@@ -14,10 +14,13 @@ class users extends Model {
       required: ['password'],
 
       properties: {
-      
+
         email: { type: ['string', 'null'] },
         password: 'string',
-      
+        first_name: { type: 'string', minLength: 1, maxLength: 255 },
+        last_name: { type: 'string', minLength: 1, maxLength: 255 },
+        status: { type: 'string', enum: ['active', 'disabled'], default: 'active' }
+
       }
     };
   }
@@ -38,11 +41,13 @@ module.exports = function (app) {
     if (!exists) {
       db.schema.createTable('users', table => {
         table.increments('id');
-      
+
         table.string('email').unique();
         table.string('password');
-      
-      
+        table.string('first_name');
+        table.string('last_name');
+        table.enum('status', ['active', 'disabled']).defaultTo('active');
+
         table.timestamp('createdAt');
         table.timestamp('updatedAt');
       })
