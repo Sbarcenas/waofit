@@ -5,9 +5,6 @@ const authenticate = require('./hooks/authenticate');
 module.exports = {
   before: {
     all: [
-
-      (hook) => console.log(hook.path, '----------', hook.params.provider, '------', hook.app.get('authentication').path),
-
       when(
         hook => hook.params.provider && `/${hook.path}` !== hook.app.get('authentication').path,
         authenticate,
