@@ -1,7 +1,7 @@
 const { when } = require('feathers-hooks-common');
 const authorize = require('./hooks/abilities');
 const authenticate = require('./hooks/authenticate');
-
+const logger = require('./hooks/log')
 module.exports = {
   before: {
     all: [
@@ -9,7 +9,8 @@ module.exports = {
         hook => hook.params.provider && `/${hook.path}` !== hook.app.get('authentication').path,
         authenticate,
         authorize()
-      )
+      ),
+      logger()
     ],
     find: [],
     get: [],

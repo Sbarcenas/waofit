@@ -11,7 +11,7 @@ class users extends Model {
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['password'],
+      required: ['email', 'status', 'role', 'first_name', 'last_name'],
 
       properties: {
 
@@ -19,8 +19,11 @@ class users extends Model {
         password: 'string',
         first_name: { type: 'string', minLength: 1, maxLength: 255 },
         last_name: { type: 'string', minLength: 1, maxLength: 255 },
-        status: { type: 'string', enum: ['active', 'disabled'], default: 'active' }
-
+        status: { type: 'string', enum: ['active', 'disabled'], default: 'active' },
+        role: { type: 'string', enum: ['user', 'admin'] },
+        facebookId: { type: 'string' },
+        gender: { type: 'string', enum: ['male', ''] },
+        birthday: { type: 'string', format: 'date-time' }
       }
     };
   }
@@ -47,7 +50,11 @@ module.exports = function (app) {
         table.string('first_name');
         table.string('last_name');
         table.enum('status', ['active', 'disabled']).defaultTo('active');
+        table.enum('role', ['user', 'admin']).defaultTo('user');
+        table.string('facebookId');
+        table.enum('gender', ['male', 'female']);
 
+        table.date('birthday');
         table.timestamp('createdAt');
         table.timestamp('updatedAt');
       })

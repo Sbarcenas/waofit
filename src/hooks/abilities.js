@@ -20,6 +20,7 @@ function defineAbilitiesFor(user) {
 
   can('create', ['users'])
   can('read', ['users'])
+  can('update', ['users'])
 
   if (user) {
     //hacer acciones

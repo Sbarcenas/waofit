@@ -10,7 +10,7 @@
     "entity": "user",
     "service": "users",
     "secret": "7m9BQMAHNVCNIfBUkordr/ZQEvU=",
-    "authStrategies": ["jwt", "local"],
+    "authStrategies": ["jwt", "local", "facebook"],
     "path": "/authentication",
     "jwtOptions": {
       "header": {
@@ -24,10 +24,25 @@
     "local": {
       "usernameField": "email",
       "passwordField": "password"
+    },
+    "facebook-token": {
+      "name": "facebook-token",
+      "clientID": "1494933113998086",
+      "clientSecret": "b11301d5f01e8203661b1a48df57befe",
+      "fbGraphVersion": "v3.0",
+      "profileFields": ["public_profile", "email"]
+    },
+    "oauth": {
+      "facebook": {
+        "key": "1494933113998086",
+        "secret": "b11301d5f01e8203661b1a48df57befe",
+        "scope": ["email, public_profile"]
+      }
     }
   },
   "mysql": {
     "client": "mysql2",
-    "connection": "mysql://root:@localhost:3306/fithub"
+    "connection": "mysql://fithubuser:bB*3fm22@api.fithub.com.co:3306/fithub",
+    "connection_": "mysql://root:@localhost:3306/fithub"
   }
 }
