@@ -7,29 +7,27 @@ module.exports = app => {
   const authentication = new AuthenticationService(app);
 
   class FacebookStrategy extends OAuthStrategy {
-    // async findEntity(req, params) {
+    async findEntity(req, params) {
 
-    //   const a = await app.service('users').find({ query: { email: req.email, facebookId: req.id } }).then(it => it.data);
-    //   console.log(a)
+      return await app.service('users').find({
+        query: {
+          $or: [
+            { email: req.email }, { facebookId: req.id }
+          ]
+        }
+      }).then(it => it.data[0]);
+    }
 
-    //   return a
-    // }
-
-    // async updateEntity(entity, profile, params) {
-    //   // console.log(entity, profile);
-    //   delete profile.birthday
-    //   delete profile.name
-
-    //   if (entity.length > 0)
-    //     return app.service('users').patch(entity[0].id, profile);
-    // }
+    async updateEntity(entity, profile, params) {
+      // console.log(entity, profile);
+      delete profile.birthday
+      delete profile.name
+      profile.facebookId = profile.id
+      if (entity)
+        return app.service('users').patch(entity.id, profile);
+    }
 
 
-    // async createEntity(profile, params) {
-    //   console.log(profile, '-----------')
-
-    //   throw ''
-    // }
 
     async getProfile(authResult) {
       // This is the oAuth access token that can be used
@@ -47,8 +45,6 @@ module.exports = app => {
           fields: 'id,name,email,first_name,last_name,gender,birthday'
         }
       });
-
-      // console.log(data, '---------')
 
       return data;
     }
