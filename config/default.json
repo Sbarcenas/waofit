@@ -25,13 +25,6 @@
       "usernameField": "email",
       "passwordField": "password"
     },
-    "facebook-token": {
-      "name": "facebook-token",
-      "clientID": "1494933113998086",
-      "clientSecret": "b11301d5f01e8203661b1a48df57befe",
-      "fbGraphVersion": "v3.0",
-      "profileFields": ["public_profile", "email"]
-    },
     "oauth": {
       "facebook": {
         "key": "1494933113998086",
@@ -39,6 +32,10 @@
         "scope": ["email, public_profile"]
       }
     }
+  },
+  "mailjet": {
+    "apiKey": "6e8c319aa5adf18d63ffb2b08d4c5b9f",
+    "secretKey": "a4f2f1244122be7ccd1dca7267788a17"
   },
   "mysql": {
     "client": "mysql2",

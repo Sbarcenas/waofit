@@ -18,12 +18,19 @@ function subjectName(subject) {
 function defineAbilitiesFor(user) {
   const { rules, can } = AbilityBuilder.extract()
 
-  can('create', ['users'])
-  can('read', ['users'])
-  can('update', ['users'])
+  can('create', [
+    'users',
+    'recovery-password'
+  ])
+
+  can('update', [
+    'recovery-password'
+  ])
 
   if (user) {
     //hacer acciones
+    can('read', ['users'], { id: user.id })
+    can('update', ['users'], { id: user.id })
   }
 
   if (process.env.NODE_ENV !== 'production') {

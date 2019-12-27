@@ -1,16 +1,14 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 
-const {
-  hashPassword, protect
-} = require('@feathersjs/authentication-local').hooks;
+const { hashPassword, protect } = require('@feathersjs/authentication-local').hooks;
 
-const proccessUsersFaceboookBC = require('../../hooks/proccess-users-faceboook-b-c');
+const proccessUsersFaceboookBC = require('./hooks/proccess-users-faceboook-b-c');
 
-const proccessUsersFacebookBP = require('../../hooks/proccess-users-facebook-b-p');
+const proccessUsersFacebookBP = require('./hooks/proccess-users-facebook-b-p');
 
-const proccessUsersBC = require('../../hooks/proccess-users-b-c');
+const proccessUsersBC = require('./hooks/proccess-users-b-c');
 
-const proccessFindFacebookBC = require('../../hooks/proccess-find-facebook-b-c');
+const proccessFindFacebookBC = require('./hooks/proccess-find-facebook-b-c');
 
 module.exports = {
   before: {

@@ -27,8 +27,6 @@ module.exports = app => {
         return app.service('users').patch(entity.id, profile);
     }
 
-
-
     async getProfile(authResult) {
       // This is the oAuth access token that can be used
       // for Facebook API requests as the Bearer token

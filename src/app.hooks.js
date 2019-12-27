@@ -2,6 +2,7 @@ const { when } = require('feathers-hooks-common');
 const authorize = require('./hooks/abilities');
 const authenticate = require('./hooks/authenticate');
 const logger = require('./hooks/log')
+const showErrors = require('./hooks/show-errors');
 module.exports = {
   before: {
     all: [
@@ -10,7 +11,7 @@ module.exports = {
         authenticate,
         authorize()
       ),
-      logger()
+      // logger()
     ],
     find: [],
     get: [],
@@ -31,7 +32,9 @@ module.exports = {
   },
 
   error: {
-    all: [],
+    all: [
+      // showErrors()
+    ],
     find: [],
     get: [],
     create: [],

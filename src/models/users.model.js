@@ -22,8 +22,9 @@ class users extends Model {
         status: { type: 'string', enum: ['active', 'disabled'], default: 'active' },
         role: { type: 'string', enum: ['user', 'admin'] },
         facebookId: { type: 'string' },
-        gender: { type: 'string', enum: ['male', ''] },
-        birthday: { type: 'string', format: 'date-time' }
+        gender: { type: 'string', enum: ['male', 'female'] },
+        birthday: { type: 'string', format: 'date-time' },
+        token_reset_password: { type: 'string' }
       }
     };
   }
@@ -53,8 +54,9 @@ module.exports = function (app) {
         table.enum('role', ['user', 'admin']).defaultTo('user');
         table.string('facebookId');
         table.enum('gender', ['male', 'female']);
-
         table.date('birthday');
+        table.string('token_reset_password');
+
         table.timestamp('createdAt');
         table.timestamp('updatedAt');
       })

@@ -5,8 +5,6 @@ const moment = require('moment');
 module.exports = (options = {}) => {
   return async context => {
 
-    console.log('---**************------')
-
     if (context.data.facebookId) {
 
       context.data.birthday = moment(context.data.birthday).format('YYYY-MM-DD')
