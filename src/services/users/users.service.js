@@ -6,7 +6,10 @@ const hooks = require('./users.hooks');
 module.exports = function (app) {
   const options = {
     Model: createModel(app),
-    paginate: app.get('paginate')
+    paginate: app.get('paginate'),
+    whitelist: ['$eager', '$joinRelation'],
+    allowedEager: 'user-device-tokens',
+    // allowedUpsert: ['user_device_tokens']
   };
 
   // Initialize our service with any options it requires

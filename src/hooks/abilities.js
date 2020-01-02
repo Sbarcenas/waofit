@@ -30,7 +30,9 @@ function defineAbilitiesFor(user) {
   if (user) {
     //hacer acciones
     can('read', ['users'], { id: user.id })
+    can('read', ['current-user'])
     can('update', ['users'], { id: user.id })
+    can('create', ['user-device-tokens'])
   }
 
   if (process.env.NODE_ENV !== 'production') {

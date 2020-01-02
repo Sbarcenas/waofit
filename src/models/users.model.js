@@ -8,13 +8,29 @@ class users extends Model {
     return 'users';
   }
 
+  static get relationMappings() {
+    const userDeviceTokens = require('./user-device-tokens.model')();
+
+    return {
+      'user-device-tokens': {
+        relation: Model.HasManyRelation,
+        modelClass: userDeviceTokens,
+        join: {
+          from: 'users.id',
+          to: 'user_device_tokens.user_id'
+        }
+      }
+    };
+  }
+
+
   static get jsonSchema() {
     return {
       type: 'object',
       required: ['email', 'status', 'role', 'first_name', 'last_name'],
 
       properties: {
-
+        id: { type: 'integer' },
         email: { type: ['string', 'null'] },
         password: 'string',
         first_name: { type: 'string', minLength: 1, maxLength: 255 },
@@ -23,8 +39,9 @@ class users extends Model {
         role: { type: 'string', enum: ['user', 'admin'] },
         facebookId: { type: 'string' },
         gender: { type: 'string', enum: ['male', 'female'] },
-        birthday: { type: 'string', format: 'date-time' },
-        token_reset_password: { type: 'string' }
+        birthday: { type: 'string', format: 'date' },
+        token_reset_password: { type: 'string' },
+        // deletedAt: { type: 'string', format: 'date-time' }
       }
     };
   }
@@ -39,32 +56,35 @@ class users extends Model {
 }
 
 module.exports = function (app) {
-  const db = app.get('knex');
+  if (app) {
+    const db = app.get('knex');
 
-  db.schema.hasTable('users').then(exists => {
-    if (!exists) {
-      db.schema.createTable('users', table => {
-        table.increments('id');
+    db.schema.hasTable('users').then(exists => {
+      if (!exists) {
+        db.schema.createTable('users', table => {
+          table.increments('id').primary();
 
-        table.string('email').unique();
-        table.string('password');
-        table.string('first_name');
-        table.string('last_name');
-        table.enum('status', ['active', 'disabled']).defaultTo('active');
-        table.enum('role', ['user', 'admin']).defaultTo('user');
-        table.string('facebookId');
-        table.enum('gender', ['male', 'female']);
-        table.date('birthday');
-        table.string('token_reset_password');
+          table.string('email').unique();
+          table.string('password');
+          table.string('first_name');
+          table.string('last_name');
+          table.enum('status', ['active', 'disabled']).defaultTo('active');
+          table.enum('role', ['user', 'admin']).defaultTo('user');
+          table.string('facebookId');
+          table.enum('gender', ['male', 'female']);
+          table.date('birthday');
+          table.string('token_reset_password');
 
-        table.timestamp('createdAt');
-        table.timestamp('updatedAt');
-      })
-        .then(() => console.log('Created users table')) // eslint-disable-line no-console
-        .catch(e => console.error('Error creating users table', e)); // eslint-disable-line no-console
-    }
-  })
-    .catch(e => console.error('Error creating users table', e)); // eslint-disable-line no-console
+          // table.timestamp('deletedAt');
+          table.timestamp('createdAt');
+          table.timestamp('updatedAt');
+        })
+          .then(() => console.log('Created users table')) // eslint-disable-line no-console
+          .catch(e => console.error('Error creating users table', e)); // eslint-disable-line no-console
+      }
+    })
+      .catch(e => console.error('Error creating users table', e)); // eslint-disable-line no-console
+  }
 
   return users;
 };

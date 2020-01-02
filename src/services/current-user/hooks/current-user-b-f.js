@@ -8,19 +8,18 @@ const { getItems, replaceItems } = require('feathers-hooks-common')
 module.exports = (options = {}) => {
 
 
-  return async context => {
+    return async context => {
 
-    let records = getItems(context)
+        let records = getItems(context)
 
-    if (records.facebookId) {
+        const { user } = context.params
 
-      records.birthday = moment(context.data.birthday).format('YYYY-MM-DD')
-      records.role = 'user'
-    }
-
-    replaceItems(context, records)
+        context.result = await context.app.service('users').get(user.id)
 
 
-    return context;
-  };
+        replaceItems(context, records)
+
+
+        return context;
+    };
 };

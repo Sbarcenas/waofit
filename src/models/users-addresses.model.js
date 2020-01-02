@@ -8,6 +8,8 @@ class usersAddresses extends Model {
     return 'users_addresses';
   }
 
+
+
   static get jsonSchema() {
     return {
       type: 'object',

@@ -7,6 +7,14 @@ module.exports = (options = {}) => {
 
     let records = getItems(context)
 
+    const users = await context.app.service('users').find({
+      query: {
+        $joinRelation: 'user-device-tokens',
+        $eager: 'user-device-tokens',
+      }
+    }).then(it => it.data[0])
+
+
     replaceItems(context, records)
 
     return context;

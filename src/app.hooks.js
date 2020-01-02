@@ -33,7 +33,7 @@ module.exports = {
 
   error: {
     all: [
-      // showErrors()
+      showErrors()
     ],
     find: [],
     get: [],
