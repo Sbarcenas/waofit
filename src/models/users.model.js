@@ -41,6 +41,7 @@ class users extends Model {
         gender: { type: 'string', enum: ['male', 'female'] },
         birthday: { type: 'string', format: 'date' },
         token_reset_password: { type: 'string' },
+        phone: { type: 'string', maxLength: 255 }
         // deletedAt: { type: 'string', format: 'date-time' }
       }
     };
@@ -74,7 +75,7 @@ module.exports = function (app) {
           table.enum('gender', ['male', 'female']);
           table.date('birthday');
           table.string('token_reset_password');
-
+          table.string('phone', 255);
           // table.timestamp('deletedAt');
           table.timestamp('createdAt');
           table.timestamp('updatedAt');
