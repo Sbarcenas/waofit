@@ -30,9 +30,23 @@ function defineAbilitiesFor(user) {
   if (user) {
     //hacer acciones
     can('read', ['users'], { id: user.id })
+    can('read', ['users-addresses'], { user_id: user.id })
     can('read', ['current-user'])
     can('update', ['users'], { id: user.id })
-    can('create', ['user-device-tokens'])
+
+    can('update', [
+      'users-addresses'
+    ], { user_id: user.id })
+
+    can('create', [
+      'user-device-tokens',
+      'users-addresses'
+    ])
+
+    if (user.role == 'admin') {
+      can('manage', ['all'])
+    }
+
   }
 
   if (process.env.NODE_ENV !== 'production') {

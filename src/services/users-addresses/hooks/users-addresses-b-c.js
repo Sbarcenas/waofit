@@ -7,6 +7,12 @@ module.exports = (options = {}) => {
 
         let records = getItems(context)
 
+        const { user } = context.params
+
+        records.user_id = user.id
+
+        replaceItems(context, records)
+
         return context;
     };
 };

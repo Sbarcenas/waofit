@@ -9,14 +9,19 @@ class usersAddresses extends Model {
   }
 
 
-
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['text'],
+      required: ['lat', 'lng', 'city_id', 'user_id'],
 
       properties: {
-        text: { type: 'string' }
+        address: { type: 'string', maxLength: 255 },
+        user_id: { type: 'integer' },
+        city_id: { type: 'integer' },
+        lat: { type: 'number' },
+        lng: { type: 'number' },
+        details: { type: 'string' },
+        main: { type: 'string', enum: ['true', 'false'] }
       }
     };
   }
@@ -37,7 +42,22 @@ module.exports = function (app) {
     if (!exists) {
       db.schema.createTable('users_addresses', table => {
         table.increments('id');
-        table.string('text');
+        table.string('address', 255);
+        table.integer('user_id')
+          .unsigned()
+          .references('id')
+          .inTable('users')
+          .index();
+        table.integer('city_id')
+          .unsigned()
+          .references('id')
+          .inTable('locations_cities')
+          .index();
+        table.double('lat');
+        table.double('lng');
+        table.string('details')
+        table.enum('main', ['true', 'false']);
+        table.timestamp('deletedAt');
         table.timestamp('createdAt');
         table.timestamp('updatedAt');
       })

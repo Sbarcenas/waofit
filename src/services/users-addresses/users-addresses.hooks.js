@@ -1,4 +1,6 @@
 const usersAddressesBC = require('./hooks/users-addresses-b-c');
+const usersAddressesAC = require('./hooks/users-addreeses-a-c');
+const usersAddressesAP = require('./hooks/users-addresses-a-p');
 
 module.exports = {
   before: {
@@ -17,9 +19,13 @@ module.exports = {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [
+      usersAddressesAC()
+    ],
     update: [],
-    patch: [],
+    patch: [
+      usersAddressesAP()
+    ],
     remove: []
   },
 
