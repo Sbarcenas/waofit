@@ -15,7 +15,8 @@ class locationsCities extends Model {
 
       properties: {
         name: { type: 'string', maxlength: 255 },
-        state_id: { type: 'integer' }
+        state_id: { type: 'integer' },
+        deletedAt: { type: 'string', format: 'date-time' }
       }
     };
   }
@@ -42,7 +43,7 @@ module.exports = function (app) {
           .references('id')
           .inTable('locations_states')
           .index();
-        table.timestamp('deletedAt');
+        table.timestamp('deletedAt').nullable();
         table.timestamp('createdAt');
         table.timestamp('updatedAt');
       })

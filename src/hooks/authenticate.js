@@ -10,7 +10,6 @@ function hasToken(hook) {
 
 module.exports = async function authenticate(hook) {
   try {
-    // console.log(hook);
     return await verifyIdentity(hook)
   } catch (error) {
     if (error instanceof NotAuthenticated && !hasToken(hook)) {

@@ -27,7 +27,7 @@ class users extends Model {
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['email', 'status', 'role', 'first_name', 'last_name'],
+      required: ['email', 'status', 'role', 'first_name', 'last_name', 'phone'],
 
       properties: {
         id: { type: 'integer' },
@@ -41,8 +41,8 @@ class users extends Model {
         gender: { type: 'string', enum: ['male', 'female'] },
         birthday: { type: 'string', format: 'date' },
         token_reset_password: { type: 'string' },
-        phone: { type: 'string', maxLength: 255 }
-        // deletedAt: { type: 'string', format: 'date-time' }
+        phone: { type: 'string', maxLength: 255 },
+        deletedAt: { type: 'string', format: 'date-time' }
       }
     };
   }
@@ -76,7 +76,7 @@ module.exports = function (app) {
           table.date('birthday');
           table.string('token_reset_password');
           table.string('phone', 255);
-          // table.timestamp('deletedAt');
+          table.timestamp('deletedAt').nullable();
           table.timestamp('createdAt');
           table.timestamp('updatedAt');
         })

@@ -10,18 +10,14 @@ const proccessUsersBC = require('./hooks/proccess-users-b-c');
 
 const proccessFindFacebookBC = require('./hooks/proccess-find-facebook-b-c');
 
-// const { softDelete2, protect } = require('feathers-hooks-common');
-
 module.exports = {
   before: {
-    all: [
-      // softDelete2()
-    ],
-    find: [authenticate('jwt'), /* proccessFindFacebookBC() */],
-    get: [authenticate('jwt'), /* proccessFindFacebookBC() */],
-    create: [hashPassword('password'), proccessUsersFaceboookBC(), /* proccessUsersBC() */],
+    all: [],
+    find: [authenticate('jwt'), proccessFindFacebookBC()],
+    get: [authenticate('jwt'), proccessFindFacebookBC()],
+    create: [hashPassword('password'), proccessUsersFaceboookBC(), proccessUsersBC()],
     update: [hashPassword('password'), authenticate('jwt')],
-    patch: [hashPassword('password'), authenticate('jwt'), proccessUsersBC(),/* proccessUsersFacebookBP() */],
+    patch: [hashPassword('password'), authenticate('jwt') /* proccessUsersBC(), proccessUsersFacebookBP() */],
     remove: [authenticate('jwt')]
   },
 
@@ -29,7 +25,7 @@ module.exports = {
     all: [
       // Make sure the password field is never sent to the client
       // Always must be the last hook
-      protect('password')
+      protect('password'),
     ],
     find: [],
     get: [],

@@ -28,20 +28,32 @@ function defineAbilitiesFor(user) {
   ])
 
   if (user) {
+
     //hacer acciones
-    can('read', ['users'], { id: user.id })
-    can('read', ['users-addresses'], { user_id: user.id })
+    can('create', [
+      'user-device-tokens',
+      'users-addresses',
+      'users-product-brand-favorites',
+      'users-credit-cards'
+    ])
+
+    can('read', [
+      'users'
+    ], { id: user.id })
+
+    can('manage', [
+      'users-addresses',
+      'users-product-brand-favorites'
+    ], { user_id: user.id })
+
     can('read', ['current-user'])
+
     can('update', ['users'], { id: user.id })
 
-    can('update', [
+    can('manage', [
       'users-addresses'
     ], { user_id: user.id })
 
-    can('create', [
-      'user-device-tokens',
-      'users-addresses'
-    ])
 
     if (user.role == 'admin') {
       can('manage', ['all'])

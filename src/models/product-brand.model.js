@@ -2,10 +2,10 @@
 // for more of what you can do here.
 const { Model } = require('objection');
 
-class locationsStates extends Model {
+class productBrand extends Model {
 
   static get tableName() {
-    return 'locations_states';
+    return 'product_brand';
   }
 
   static get jsonSchema() {
@@ -14,7 +14,9 @@ class locationsStates extends Model {
       required: ['name'],
 
       properties: {
-        name: { type: 'string' },
+        name: { type: 'string', maxLength: 255 },
+        icon_path: { type: 'string' },
+        description: { type: 'string' },
         deletedAt: { type: 'string', format: 'date-time' }
       }
     };
@@ -32,20 +34,22 @@ class locationsStates extends Model {
 module.exports = function (app) {
   const db = app.get('knex');
 
-  db.schema.hasTable('locations_states').then(exists => {
+  db.schema.hasTable('product_brand').then(exists => {
     if (!exists) {
-      db.schema.createTable('locations_states', table => {
+      db.schema.createTable('product_brand', table => {
         table.increments('id');
         table.string('name', 255);
+        table.string('icon_path');
+        table.string('description');
         table.timestamp('deletedAt').nullable();
         table.timestamp('createdAt');
         table.timestamp('updatedAt');
       })
-        .then(() => console.log('Created locations_states table')) // eslint-disable-line no-console
-        .catch(e => console.error('Error creating locations_states table', e)); // eslint-disable-line no-console
+        .then(() => console.log('Created product_brand table')) // eslint-disable-line no-console
+        .catch(e => console.error('Error creating product_brand table', e)); // eslint-disable-line no-console
     }
   })
-    .catch(e => console.error('Error creating locations_states table', e)); // eslint-disable-line no-console
+    .catch(e => console.error('Error creating product_brand table', e)); // eslint-disable-line no-console
 
-  return locationsStates;
+  return productBrand;
 };

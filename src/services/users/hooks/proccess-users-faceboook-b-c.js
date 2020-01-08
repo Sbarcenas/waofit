@@ -15,7 +15,6 @@ module.exports = (options = {}) => {
     if (records.facebookId) {
 
       records.birthday = moment(context.data.birthday).format('YYYY-MM-DD')
-      records.role = 'user'
     }
 
     replaceItems(context, records)

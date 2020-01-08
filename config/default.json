@@ -6,6 +6,12 @@
     "default": 10,
     "max": 50
   },
+  "epayco": {
+    "PUBLIC_KEY": "3c6264e48dfeb2e520f41adb32b5f150",
+    "PRIVATE_KEY": "3f627ba570466b681ff8d05ea7e97aed",
+    "P_CUST_ID_CLIENTE": "29602",
+    "P_KEY": "ada25f9697bbe7b7f9379d16cc305bc41f0a48a5"
+  },
   "authentication": {
     "entity": "user",
     "service": "users",

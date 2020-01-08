@@ -17,6 +17,7 @@ class userDeviceTokens extends Model {
         id: { type: 'integer' },
         name: { type: 'string' },
         user_id: { type: 'integer' },
+        deletedAt: { type: 'string', format: 'date-time' }
       }
     };
   }
@@ -59,6 +60,7 @@ module.exports = function (app) {
             .references('id')
             .inTable('users')
             .index();
+          table.timestamp('deletedAt').nullable();
           table.timestamp('createdAt');
           table.timestamp('updatedAt');
         })

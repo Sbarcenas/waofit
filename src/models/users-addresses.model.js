@@ -21,7 +21,8 @@ class usersAddresses extends Model {
         lat: { type: 'number' },
         lng: { type: 'number' },
         details: { type: 'string' },
-        main: { type: 'string', enum: ['true', 'false'] }
+        main: { type: 'string', enum: ['true', 'false'] },
+        deletedAt: { type: 'string', format: 'date-time' }
       }
     };
   }
@@ -57,7 +58,7 @@ module.exports = function (app) {
         table.double('lng');
         table.string('details')
         table.enum('main', ['true', 'false']);
-        table.timestamp('deletedAt');
+        table.timestamp('deletedAt').nullable();
         table.timestamp('createdAt');
         table.timestamp('updatedAt');
       })
