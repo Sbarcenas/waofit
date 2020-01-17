@@ -16,6 +16,7 @@ class productBrand extends Model {
       properties: {
         name: { type: 'string', maxLength: 255 },
         icon_path: { type: 'string' },
+        priority: { type: 'integer' },
         description: { type: 'string' },
         deletedAt: { type: 'string', format: 'date-time' }
       }
@@ -40,6 +41,7 @@ module.exports = function (app) {
         table.increments('id');
         table.string('name', 255);
         table.string('icon_path');
+        table.integer('priority');
         table.string('description');
         table.timestamp('deletedAt').nullable();
         table.timestamp('createdAt');
