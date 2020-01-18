@@ -27,12 +27,12 @@ class users extends Model {
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['email', 'status', 'role', 'first_name', 'last_name', 'phone'],
+      required: ['email', 'status', 'first_name', 'last_name', 'phone'],
 
       properties: {
         id: { type: 'integer' },
         email: { type: ['string', 'null'] },
-        password: 'string',
+        password: { type: 'string' },
         first_name: { type: 'string', minLength: 1, maxLength: 255 },
         last_name: { type: 'string', minLength: 1, maxLength: 255 },
         status: { type: 'string', enum: ['active', 'disabled'], default: 'active' },
@@ -64,7 +64,6 @@ module.exports = function (app) {
       if (!exists) {
         db.schema.createTable('users', table => {
           table.increments('id').primary();
-
           table.string('email').unique();
           table.string('password');
           table.string('first_name');

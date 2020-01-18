@@ -8,16 +8,17 @@ class usersAddresses extends Model {
     return 'users_addresses';
   }
 
-
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['lat', 'lng', 'city_id', 'user_id'],
+      required: ['lat', 'lng', 'name', 'main'],
 
       properties: {
+        name: { type: 'string', maxLength: 255 },
         address: { type: 'string', maxLength: 255 },
         user_id: { type: 'integer' },
         city_id: { type: 'integer' },
+        state_id: { type: 'integer' },
         lat: { type: 'number' },
         lng: { type: 'number' },
         details: { type: 'string' },
@@ -37,36 +38,45 @@ class usersAddresses extends Model {
 }
 
 module.exports = function (app) {
-  const db = app.get('knex');
+  if (app) {
 
-  db.schema.hasTable('users_addresses').then(exists => {
-    if (!exists) {
-      db.schema.createTable('users_addresses', table => {
-        table.increments('id');
-        table.string('address', 255);
-        table.integer('user_id')
-          .unsigned()
-          .references('id')
-          .inTable('users')
-          .index();
-        table.integer('city_id')
-          .unsigned()
-          .references('id')
-          .inTable('locations_cities')
-          .index();
-        table.double('lat');
-        table.double('lng');
-        table.string('details')
-        table.enum('main', ['true', 'false']);
-        table.timestamp('deletedAt').nullable();
-        table.timestamp('createdAt');
-        table.timestamp('updatedAt');
-      })
-        .then(() => console.log('Created users_addresses table')) // eslint-disable-line no-console
-        .catch(e => console.error('Error creating users_addresses table', e)); // eslint-disable-line no-console
-    }
-  })
-    .catch(e => console.error('Error creating users_addresses table', e)); // eslint-disable-line no-console
+    const db = app.get('knex');
+
+    db.schema.hasTable('users_addresses').then(exists => {
+      if (!exists) {
+        db.schema.createTable('users_addresses', table => {
+          table.increments('id');
+          table.string('name', 255);
+          table.string('address', 255);
+          table.integer('user_id')
+            .unsigned()
+            .references('id')
+            .inTable('users')
+            .index();
+          table.integer('city_id')
+            .unsigned()
+            .references('id')
+            .inTable('locations_cities')
+            .index();
+          table.integer('state_id')
+            .unsigned()
+            .references('id')
+            .inTable('locations_states')
+            .index();
+          table.double('lat');
+          table.double('lng');
+          table.string('details')
+          table.enum('main', ['true', 'false']);
+          table.timestamp('deletedAt').nullable();
+          table.timestamp('createdAt');
+          table.timestamp('updatedAt');
+        })
+          .then(() => console.log('Created users_addresses table')) // eslint-disable-line no-console
+          .catch(e => console.error('Error creating users_addresses table', e)); // eslint-disable-line no-console
+      }
+    })
+      .catch(e => console.error('Error creating users_addresses table', e)); // eslint-disable-line no-console
+  }
 
   return usersAddresses;
 };

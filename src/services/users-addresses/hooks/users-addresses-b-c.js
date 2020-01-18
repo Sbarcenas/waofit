@@ -30,9 +30,10 @@ module.exports = (options = {}) => {
         if (!city) throw new NotFound('No se encontro la ciudad enviada.')
 
         records.city_id = city.id
+        records.state_id = state.id
 
-        delete records.city_name
-        delete records.state_name
+        delete records.city_name;
+        delete records.state_name;
 
         replaceItems(context, records)
 
