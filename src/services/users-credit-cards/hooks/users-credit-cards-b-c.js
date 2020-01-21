@@ -63,15 +63,13 @@ module.exports = (options = {}) => {
         });
 
         const credit_info = {
-            "card[number]": records.masked_number,
+            "card[number]": records.masked_number.replace(/ /g, ""),
             "card[exp_year]": `${records.exp_year}`,
             "card[exp_month]": `${records.exp_month}`,
             "card[cvc]": records.cvv
         };
 
         const credit_card_response = await epayco.token.create(credit_info);
-
-        console.log(credit_card_response);
 
         if (!credit_card_response.status) throw new NotAcceptable('Error al crear la tarjeta de credito, asegurate de que los datos sean correctos');
 
