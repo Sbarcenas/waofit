@@ -59,19 +59,19 @@ module.exports = (options = {}) => {
             apiKey: epaycoCredentials.PUBLIC_KEY,
             privateKey: epaycoCredentials.PRIVATE_KEY,
             lang: 'ES',
-            test: false
+            test: true
         });
 
         const credit_info = {
             "card[number]": records.masked_number,
-            "card[exp_year]": records.exp_year,
-            "card[exp_month]": records.exp_month,
+            "card[exp_year]": `${records.exp_year}`,
+            "card[exp_month]": `${records.exp_month}`,
             "card[cvc]": records.cvv
         };
 
         const credit_card_response = await epayco.token.create(credit_info);
 
-
+        console.log(credit_card_response);
 
         if (!credit_card_response.status) throw new NotAcceptable('Error al crear la tarjeta de credito, asegurate de que los datos sean correctos');
 
@@ -109,8 +109,8 @@ module.exports = (options = {}) => {
         records.customer_id = customer_response.data.customerId;
         records.type_document;
         records.identification_number;
-        records.exp_year = credit_card_response.card.exp_year;
-        records.exp_month = credit_card_response.card.exp_month;
+        records.exp_year = parseInt(credit_card_response.card.exp_year);
+        records.exp_month = parseInt(credit_card_response.card.exp_month);
         records.masked_number = make_masker_number(records.masked_number);
         records.meta_data = JSON.stringify(meta_data);
         records.payment_method = 'credit-card';
@@ -122,6 +122,8 @@ module.exports = (options = {}) => {
         records.address = records.address;
         records.phone = records.phone;
         records.cell_phone = records.cell_phone;
+
+        delete records.city_id
 
         replaceItems(context, records)
 
