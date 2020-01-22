@@ -18,7 +18,7 @@ module.exports = (options = {}) => {
 
         if(creditCards.length > 0){
             await context.app.service('users-credit-cards').patch(null, { default: 'false' }, {
-                query: { user_id: user.id }
+                query: { user_id: user.id, id:{$ne:records.id} }
             });
         }
     }
