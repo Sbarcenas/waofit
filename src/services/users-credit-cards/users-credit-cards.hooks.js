@@ -1,5 +1,7 @@
 const usersCreditCardsBC = require('./hooks/users-credit-cards-b-c');
-const { disallow } = require('feathers-hooks-common')
+const defaultCreditCards = require('./hooks/default-credit-cards');
+const { disallow, discard, iff, isProvider } = require('feathers-hooks-common')
+
 module.exports = {
   before: {
     all: [],
@@ -10,11 +12,13 @@ module.exports = {
     ],
     update: [],
     patch: [
-      disallow('external')
+      iff(isProvider('external'),
+      discard('user_id', 'credit_card_token_id','owner_name','customer_id','cvv',
+      'type_document','identification_number','exp_year','exp_month','masked_number','meta_data',
+      'payment_method','gateway','active','brand','city','address','phone','cell_phone')
+      )
     ],
-    remove: [
-      disallow('external')
-    ]
+    remove: []
   },
 
   after: {
@@ -23,7 +27,11 @@ module.exports = {
     get: [],
     create: [],
     update: [],
-    patch: [],
+    patch: [
+      iff(isProvider('external'),
+        defaultCreditCards()
+      )
+    ],
     remove: []
   },
 
