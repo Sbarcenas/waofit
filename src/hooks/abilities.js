@@ -47,7 +47,10 @@ function defineAbilitiesFor(user) {
       'users-credit-cards'
     ], { user_id: user.id })
 
-    can('read', ['current-user'])
+    can('read', [
+      'current-user',
+      'credentials'
+    ])
 
     can('update', ['users'], { id: user.id })
 

@@ -2,18 +2,18 @@
 // for more of what you can do here.
 const { Model } = require('objection');
 
-class s3Credentials extends Model {
+class credentials extends Model {
 
   static get tableName() {
-    return 's_3_credentials';
+    return 'credentials';
   }
 
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['bucket','region','accessKey','secretKey'],
-
+      required: ['type','accessKey','secretKey'],
       properties: {
+        type:{type:'string', enum:['s3Credential']},
         bucket: { type: 'string', maxLength:255 },
         region: { type: 'string', maxLength:255 },
         accessKey: { type: 'string' },
@@ -35,23 +35,24 @@ class s3Credentials extends Model {
 module.exports = function (app) {
   const db = app.get('knex');
 
-  db.schema.hasTable('s_3_credentials').then(exists => {
+  db.schema.hasTable('credentials').then(exists => {
     if (!exists) {
-      db.schema.createTable('s_3_credentials', table => {
+      db.schema.createTable('credentials', table => {
         table.increments('id');
+        table.enum('type', ['s3Credential']);
         table.string('bucket', 255);
         table.string('region', 255);
         table.string('accessKey');
         table.string('secretKey');
-        table.timestamp('deletedAt');
+        table.timestamp('deletedAt').nullable();
         table.timestamp('createdAt');
         table.timestamp('updatedAt');
       })
-        .then(() => console.log('Created s_3_credentials table')) // eslint-disable-line no-console
-        .catch(e => console.error('Error creating s_3_credentials table', e)); // eslint-disable-line no-console
+        .then(() => console.log('Created credentials table')) // eslint-disable-line no-console
+        .catch(e => console.error('Error creating credentials table', e)); // eslint-disable-line no-console
     }
   })
-    .catch(e => console.error('Error creating s_3_credentials table', e)); // eslint-disable-line no-console
+    .catch(e => console.error('Error creating credentials table', e)); // eslint-disable-line no-console
 
-  return s3Credentials;
+  return credentials;
 };

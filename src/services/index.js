@@ -9,6 +9,7 @@ const locationsCities = require('./locations-cities/locations-cities.service.js'
 const usersCreditCards = require('./users-credit-cards/users-credit-cards.service.js');
 const productBrand = require('./product-brand/product-brand.service.js');
 const usersProductBrandFavorites = require('./users-product-brand-favorites/users-product-brand-favorites.service.js');
+const credentials = require('./credentials/credentials.service.js');
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {
   app.configure(users);
@@ -22,4 +23,5 @@ module.exports = function (app) {
   app.configure(usersCreditCards);
   app.configure(productBrand);
   app.configure(usersProductBrandFavorites);
+  app.configure(credentials);
 };
