@@ -43,7 +43,8 @@ function defineAbilitiesFor(user) {
 
     can('manage', [
       'users-addresses',
-      'users-product-brand-favorites'
+      'users-product-brand-favorites',
+      'users-credit-cards'
     ], { user_id: user.id })
 
     can('read', ['current-user'])
