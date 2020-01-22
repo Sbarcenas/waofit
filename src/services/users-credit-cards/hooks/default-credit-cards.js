@@ -11,6 +11,8 @@ module.exports = (options = {}) => {
 
     let records = getItems(context)
 
+    const { user } = context.params
+
     if(records.default == 'true'){
       const creditCards = await context.app.service('users-credit-cards').find({query:{user_id: user.id }, paginate: false}).then(it =>it);
 
