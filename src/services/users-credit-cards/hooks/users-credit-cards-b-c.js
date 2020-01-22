@@ -36,9 +36,13 @@ async function verifyDefault(user, predetermined, context) {
 
     } else {
 
-        await context.app.service('users-credit-cards').patch(null, { default: 'false' }, {
-            query: { user_id: user.id }
-        });
+        const creditCards = await context.app.service('users-credit-cards').find({query:{user_id: user.id }, paginate: false}).then(it =>it);
+
+        if(creditCards.length > 0){
+            await context.app.service('users-credit-cards').patch(null, { default: 'false' }, {
+                query: { user_id: user.id }
+            });
+        }
 
         response = 'true';
     }
