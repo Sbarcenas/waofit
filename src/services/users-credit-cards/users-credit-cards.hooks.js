@@ -1,5 +1,5 @@
 const usersCreditCardsBC = require('./hooks/users-credit-cards-b-c');
-
+const { disallow } = require('feathers-hooks-common')
 module.exports = {
   before: {
     all: [],
@@ -9,8 +9,12 @@ module.exports = {
       usersCreditCardsBC()
     ],
     update: [],
-    patch: [],
-    remove: []
+    patch: [
+      disallow('external')
+    ],
+    remove: [
+      disallow('external')
+    ]
   },
 
   after: {
