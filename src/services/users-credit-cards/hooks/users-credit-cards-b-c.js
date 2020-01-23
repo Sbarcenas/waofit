@@ -124,6 +124,7 @@ module.exports = (options = {}) => {
         records.address = records.address;
         records.phone = records.phone;
         records.cell_phone = records.cell_phone;
+        records.default_payment_fees = 1;
 
         delete records.city_id
 

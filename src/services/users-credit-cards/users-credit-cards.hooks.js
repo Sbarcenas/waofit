@@ -12,6 +12,7 @@ module.exports = {
     ],
     update: [],
     patch: [
+      (c)=>{console.log(c.id,'--------------------------------------------')},
       iff(isProvider('external'),
       discard('user_id', 'credit_card_token_id','owner_name','customer_id','cvv',
       'type_document','identification_number','exp_year','exp_month','masked_number','meta_data',

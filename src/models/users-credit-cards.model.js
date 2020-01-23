@@ -37,7 +37,8 @@ class usersCreditCards extends Model {
         address: { type: 'string', maxLength: 255 },
         phone: { type: 'string', maxLength: 255 },
         cell_phone: { type: 'string', maxLength: 255 },
-        deletedAt: { type: 'integer' }
+        default_payment_fees:{type:'integer'},
+        deletedAt: { type: 'string', format:'date-time' }
       }
     };
   }
@@ -82,7 +83,8 @@ module.exports = function (app) {
         table.string('address', 255);
         table.string('phone', 255);
         table.string('cell_phone', 255);
-        table.integer('deletedAt');
+        table.integer('default_payment_fees');
+        table.timestamp('deletedAt').nullable();
         table.timestamp('createdAt');
         table.timestamp('updatedAt');
       })

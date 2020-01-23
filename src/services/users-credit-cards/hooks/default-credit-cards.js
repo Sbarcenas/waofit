@@ -17,9 +17,12 @@ module.exports = (options = {}) => {
       const creditCards = await context.app.service('users-credit-cards').find({query:{user_id: user.id }, paginate: false}).then(it =>it);
 
         if(creditCards.length > 0){
-            await context.app.service('users-credit-cards').patch(null, { default: 'false' }, {
-                query: { user_id: user.id, id:{$ne:records.id} }
-            });
+          
+            await context.app.service('users-credit-cards').getModel()
+              .query()
+              .patch({ default: 'false' })
+              .where('user_id',user.id)
+              .whereNot('id',records.id);
         }
     }
     
