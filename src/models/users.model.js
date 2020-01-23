@@ -42,6 +42,8 @@ class users extends Model {
         birthday: { type: 'string', format: 'date' },
         token_reset_password: { type: 'string' },
         phone: { type: 'string', maxLength: 255 },
+        credits: { type: 'integer' },
+        profile_picture: { type: 'string' },
         deletedAt: { type: 'string', format: 'date-time' }
       }
     };
@@ -75,6 +77,8 @@ module.exports = function (app) {
           table.date('birthday');
           table.string('token_reset_password');
           table.string('phone', 255);
+          table.integer('credits', 255).defaultTo(0);
+          table.text('profile_picture', 255);
           table.timestamp('deletedAt').nullable();
           table.timestamp('createdAt');
           table.timestamp('updatedAt');
