@@ -3,17 +3,18 @@ const authorize = require('./hooks/abilities');
 const authenticate = require('./hooks/authenticate');
 const logger = require('./hooks/log')
 const showErrors = require('./hooks/show-errors');
-const { softDelete } = require('feathers-hooks-common')
+const { softDelete } = require('feathers-hooks-common');
+const removeSoftdelete = require('./hooks/remove-softdelete');
 
-// const deleted = softDelete({
-//   // context is the normal hook context
-//   deletedQuery: async context => {
-//     return { deletedAt: null };
-//   },
-//   removeData: async context => {
-//     return { deletedAt: new Date().toISOString() };
-//   }
-// });
+const deleted = softDelete({
+  // context is the normal hook context
+  deletedQuery: async context => {
+    return { deletedAt: null };
+  },
+  removeData: async context => {
+    return { deletedAt: new Date().toISOString() };
+  }
+});
 
 module.exports = {
   before: {
@@ -26,10 +27,10 @@ module.exports = {
       logger()
     ],
     find: [
-      // deleted
+      deleted
     ],
     get: [
-      // deleted
+      deleted
     ],
     create: [
       context => {
@@ -37,13 +38,13 @@ module.exports = {
       }
     ],
     update: [
-      // deleted
+      deleted
     ],
     patch: [
-      // deleted
+      deleted
     ],
     remove: [
-      // deleted
+      removeSoftdelete()
     ]
   },
 
