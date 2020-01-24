@@ -21,7 +21,7 @@ module.exports = (options = {}) => {
         .whereNot('deletedAt', null)
   
       context.result = record
-    }else
+    }else if(context.path != 'authentication')
       throw new NotAcceptable('for remove a record is need a id')
 
     return context;
