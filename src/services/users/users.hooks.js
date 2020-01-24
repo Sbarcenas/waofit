@@ -4,16 +4,12 @@ const proccessUsersFaceboookBC = require('./hooks/proccess-users-faceboook-b-c')
 const proccessUsersFacebookBP = require('./hooks/proccess-users-facebook-b-p');
 const proccessUsersBC = require('./hooks/proccess-users-b-c');
 const proccessFindFacebookBC = require('./hooks/proccess-find-facebook-b-c');
-const { discard, iff, isProvider } = require('feathers-hooks-common')
+const { discard, iff, isProvider, disallow } = require('feathers-hooks-common')
 const { softDelete } = require('feathers-hooks-common')
 
 module.exports = {
   before: {
-    all: [
-      iff(isProvider('external'),
-        discard('credits','email','password','status','role','facebookId','token_reset_password')
-      )
-    ],
+    all: [],
     find: [
       authenticate('jwt'),
       proccessFindFacebookBC()
@@ -23,15 +19,20 @@ module.exports = {
       proccessFindFacebookBC()
     ],
     create: [
+      iff(isProvider('external'),
+        discard('credits','status','role','facebookId','token_reset_password')
+      ),
       hashPassword('password'),
       proccessUsersFaceboookBC(),
       proccessUsersBC()
     ],
     update: [
-      hashPassword('password'),
-      authenticate('jwt')
+      disallow("external")
     ],
     patch: [
+      iff(isProvider('external'),
+        discard('credits','status','role','facebookId','token_reset_password','password','email')
+      ),
       hashPassword('password'),
       authenticate('jwt') /* proccessUsersBC(), proccessUsersFacebookBP() */
     ],
