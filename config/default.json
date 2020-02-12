@@ -12,6 +12,10 @@
     "P_CUST_ID_CLIENTE": "29602",
     "P_KEY": "ada25f9697bbe7b7f9379d16cc305bc41f0a48a5"
   },
+  "algolia": {
+    "appId": "EQYLFEJXHK",
+    "apiKey": "4ac09720d39223798d68ce8769ca454a"
+  },
   "authentication": {
     "entity": "user",
     "service": "users",

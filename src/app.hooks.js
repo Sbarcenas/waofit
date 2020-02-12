@@ -1,15 +1,16 @@
-const { when, iff, isProvider } = require('feathers-hooks-common');
-const authorize = require('./hooks/abilities');
-const authenticate = require('./hooks/authenticate');
-const logger = require('./hooks/log')
-const showErrors = require('./hooks/show-errors');
-const { softDelete } = require('feathers-hooks-common');
-const removeSoftdelete = require('./hooks/remove-softdelete');
+const { when, iff, isProvider } = require("feathers-hooks-common");
+const authorize = require("./hooks/abilities");
+const authenticate = require("./hooks/authenticate");
+const logger = require("./hooks/log");
+const showErrors = require("./hooks/show-errors");
+const { softDelete } = require("feathers-hooks-common");
+const removeSoftdelete = require("./hooks/remove-softdelete");
 
 const deleted = softDelete({
   // context is the normal hook context
   deletedQuery: async context => {
-    return { deletedAt: null };
+    const field = `${context.service.getModel().tableName}.deletedAt`;
+    return { [field]: null };
   },
   removeData: async context => {
     return { deletedAt: new Date().toISOString() };
@@ -20,32 +21,24 @@ module.exports = {
   before: {
     all: [
       when(
-        hook => hook.params.provider && `/${hook.path}` !== hook.app.get('authentication').path,
+        hook =>
+          hook.params.provider &&
+          `/${hook.path}` !== hook.app.get("authentication").path,
         authenticate,
         authorize()
       ),
       logger()
     ],
-    find: [
-      deleted
-    ],
-    get: [
-      deleted
-    ],
+    find: [deleted],
+    get: [deleted],
     create: [
       context => {
         delete context.data.deletedAt;
       }
     ],
-    update: [
-      deleted
-    ],
-    patch: [
-      deleted
-    ],
-    remove: [
-      removeSoftdelete()
-    ]
+    update: [deleted],
+    patch: [deleted],
+    remove: [removeSoftdelete()]
   },
 
   after: {
@@ -59,9 +52,7 @@ module.exports = {
   },
 
   error: {
-    all: [
-      showErrors()
-    ],
+    all: [showErrors()],
     find: [],
     get: [],
     create: [],
