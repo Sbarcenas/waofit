@@ -5,23 +5,21 @@ const {
   getItems,
   replaceItems
 } = require("feathers-hooks-common");
-const algolia = require("../utils/algolia/");
+const algolia = require("../../../utils/algolia/");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}, index) => {
   return async context => {
     let records = getItems(context);
 
-    const data = options.map(it => ({ ...it, objectID: it.id }));
-
     const algoliaCredemtials = context.app.get("algolia");
 
     const Algolia = new algolia(
-      `${index}`,
+      "expressProducts",
       algoliaCredemtials.appId,
       algoliaCredemtials.apiKey
     );
 
-    Algolia.update_all(data);
+    Algolia.remove(context.id);
 
     replaceItems(context, records);
 

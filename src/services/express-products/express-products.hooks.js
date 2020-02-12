@@ -2,6 +2,7 @@ const assingPathCategory = require("./hooks/assing-path-category");
 const pushAlgolia = require("./hooks/push-algolia");
 const prepareRecordsForAlgolia = require("./hooks/prepare-records-for-algolia");
 const updateAlgolia = require("./hooks/update-algolia");
+const removeAlgolia = require("./hooks/remove-algolia");
 
 const { discard, iff, isProvider, disallow } = require("feathers-hooks-common");
 
@@ -23,7 +24,7 @@ module.exports = {
     create: [pushAlgolia()],
     update: [],
     patch: [updateAlgolia()],
-    remove: []
+    remove: [removeAlgolia()]
   },
 
   error: {

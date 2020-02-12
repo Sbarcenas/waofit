@@ -37,7 +37,6 @@ module.exports = function(options = {}) {
       algoliaCredemtials.apiKey
     );
 
-    //console.log(records, "----------------");
     records.objectID = records.id;
     Algolia.save(records);
 
