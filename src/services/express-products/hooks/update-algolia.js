@@ -37,7 +37,7 @@ module.exports = function(options = {}) {
       algoliaCredemtials.apiKey
     );
 
-    records.objectID = records.id;
+    records.objectID = parseInt(records.id);
     Algolia.save(records);
 
     // Place the modified records back in the context.

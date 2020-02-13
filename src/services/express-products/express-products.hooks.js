@@ -4,7 +4,44 @@ const prepareRecordsForAlgolia = require("./hooks/prepare-records-for-algolia");
 const updateAlgolia = require("./hooks/update-algolia");
 const removeAlgolia = require("./hooks/remove-algolia");
 
-const { discard, iff, isProvider, disallow } = require("feathers-hooks-common");
+const { fastJoin } = require("feathers-hooks-common");
+
+const resolves = {
+  joins: {
+    join: () => async (records, context) => {
+      const [countCalifications, sumCalifications] = await Promise.all([
+        context.app
+          .service("reviews")
+          .getModel()
+          .query()
+          .count("*", { as: "quantity" })
+          .where({
+            type: "express-product",
+            type_id: records.id,
+            deletedAt: null
+          }),
+        context.app
+          .service("reviews")
+          .getModel()
+          .query()
+          .sum("stars", { as: "totalCalifications" })
+          .where({
+            type: "express-product",
+            type_id: records.id,
+            deletedAt: null
+          })
+      ]);
+      records.rating_average =
+        parseInt(sumCalifications[0].totalCalifications) /
+        countCalifications[0].quantity;
+
+      records.rating_average = records.rating_average
+        ? records.rating_average
+        : 0;
+      records.count_reviews = countCalifications[0].quantity;
+    }
+  }
+};
 
 module.exports = {
   before: {
@@ -13,17 +50,17 @@ module.exports = {
     get: [],
     create: [assingPathCategory(), prepareRecordsForAlgolia()],
     update: [],
-    patch: [iff(isProvider("external"), prepareRecordsForAlgolia())],
+    patch: [prepareRecordsForAlgolia()],
     remove: []
   },
 
   after: {
     all: [],
-    find: [],
-    get: [],
+    find: [fastJoin(resolves)],
+    get: [fastJoin(resolves)],
     create: [pushAlgolia()],
     update: [],
-    patch: [updateAlgolia()],
+    patch: [fastJoin(resolves), updateAlgolia()],
     remove: [removeAlgolia()]
   },
 

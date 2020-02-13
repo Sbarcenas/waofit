@@ -1,11 +1,11 @@
-
-
+const processReviewsAfterCreateTypeProduct = require("./hooks/process-reviews-after-create-type-product");
+const processReviewsBeforeCreate = require("./hooks/process-reviews-before-create");
 module.exports = {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [processReviewsBeforeCreate()],
     update: [],
     patch: [],
     remove: []
@@ -15,7 +15,7 @@ module.exports = {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [processReviewsAfterCreateTypeProduct()],
     update: [],
     patch: [],
     remove: []

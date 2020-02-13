@@ -10,10 +10,13 @@ class reviews extends Model {
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["type", "starts", "user_id", "type_id"],
+      required: ["type", "stars", "user_id", "type_id"],
 
       properties: {
-        type: { type: "string", enum: ["recipe", "blog", "guide", "product"] },
+        type: {
+          type: "string",
+          enum: ["recipe", "blog", "guide", "express-product"]
+        },
         stars: { type: "integer" },
         comment: { type: "string", maxLength: 255 },
         user_id: { type: "integer" },
@@ -42,7 +45,7 @@ module.exports = function(app) {
         db.schema
           .createTable("reviews", table => {
             table.increments("id");
-            table.enum("type", ["recipe", "blog", "guide", "product"]);
+            table.enum("type", ["recipe", "blog", "guide", "express-product"]);
             table.integer("type_id");
             table
               .integer("user_id")
