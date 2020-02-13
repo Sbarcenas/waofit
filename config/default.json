@@ -7,10 +7,10 @@
     "max": 50
   },
   "epayco": {
-    "PUBLIC_KEY": "3c6264e48dfeb2e520f41adb32b5f150",
-    "PRIVATE_KEY": "3f627ba570466b681ff8d05ea7e97aed",
-    "P_CUST_ID_CLIENTE": "29602",
-    "P_KEY": "ada25f9697bbe7b7f9379d16cc305bc41f0a48a5"
+    "PUBLIC_KEY": "6c24509b8bb64c6f44b9a905d208df98",
+    "PRIVATE_KEY": "baa5fd487808056650d6b7126676a6fa",
+    "P_CUST_ID_CLIENTE": "59348",
+    "P_KEY": "18a7e7c394c21d04966e08c893b3d7faa8b5c0cb"
   },
   "algolia": {
     "appId": "EQYLFEJXHK",
