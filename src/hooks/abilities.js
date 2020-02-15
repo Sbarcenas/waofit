@@ -44,7 +44,12 @@ function defineAbilitiesFor(user) {
       { user_id: user.id }
     );
 
-    can("read", ["current-user", "credentials", "express-products"]);
+    can("read", [
+      "current-user",
+      "credentials",
+      "express-products",
+      "express-categories"
+    ]);
 
     can("update", ["users"], { id: user.id });
 

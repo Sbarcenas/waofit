@@ -1,7 +1,7 @@
 const updateProductInAlgolia = require("./hooks/update-product-in-algolia");
 const restrictRemove = require("./hooks/restrict-remove");
 const removeSoftdelete = require("../../hooks/remove-softdelete");
-
+const expressCategoriesAfterFind = require("./hooks/express-categories-after-find");
 module.exports = {
   before: {
     all: [],
@@ -15,7 +15,7 @@ module.exports = {
 
   after: {
     all: [],
-    find: [],
+    find: [expressCategoriesAfterFind()],
     get: [],
     create: [],
     update: [],
