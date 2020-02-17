@@ -28,11 +28,14 @@ module.exports = function(options = {}) {
     // getItems always returns an array to simplify your processing.
     let records = getItems(context);
 
+    if (context.params.query.parent_id) return context;
+
     const elements = {};
-    const data = records.map(({ id, name, parent_id }) => ({
+    const data = records.map(({ id, name, parent_id, path_image }) => ({
       id: id,
       name,
       parent_id,
+      path_image,
       childrens: []
     }));
 

@@ -2,6 +2,9 @@ const updateProductInAlgolia = require("./hooks/update-product-in-algolia");
 const restrictRemove = require("./hooks/restrict-remove");
 const removeSoftdelete = require("../../hooks/remove-softdelete");
 const expressCategoriesAfterFind = require("./hooks/express-categories-after-find");
+
+const { iff, isProvider } = require("feathers-hooks-common");
+
 module.exports = {
   before: {
     all: [],
