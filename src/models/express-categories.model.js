@@ -20,6 +20,7 @@ class expressCategories extends Model {
         id: { type: "integer" },
         name: { type: "string", maxLength: 255 },
         parent_id: { type: "integer" },
+        path_image: { type: "string" },
         deletedAt: { type: "string", format: "date-time" }
       }
     };
@@ -48,6 +49,7 @@ module.exports = function(app) {
               table.increments("id");
               table.string("name");
               table.integer("parent_id");
+              table.text("path_image");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");

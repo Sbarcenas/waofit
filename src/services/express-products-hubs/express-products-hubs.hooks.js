@@ -1,11 +1,12 @@
-
+const preparePushHubsAlgolia = require("./hooks/prepare-push-hubs-algolia");
+const pushHubsAlgolia = require("./hooks/push-hubs-algolia");
 
 module.exports = {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [preparePushHubsAlgolia()],
     update: [],
     patch: [],
     remove: []
@@ -15,7 +16,7 @@ module.exports = {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [pushHubsAlgolia()],
     update: [],
     patch: [],
     remove: []

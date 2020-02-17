@@ -6,7 +6,7 @@ const {
   getItems,
   replaceItems
 } = require("feathers-hooks-common");
-const { NotAcceptable } = require("@feathersjs/errors");
+const algolia = require("../../../utils/algolia");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = function(options = {}) {
@@ -29,46 +29,7 @@ module.exports = function(options = {}) {
     // getItems always returns an array to simplify your processing.
     const records = getItems(context);
 
-    if (records.status == "active") {
-      const [imageMain, multimedia] = await Promise.all([
-        context.app
-          .service("express-products-media")
-          .getModel()
-          .query()
-          .where({
-            product_id: context.id,
-            main: "true",
-            media_type: "normal",
-            deletedAt: null
-          })
-          .then(it => it[0]),
-        context.app
-          .service("express-products-media")
-          .getModel()
-          .query()
-          .where({
-            product_id: context.id,
-            main: "false",
-            deletedAt: null
-          })
-          .then(it => it[0])
-      ]);
-
-      if (!imageMain)
-        throw new NotAcceptable(
-          "No se puede activar el producto por que no tiene una imagen principal."
-        );
-
-      if (!multimedia)
-        throw new NotAcceptable(
-          "No se puede activar el producto por que no tiene galeria."
-        );
-
-      context.image_main = imageMain.source_path;
-      context.params.query = {
-        $eager: "[brand,category, hubs]"
-      };
-    }
+    records.status = "inactive";
 
     // Place the modified records back in the context.
     replaceItems(context, records);

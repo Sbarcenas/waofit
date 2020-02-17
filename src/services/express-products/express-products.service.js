@@ -7,7 +7,7 @@ module.exports = function(app) {
   const options = {
     Model: createModel(app),
     whitelist: ["$eager", "$joinRelation"],
-    allowedEager: "[category, brand, tax]",
+    allowedEager: "[category, brand, tax, hubs]",
     paginate: app.get("paginate")
   };
 

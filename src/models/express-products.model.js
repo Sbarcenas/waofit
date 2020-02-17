@@ -10,7 +10,9 @@ class expressProducts extends Model {
   static get relationMappings() {
     const expressCategoryModel = require("./express-categories.model")();
     const branModel = require("./brands.model")();
-    const taxModel = require("./tax-rule.model");
+    const taxModel = require("./tax-rule.model")();
+    const hubsModel = require("./express-hubs.model")();
+    const mediaModel = require("./express-products-media.model")();
     return {
       category: {
         relation: Model.HasOneRelation,
@@ -18,6 +20,10 @@ class expressProducts extends Model {
         join: {
           from: "express_products.express_category_id",
           to: "express_categories.id"
+        },
+        filter: buildQuery => {
+          buildQuery.where({ deletedAt: null });
+          return buildQuery;
         }
       },
       brand: {
@@ -26,6 +32,10 @@ class expressProducts extends Model {
         join: {
           from: "express_products.brand_id",
           to: "brands.id"
+        },
+        filter: buildQuery => {
+          buildQuery.where({ deletedAt: null });
+          return buildQuery;
         }
       },
       tax: {
@@ -34,6 +44,38 @@ class expressProducts extends Model {
         join: {
           from: "express_products.tax_rule_id",
           to: "tax_rule.id"
+        },
+        filter: buildQuery => {
+          buildQuery.where({ deletedAt: null });
+          return buildQuery;
+        }
+      },
+      /* media: {
+        relation: Model.HasOneRelation,
+        modelClass: mediaModel,
+        join: {
+          from: "express_products.tax_rule_id",
+          to: "tax_rule.id"
+        },
+        filter: buildQuery => {
+          buildQuery.where({ deletedAt: null });
+          return buildQuery;
+        }
+      }, */
+      hubs: {
+        relation: Model.ManyToManyRelation,
+        modelClass: hubsModel,
+        join: {
+          from: "express_products.id",
+          through: {
+            from: "express_products_hubs.product_id",
+            to: "express_products_hubs.hub_id"
+          },
+          to: "express_hubs.id"
+        },
+        filter: buildQuery => {
+          buildQuery.where({ "express_products_hubs.deletedAt": null });
+          return buildQuery;
         }
       }
     };
@@ -49,7 +91,8 @@ class expressProducts extends Model {
         "regular_price",
         "price",
         "type",
-        "tax_rule_id"
+        "tax_rule_id",
+        "status"
       ],
 
       properties: {
@@ -61,6 +104,7 @@ class expressProducts extends Model {
         description: { type: "string" },
         ingredients: { type: "string" },
         type: { type: "string", enum: ["scheduled", "not_scheduled"] },
+        status: { type: "string", enum: ["active", "inactive"] },
         express_category_path_ids: { type: "string" },
         tax_rule_id: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" }
@@ -108,6 +152,9 @@ module.exports = function(app) {
               table
                 .enum("type", ["scheduled", "not_scheduled"])
                 .defaultTo("not_scheduled");
+              table
+                .enum("status", ["active", "inactive"])
+                .defaultTo("inactive");
               table.string("express_category_path_ids");
               table
                 .integer("tax_rule_id")

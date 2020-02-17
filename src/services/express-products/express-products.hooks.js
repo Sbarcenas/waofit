@@ -3,6 +3,7 @@ const pushAlgolia = require("./hooks/push-algolia");
 const prepareRecordsForAlgolia = require("./hooks/prepare-records-for-algolia");
 const updateAlgolia = require("./hooks/update-algolia");
 const removeAlgolia = require("./hooks/remove-algolia");
+const registerProduct = require("./hooks/register-product");
 
 const { fastJoin } = require("feathers-hooks-common");
 
@@ -48,7 +49,11 @@ module.exports = {
     all: [],
     find: [],
     get: [],
-    create: [assingPathCategory(), prepareRecordsForAlgolia()],
+    create: [
+      registerProduct(),
+      assingPathCategory(),
+      prepareRecordsForAlgolia()
+    ],
     update: [],
     patch: [prepareRecordsForAlgolia()],
     remove: []

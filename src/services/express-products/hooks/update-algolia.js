@@ -31,14 +31,16 @@ module.exports = function(options = {}) {
 
     const algoliaCredemtials = context.app.get("algolia");
 
-    const Algolia = new algolia(
-      "expressProducts",
-      algoliaCredemtials.appId,
-      algoliaCredemtials.apiKey
-    );
-
-    records.objectID = parseInt(records.id);
-    Algolia.save(records);
+    if (records.status == "active") {
+      const Algolia = new algolia(
+        "expressProducts",
+        algoliaCredemtials.appId,
+        algoliaCredemtials.apiKey
+      );
+      records.image_main = context.image_main;
+      records.objectID = parseInt(records.id);
+      Algolia.save(records);
+    }
 
     // Place the modified records back in the context.
     replaceItems(context, records);

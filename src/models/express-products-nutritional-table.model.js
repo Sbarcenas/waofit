@@ -61,7 +61,7 @@ module.exports = function(app) {
               .integer("product_id")
               .unsigned()
               .references("id")
-              .inTable("express_products_hubs")
+              .inTable("express_products")
               .index();
             table
               .integer("express_nu_ta_opt_id")

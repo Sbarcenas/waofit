@@ -3,6 +3,10 @@
 const { Model } = require("objection");
 
 class expressHubs extends Model {
+  static setup(app) {
+    this.app = app;
+  }
+
   static get tableName() {
     return "express_hubs";
   }
@@ -10,7 +14,7 @@ class expressHubs extends Model {
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["name", "path_image"],
+      required: ["name"],
 
       properties: {
         name: { type: "string", maxLength: 255 },
@@ -31,27 +35,29 @@ class expressHubs extends Model {
 }
 
 module.exports = function(app) {
-  const db = app.get("knex");
+  if (app) {
+    expressHubs.setup(app);
+    const db = app.get("knex");
 
-  db.schema
-    .hasTable("express_hubs")
-    .then(exists => {
-      if (!exists) {
-        db.schema
-          .createTable("express_hubs", table => {
-            table.increments("id");
-            table.string("name", 255);
-            table.string("path_image");
-            table.integer("position").defaultTo(0);
-            table.timestamp("deletedAt").nullable();
-            table.timestamp("createdAt");
-            table.timestamp("updatedAt");
-          })
-          .then(() => console.log("Created express_hubs table")) // eslint-disable-line no-console
-          .catch(e => console.error("Error creating express_hubs table", e)); // eslint-disable-line no-console
-      }
-    })
-    .catch(e => console.error("Error creating express_hubs table", e)); // eslint-disable-line no-console
-
+    db.schema
+      .hasTable("express_hubs")
+      .then(exists => {
+        if (!exists) {
+          db.schema
+            .createTable("express_hubs", table => {
+              table.increments("id");
+              table.string("name", 255);
+              table.string("path_image");
+              table.integer("position").defaultTo(0);
+              table.timestamp("deletedAt").nullable();
+              table.timestamp("createdAt");
+              table.timestamp("updatedAt");
+            })
+            .then(() => console.log("Created express_hubs table")) // eslint-disable-line no-console
+            .catch(e => console.error("Error creating express_hubs table", e)); // eslint-disable-line no-console
+        }
+      })
+      .catch(e => console.error("Error creating express_hubs table", e)); // eslint-disable-line no-console
+  }
   return expressHubs;
 };

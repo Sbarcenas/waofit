@@ -18,6 +18,7 @@ class expressProductsMedia extends Model {
         video_cover_path: { type: "string" },
         product_id: { type: "integer" },
         media_type: { type: "string", enum: ["cover", "normal"] },
+        main: { type: "string", enum: ["true", "false"] },
         position: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" }
       }
@@ -53,6 +54,7 @@ module.exports = function(app) {
               .inTable("express_products")
               .index();
             table.enum("media_type", ["cover", "normal"]);
+            table.enum("main", ["true", "false"]);
             table.integer("position");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");

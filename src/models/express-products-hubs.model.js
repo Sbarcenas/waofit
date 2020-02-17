@@ -3,6 +3,10 @@
 const { Model } = require("objection");
 
 class expressProductsHubs extends Model {
+  static setup(app) {
+    this.app = app;
+  }
+
   static get tableName() {
     return "express_products_hubs";
   }
@@ -30,38 +34,42 @@ class expressProductsHubs extends Model {
 }
 
 module.exports = function(app) {
-  const db = app.get("knex");
+  if (app) {
+    expressProductsHubs.setup(app);
+    const db = app.get("knex");
 
-  db.schema
-    .hasTable("express_products_hubs")
-    .then(exists => {
-      if (!exists) {
-        db.schema
-          .createTable("express_products_hubs", table => {
-            table.increments("id");
-            table
-              .integer("hub_id")
-              .unsigned()
-              .references("id")
-              .inTable("express_hubs")
-              .index();
-            table
-              .integer("product_id")
-              .unsigned()
-              .references("id")
-              .inTable("express_products")
-              .index();
-            table.timestamp("deletedAt").nullable();
-            table.timestamp("createdAt");
-            table.timestamp("updatedAt");
-          })
-          .then(() => console.log("Created express_products_hubs table")) // eslint-disable-line no-console
-          .catch(e =>
-            console.error("Error creating express_products_hubs table", e)
-          ); // eslint-disable-line no-console
-      }
-    })
-    .catch(e => console.error("Error creating express_products_hubs table", e)); // eslint-disable-line no-console
-
+    db.schema
+      .hasTable("express_products_hubs")
+      .then(exists => {
+        if (!exists) {
+          db.schema
+            .createTable("express_products_hubs", table => {
+              table.increments("id");
+              table
+                .integer("hub_id")
+                .unsigned()
+                .references("id")
+                .inTable("express_hubs")
+                .index();
+              table
+                .integer("product_id")
+                .unsigned()
+                .references("id")
+                .inTable("express_products")
+                .index();
+              table.timestamp("deletedAt").nullable();
+              table.timestamp("createdAt");
+              table.timestamp("updatedAt");
+            })
+            .then(() => console.log("Created express_products_hubs table")) // eslint-disable-line no-console
+            .catch(e =>
+              console.error("Error creating express_products_hubs table", e)
+            ); // eslint-disable-line no-console
+        }
+      })
+      .catch(e =>
+        console.error("Error creating express_products_hubs table", e)
+      ); // eslint-disable-line no-console
+  }
   return expressProductsHubs;
 };
