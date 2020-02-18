@@ -14,6 +14,7 @@ module.exports = (options = {}) => {
     context.result = await context.app.service("users").get(user.id, {
       query: {
         $select: [
+          "id",
           "email",
           "first_name",
           "last_name",
