@@ -30,6 +30,11 @@ module.exports = function(options = {}) {
     const records = getItems(context);
 
     if (records.status == "active") {
+      if (records.id) {
+        context.id = records.id;
+        delete records.deletedAt;
+      }
+
       const [imageMain, multimedia] = await Promise.all([
         context.app
           .service("express-products-media")
@@ -66,7 +71,7 @@ module.exports = function(options = {}) {
 
       context.image_main = imageMain.source_path;
       context.params.query = {
-        $eager: "[brand,category, hubs]"
+        $eager: "[brand,category,hubs]"
       };
     }
 

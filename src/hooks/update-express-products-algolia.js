@@ -6,7 +6,7 @@ module.exports = (id = {}) => {
   return async context => {
     let records = getItems(context);
 
-    await context.app.service("express-products").patch(id, {});
+    await context.app.service("express-products").patch(id, records[0]);
 
     replaceItems(context, records);
 
