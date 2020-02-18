@@ -9,6 +9,7 @@ const removeSoftdelete = require("./hooks/remove-softdelete");
 const deleted = softDelete({
   // context is the normal hook context
   deletedQuery: async context => {
+    if (context.path == "current-user") return context;
     const field = `${context.service.getModel().tableName}.deletedAt`;
     return { [field]: null };
   },
