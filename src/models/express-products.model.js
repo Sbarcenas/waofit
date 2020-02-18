@@ -13,6 +13,7 @@ class expressProducts extends Model {
     const taxModel = require("./tax-rule.model")();
     const hubsModel = require("./express-hubs.model")();
     const mediaModel = require("./express-products-media.model")();
+
     return {
       category: {
         relation: Model.HasOneRelation,
@@ -50,18 +51,18 @@ class expressProducts extends Model {
           return buildQuery;
         }
       },
-      /* media: {
-        relation: Model.HasOneRelation,
+      media: {
+        relation: Model.HasManyRelation,
         modelClass: mediaModel,
         join: {
-          from: "express_products.tax_rule_id",
-          to: "tax_rule.id"
+          from: "express_products.id",
+          to: "express_products_media.product_id"
         },
         filter: buildQuery => {
           buildQuery.where({ deletedAt: null });
           return buildQuery;
         }
-      }, */
+      },
       hubs: {
         relation: Model.ManyToManyRelation,
         modelClass: hubsModel,
