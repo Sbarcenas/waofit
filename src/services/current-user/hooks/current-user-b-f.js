@@ -11,7 +11,24 @@ module.exports = (options = {}) => {
 
     const { user } = context.params;
 
-    context.result = await context.app.service("users").get(user.id);
+    context.result = await context.app.service("users").get(user.id, {
+      query: {
+        $select: [
+          "email",
+          "first_name",
+          "last_name",
+          "status",
+          "role",
+          "facebookId",
+          "gender",
+          "birthday",
+          "token_reset_password",
+          "phone",
+          "credits",
+          "profile_picture"
+        ]
+      }
+    });
 
     replaceItems(context, records);
 
