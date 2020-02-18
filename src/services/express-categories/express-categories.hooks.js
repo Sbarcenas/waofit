@@ -18,7 +18,9 @@ module.exports = {
 
   after: {
     all: [],
-    find: [expressCategoriesAfterFind()],
+    find: [
+      /* expressCategoriesAfterFind() */
+    ],
     get: [],
     create: [],
     update: [],
