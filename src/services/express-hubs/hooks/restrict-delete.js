@@ -6,8 +6,7 @@ const {
   getItems,
   replaceItems
 } = require("feathers-hooks-common");
-const algolia = require("../../../utils/algolia");
-
+const { NotAcceptable } = require("@feathersjs/errors");
 // eslint-disable-next-line no-unused-vars
 module.exports = function(options = {}) {
   // Return the actual hook.
@@ -29,21 +28,23 @@ module.exports = function(options = {}) {
     // getItems always returns an array to simplify your processing.
     const records = getItems(context);
 
-    const algoliaCredemtials = context.app.get("algolia");
+    const hub = await context.app
+      .service("express-hubs")
+      .getModel()
+      .query()
+      .where({ id: context.id, deletedAt: null })
+      .then(it => it[0]);
 
-    const Algolia = new algolia(
-      "expressProducts",
-      algoliaCredemtials.appId,
-      algoliaCredemtials.apiKey
-    );
+    const productsHubs = await context.app
+      .service("express-products-hubs")
+      .getModel()
+      .query()
+      .where({ hub_id: hub.id, deletedAt: null });
 
-    if (records.status == "active") {
-      records.image_main = context.image_main;
-      records.objectID = parseInt(records.id);
-      Algolia.save(records);
-    } else if (records.status == "inactive") {
-      Algolia.remove(records.id);
-    }
+    if (productsHubs.length > 0)
+      throw new NotAcceptable(
+        "No se puede eliminar el hub por que esta asociado a uno o mas productos."
+      );
 
     // Place the modified records back in the context.
     replaceItems(context, records);

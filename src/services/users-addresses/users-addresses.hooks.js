@@ -1,33 +1,27 @@
-const usersAddressesBC = require('./hooks/users-addresses-b-c');
-const usersAddressesAC = require('./hooks/users-addreeses-a-c');
-const usersAddressesAP = require('./hooks/users-addresses-a-p');
-const validationOfFields = require('../../hooks/validations-of-fields');
+const usersAddressesBC = require("./hooks/users-addresses-b-c");
+const usersAddressesAC = require("./hooks/users-addreeses-a-c");
+const usersAddressesAP = require("./hooks/users-addresses-a-p");
+const validationOfFields = require("../../hooks/validations-of-fields");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 module.exports = {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [
-      validationOfFields(),
-      usersAddressesBC()
-    ],
+    create: [validationOfFields(), usersAddressesBC()],
     update: [],
     patch: [],
-    remove: []
+    remove: [removeSoftDelete()]
   },
 
   after: {
     all: [],
     find: [],
     get: [],
-    create: [
-      usersAddressesAC()
-    ],
+    create: [usersAddressesAC()],
     update: [],
-    patch: [
-      usersAddressesAP()
-    ],
+    patch: [usersAddressesAP()],
     remove: []
   },
 

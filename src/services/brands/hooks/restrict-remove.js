@@ -6,7 +6,6 @@ const {
   replaceItems
 } = require("feathers-hooks-common");
 const { NotAcceptable } = require("@feathersjs/errors");
-const batchUpdateExpressProductsAlgolia = require("../../../hooks/batch-update-express-products-algolia");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
   return async context => {

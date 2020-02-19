@@ -73,10 +73,14 @@ class Algolia {
   save(objectData) {
     const data = Object.assign({}, objectData);
     return new Promise((resolve, reject) => {
-      this._algoliaIndex.partialUpdateObject(data, true, (error, content) => {
-        if (error) reject(error);
-        else resolve(content, this);
-      });
+      this._algoliaIndex.partialUpdateObject(
+        data,
+        { createIfNotExists: true },
+        (error, content) => {
+          if (error) reject(error);
+          else resolve(content, this);
+        }
+      );
     });
   }
 

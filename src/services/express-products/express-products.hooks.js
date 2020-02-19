@@ -4,6 +4,7 @@ const prepareRecordsForAlgolia = require("./hooks/prepare-records-for-algolia");
 const updateAlgolia = require("./hooks/update-algolia");
 const removeAlgolia = require("./hooks/remove-algolia");
 const registerProduct = require("./hooks/register-product");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 const { fastJoin } = require("feathers-hooks-common");
 
@@ -56,7 +57,7 @@ module.exports = {
     ],
     update: [],
     patch: [prepareRecordsForAlgolia()],
-    remove: []
+    remove: [removeSoftDelete()]
   },
 
   after: {

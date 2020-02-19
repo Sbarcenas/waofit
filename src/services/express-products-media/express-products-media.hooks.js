@@ -1,4 +1,4 @@
-
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 module.exports = {
   before: {
@@ -8,7 +8,7 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [removeSoftDelete()]
   },
 
   after: {

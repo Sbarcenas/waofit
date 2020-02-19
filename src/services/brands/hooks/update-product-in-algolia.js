@@ -13,7 +13,7 @@ module.exports = (options = {}) => {
 
     const products = await context.app
       .service("express-products")
-      .find({ query: { $eager: "[brand,category]", deletedAt: null } })
+      .find({ query: { $eager: "[brand,category,hubs]", deletedAt: null } })
       .then(it => it.data);
 
     await batchUpdateExpressProductsAlgolia(

@@ -1,5 +1,7 @@
 const processReviewsAfterCreateTypeProduct = require("./hooks/process-reviews-after-create-type-product");
 const processReviewsBeforeCreate = require("./hooks/process-reviews-before-create");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
+
 module.exports = {
   before: {
     all: [],
@@ -8,7 +10,7 @@ module.exports = {
     create: [processReviewsBeforeCreate()],
     update: [],
     patch: [],
-    remove: []
+    remove: [removeSoftDelete()]
   },
 
   after: {

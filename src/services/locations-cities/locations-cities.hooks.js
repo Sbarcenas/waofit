@@ -1,20 +1,14 @@
-const { isProvider, iff } = require('feathers-hooks-common')
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 module.exports = {
   before: {
     all: [],
-    find: [
-      iff(isProvider('external'),
-        () => console.log('----------external')
-      ).else(
-        () => console.log('------server')
-      ),
-    ],
+    find: [],
     get: [],
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [removeSoftDelete()]
   },
 
   after: {

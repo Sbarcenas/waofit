@@ -1,4 +1,7 @@
-
+const switchPrepareUpdateAlgolia = require("./hooks/switch-prepare-update-algolia");
+const updateAlgolia = require("./hooks/update-algolia");
+const restringDelete = require("./hooks/restrict-delete");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 module.exports = {
   before: {
@@ -7,8 +10,8 @@ module.exports = {
     get: [],
     create: [],
     update: [],
-    patch: [],
-    remove: []
+    patch: [switchPrepareUpdateAlgolia()],
+    remove: [restringDelete(), removeSoftDelete()]
   },
 
   after: {
@@ -17,7 +20,7 @@ module.exports = {
     get: [],
     create: [],
     update: [],
-    patch: [],
+    patch: [updateAlgolia()],
     remove: []
   },
 

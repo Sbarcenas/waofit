@@ -39,7 +39,7 @@ module.exports = {
     ],
     update: [deleted],
     patch: [deleted],
-    remove: [removeSoftdelete()]
+    remove: []
   },
 
   after: {

@@ -8,7 +8,7 @@ const proccessUsersFacebookBP = require("./hooks/proccess-users-facebook-b-p");
 const proccessUsersBC = require("./hooks/proccess-users-b-c");
 const proccessFindFacebookBC = require("./hooks/proccess-find-facebook-b-c");
 const { discard, iff, isProvider, disallow } = require("feathers-hooks-common");
-const { softDelete } = require("feathers-hooks-common");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 module.exports = {
   before: {
@@ -53,7 +53,7 @@ module.exports = {
       hashPassword("password"),
       authenticate("jwt") /* proccessUsersBC(), proccessUsersFacebookBP() */
     ],
-    remove: [authenticate("jwt")]
+    remove: [authenticate("jwt"), removeSoftDelete()]
   },
 
   after: {

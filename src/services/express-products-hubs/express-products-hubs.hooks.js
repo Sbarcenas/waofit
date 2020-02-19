@@ -1,5 +1,6 @@
 const preparePushHubsAlgolia = require("./hooks/prepare-push-hubs-algolia");
 const pushHubsAlgolia = require("./hooks/push-hubs-algolia");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 module.exports = {
   before: {
@@ -9,7 +10,7 @@ module.exports = {
     create: [preparePushHubsAlgolia()],
     update: [],
     patch: [],
-    remove: []
+    remove: [removeSoftDelete()]
   },
 
   after: {

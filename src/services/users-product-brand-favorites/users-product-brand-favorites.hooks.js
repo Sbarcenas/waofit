@@ -1,16 +1,15 @@
-const usersProductsBrandFavorites = require('./hooks/users-product-brand-favorites-b-c')
+const usersProductsBrandFavorites = require("./hooks/users-product-brand-favorites-b-c");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 module.exports = {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [
-      usersProductsBrandFavorites()
-    ],
+    create: [usersProductsBrandFavorites()],
     update: [],
     patch: [],
-    remove: []
+    remove: [removeSoftDelete()]
   },
 
   after: {
