@@ -38,7 +38,6 @@ module.exports = function(options = {}) {
     );
 
     if (records.status == "active") {
-      records.image_main = context.image_main;
       records.objectID = parseInt(records.id);
       Algolia.save(records);
     } else if (records.status == "inactive") {

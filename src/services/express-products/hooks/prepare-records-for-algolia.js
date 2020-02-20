@@ -69,7 +69,6 @@ module.exports = function(options = {}) {
           "No se puede activar el producto por que no tiene galeria."
         );
 
-      context.image_main = imageMain.source_path;
       context.params.query = {
         $eager: "[brand,category,hubs]"
       };

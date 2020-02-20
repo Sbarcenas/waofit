@@ -11,7 +11,11 @@ const { fastJoin } = require("feathers-hooks-common");
 const resolves = {
   joins: {
     join: () => async (records, context) => {
-      const [countCalifications, sumCalifications] = await Promise.all([
+      const [
+        countCalifications,
+        sumCalifications,
+        imageMain
+      ] = await Promise.all([
         context.app
           .service("reviews")
           .getModel()
@@ -31,7 +35,18 @@ const resolves = {
             type: "express-product",
             type_id: records.id,
             deletedAt: null
+          }),
+        context.app
+          .service("express-products-media")
+          .getModel()
+          .query()
+          .where({
+            product_id: records.id,
+            main: "true",
+            media_type: "normal",
+            deletedAt: null
           })
+          .then(it => it[0])
       ]);
       records.rating_average =
         parseInt(sumCalifications[0].totalCalifications) /
@@ -41,6 +56,7 @@ const resolves = {
         ? records.rating_average
         : 0;
       records.count_reviews = countCalifications[0].quantity;
+      records.image_main = imageMain.source_path;
     }
   }
 };
