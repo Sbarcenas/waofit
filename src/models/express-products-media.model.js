@@ -14,7 +14,7 @@ class expressProductsMedia extends Model {
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["type", "product_id"],
+      required: [],
 
       properties: {
         type: { type: "string", enum: ["video", "image"] },
