@@ -12,13 +12,12 @@ class expressProductsNutritionalTable extends Model {
       type: "object",
       required: [
         "product_id",
-        "express_nutritional_table_options_id",
+        "express_nu_ta_opt_id",
         "name",
         "value",
         "value2",
         "parent_id",
         "section",
-        "position",
         "json"
       ],
 
@@ -28,8 +27,8 @@ class expressProductsNutritionalTable extends Model {
         express_nutritional_table_options_id: { type: "integer" },
         value: { type: "string", maxLength: 255 },
         value2: { type: "string", maxLength: 255 },
-        parent_id: { type: "string", maxLength: 255 },
-        section: { type: "string", maxLength: 255 },
+        parent_id: { type: "integer" },
+        section: { type: "string", enum: ["a", "b", "c"] },
         position: { type: "integer" },
         json: { type: "string" },
         deletedAt: { type: "string", format: "date-time" }

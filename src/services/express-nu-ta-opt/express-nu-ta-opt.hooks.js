@@ -1,4 +1,5 @@
 const removeSoftDelete = require("../../hooks/remove-softdelete");
+const restrictRemove = require("./hooks/restrict-remove");
 
 module.exports = {
   before: {
@@ -8,7 +9,7 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: [removeSoftDelete()]
+    remove: [restrictRemove(), removeSoftDelete()]
   },
 
   after: {
