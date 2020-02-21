@@ -1,13 +1,15 @@
 const removeSoftDelete = require("../../hooks/remove-softdelete");
+const registerRecord = require("./hooks/register-record");
+const resctricUpdateRecord = require("./hooks/resctic-update-record");
 
 module.exports = {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [registerRecord()],
     update: [],
-    patch: [],
+    patch: [resctricUpdateRecord()],
     remove: [removeSoftDelete()]
   },
 

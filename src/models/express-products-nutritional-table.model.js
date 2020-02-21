@@ -7,13 +7,31 @@ class expressProductsNutritionalTable extends Model {
     return "express_products_nutritional_table";
   }
 
+  static get relationMappings() {
+    const expressNuTaOpt = require("./express-nu-ta-opt.model")();
+
+    return {
+      expressNutritionTableOptionName: {
+        relation: Model.HasOneRelation,
+        modelClass: expressNuTaOpt,
+        join: {
+          from: "express_products_nutritional_table.express_nu_ta_opt_id",
+          to: "express_nu_ta_opt.id"
+        },
+        filter: buildQuery => {
+          buildQuery.where({ deletedAt: null });
+          return buildQuery;
+        }
+      }
+    };
+  }
+
   static get jsonSchema() {
     return {
       type: "object",
       required: [
         "product_id",
         "express_nu_ta_opt_id",
-        "name",
         "value",
         "value2",
         "parent_id",
@@ -22,7 +40,6 @@ class expressProductsNutritionalTable extends Model {
       ],
 
       properties: {
-        name: { type: "string", maxLength: 255 },
         product_id: { type: "integer" },
         express_nutritional_table_options_id: { type: "integer" },
         value: { type: "string", maxLength: 255 },
@@ -55,7 +72,6 @@ module.exports = function(app) {
         db.schema
           .createTable("express_products_nutritional_table", table => {
             table.increments("id");
-            table.string("name");
             table
               .integer("product_id")
               .unsigned()
@@ -71,8 +87,8 @@ module.exports = function(app) {
             table.string("value", 255);
             table.string("value2", 255);
             table.integer("parent_id");
-            table.string("section");
-            table.string("position");
+            table.enum("section", ["a", "b", "c"]);
+            table.integer("position");
             table.string("json");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
