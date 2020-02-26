@@ -21,6 +21,7 @@ const expressProductsNutritionalTable = require("./express-products-nutritional-
 const expressNuTaOpt = require("./express-nu-ta-opt/express-nu-ta-opt.service.js");
 const expressProductsMedia = require("./express-products-media/express-products-media.service.js");
 const reviews = require("./reviews/reviews.service.js");
+const copyTemplateNutritionalTable = require('./copy-template-nutritional-table/copy-template-nutritional-table.service.js');
 // eslint-disable-next-line no-unused-vars
 module.exports = function(app) {
   app.configure(users);
@@ -46,4 +47,5 @@ module.exports = function(app) {
   app.configure(expressNuTaOpt);
   app.configure(expressProductsMedia);
   app.configure(reviews);
+  app.configure(copyTemplateNutritionalTable);
 };

@@ -4,9 +4,15 @@ module.exports = {
       let { tableName } = Model;
       const values = data
         .map(item => {
-          return `(${Object.values(item).join(",")})`;
+          return `(${Object.values(item).map(it => {
+            if (typeof it == "string") {
+              it = '"' + it + '"';
+            }
+            return it;
+          })})`;
         })
         .join(", ");
+
       if (data.length == 0) throw new Error("data is empty");
       data = data[0];
       const keys = Object.keys(data).join(",");
