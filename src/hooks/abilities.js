@@ -29,7 +29,8 @@ function defineAbilitiesFor(user) {
       "users-addresses",
       "users-product-brand-favorites",
       "users-credit-cards",
-      "reviews"
+      "reviews",
+      "authors"
     ]);
 
     can("read", ["users"], { id: user.id });

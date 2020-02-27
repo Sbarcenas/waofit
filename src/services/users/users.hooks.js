@@ -8,6 +8,8 @@ const proccessUsersFacebookBP = require("./hooks/proccess-users-facebook-b-p");
 const proccessUsersBC = require("./hooks/proccess-users-b-c");
 const proccessFindFacebookBC = require("./hooks/proccess-find-facebook-b-c");
 const { discard, iff, isProvider, disallow } = require("feathers-hooks-common");
+const createAuthor = require("./hooks/create-author");
+const updateAuthor = require("./hooks/update-author");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 module.exports = {
@@ -64,9 +66,9 @@ module.exports = {
     ],
     find: [],
     get: [],
-    create: [],
+    create: [createAuthor()],
     update: [],
-    patch: [proccessUsersFacebookBP()],
+    patch: [proccessUsersFacebookBP(), updateAuthor()],
     remove: []
   },
 
