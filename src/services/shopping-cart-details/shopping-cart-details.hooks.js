@@ -1,13 +1,22 @@
-const { authenticate } = require('@feathersjs/authentication').hooks;
+const registerShoppingCartDetails = require("./hooks/register-shopping-cart-details");
+const registerExpressProduct = require("./hooks/register-express-product");
+const patchExpressProduct = require("./hooks/patch-express-product");
+const { discard, iff, isProvider } = require("feathers-hooks-common");
 
 module.exports = {
   before: {
-    all: [ authenticate('jwt') ],
+    all: [],
     find: [],
     get: [],
-    create: [],
+    create: [registerShoppingCartDetails(), registerExpressProduct()],
     update: [],
-    patch: [],
+    patch: [
+      iff(
+        isProvider("external"),
+        discard("shopping_cart_id", "shop_type", "product_id", "deletedAt")
+      ),
+      patchExpressProduct()
+    ],
     remove: []
   },
 

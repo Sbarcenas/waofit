@@ -1,21 +1,23 @@
-const { authenticate } = require('@feathersjs/authentication').hooks;
-
+const registerShoppingCart = require("./hooks/register-shopping-cart");
+const registerExpressProduct = require("./hooks/register-express-product");
+const registerExpressProductAfterCreate = require("./hooks/register-express-products-after-create");
+const { disallow } = require("feathers-hooks-common");
 module.exports = {
   before: {
-    all: [ authenticate('jwt') ],
+    all: [],
     find: [],
     get: [],
-    create: [],
-    update: [],
-    patch: [],
-    remove: []
+    create: [registerShoppingCart(), registerExpressProduct()],
+    update: [disallow("external")],
+    patch: [disallow("external")],
+    remove: [disallow("external")]
   },
 
   after: {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [registerExpressProductAfterCreate()],
     update: [],
     patch: [],
     remove: []

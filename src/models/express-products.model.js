@@ -93,7 +93,8 @@ class expressProducts extends Model {
         "price",
         "type",
         "tax_rule_id",
-        "status"
+        "status",
+        "quantity"
       ],
 
       properties: {
@@ -109,6 +110,7 @@ class expressProducts extends Model {
         express_category_path_ids: { type: "string" },
         shop_type: { type: "string", maxlength: 255 },
         tax_rule_id: { type: "integer" },
+        quantity: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" }
       }
     };
@@ -165,6 +167,7 @@ module.exports = function(app) {
                 .inTable("tax_rule")
                 .index();
               table.string("shop_type");
+              table.integer("quantity");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");

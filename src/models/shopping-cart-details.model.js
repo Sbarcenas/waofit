@@ -3,6 +3,10 @@
 const { Model } = require("objection");
 
 class shoppingCartDetails extends Model {
+  static setup(app) {
+    this.app = app;
+  }
+
   static get tableName() {
     return "shopping_cart_details";
   }
@@ -10,11 +14,11 @@ class shoppingCartDetails extends Model {
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["shopping_cart_id", "shop", "product_id", "quantity"],
+      required: ["shopping_cart_id", "shop_type", "product_id", "quantity"],
 
       properties: {
         shopping_cart_id: { type: "integer" },
-        shop: { type: "string", enum: ["express-products", "coffee"] },
+        shop_type: { type: "string", enum: ["express_product", "coffee"] },
         product_id: { type: "integer" },
         quantity: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" }
@@ -32,35 +36,39 @@ class shoppingCartDetails extends Model {
 }
 
 module.exports = function(app) {
-  const db = app.get("knex");
+  if (app) {
+    const db = app.get("knex");
 
-  db.schema
-    .hasTable("shopping_cart_details")
-    .then(exists => {
-      if (!exists) {
-        db.schema
-          .createTable("shopping_cart_details", table => {
-            table.increments("id");
-            table
-              .integer("shopping_cart_id")
-              .unsigned()
-              .references("id")
-              .inTable("shopping_cart")
-              .index();
-            table.enum("shop", ["express-products", "coffee"]);
-            table.integer("product_id");
-            table.integer("quantity");
-            table.timestamp("deletedAt").nullable();
-            table.timestamp("createdAt");
-            table.timestamp("updatedAt");
-          })
-          .then(() => console.log("Created shopping_cart_details table")) // eslint-disable-line no-console
-          .catch(e =>
-            console.error("Error creating shopping_cart_details table", e)
-          ); // eslint-disable-line no-console
-      }
-    })
-    .catch(e => console.error("Error creating shopping_cart_details table", e)); // eslint-disable-line no-console
+    db.schema
+      .hasTable("shopping_cart_details")
+      .then(exists => {
+        if (!exists) {
+          db.schema
+            .createTable("shopping_cart_details", table => {
+              table.increments("id");
+              table
+                .integer("shopping_cart_id")
+                .unsigned()
+                .references("id")
+                .inTable("shopping_cart")
+                .index();
+              table.enum("shop_type", ["express_product", "coffee"]);
+              table.integer("product_id");
+              table.integer("quantity");
+              table.timestamp("deletedAt").nullable();
+              table.timestamp("createdAt");
+              table.timestamp("updatedAt");
+            })
+            .then(() => console.log("Created shopping_cart_details table")) // eslint-disable-line no-console
+            .catch(e =>
+              console.error("Error creating shopping_cart_details table", e)
+            ); // eslint-disable-line no-console
+        }
+      })
+      .catch(e =>
+        console.error("Error creating shopping_cart_details table", e)
+      ); // eslint-disable-line no-console
+  }
 
   return shoppingCartDetails;
 };

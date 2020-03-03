@@ -17,7 +17,6 @@ module.exports = {
       data = data[0];
       const keys = Object.keys(data).join(",");
       let query = `INSERT INTO ${tableName}(${keys}) VALUES ${values}`;
-      console.log("Query: ", query);
       return await Model.raw(query);
     }
   }
