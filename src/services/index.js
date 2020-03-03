@@ -23,6 +23,18 @@ const expressProductsMedia = require("./express-products-media/express-products-
 const reviews = require("./reviews/reviews.service.js");
 const copyTemplateNutritionalTable = require('./copy-template-nutritional-table/copy-template-nutritional-table.service.js');
 const authors = require('./authors/authors.service.js');
+const shoppingCart = require('./shopping-cart/shopping-cart.service.js');
+const shoppingCartDetails = require('./shopping-cart-details/shopping-cart-details.service.js');
+const expressProductsOrders = require('./express-products-orders/express-products-orders.service.js');
+const ordersStatus = require('./orders-status/orders-status.service.js');
+const orders = require('./orders/orders.service.js');
+const orderHistory = require('./order-history/order-history.service.js');
+const expressProductsOrdersHistory = require('./express-products-orders-history/express-products-orders-history.service.js');
+const expressProductsOrdersDetails = require('./express-products-orders-details/express-products-orders-details.service.js');
+const shipping = require('./shipping/shipping.service.js');
+const shippingStatus = require('./shipping-status/shipping-status.service.js');
+const shippingDetails = require('./shipping-details/shipping-details.service.js');
+const shippingHistory = require('./shipping-history/shipping-history.service.js');
 // eslint-disable-next-line no-unused-vars
 module.exports = function(app) {
   app.configure(users);
@@ -50,4 +62,16 @@ module.exports = function(app) {
   app.configure(reviews);
   app.configure(copyTemplateNutritionalTable);
   app.configure(authors);
+  app.configure(shoppingCart);
+  app.configure(shoppingCartDetails);
+  app.configure(expressProductsOrders);
+  app.configure(ordersStatus);
+  app.configure(orders);
+  app.configure(orderHistory);
+  app.configure(expressProductsOrdersHistory);
+  app.configure(expressProductsOrdersDetails);
+  app.configure(shipping);
+  app.configure(shippingStatus);
+  app.configure(shippingDetails);
+  app.configure(shippingHistory);
 };

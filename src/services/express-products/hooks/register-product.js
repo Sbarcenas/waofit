@@ -30,6 +30,7 @@ module.exports = function(options = {}) {
     const records = getItems(context);
 
     records.status = "inactive";
+    records.shop_type = "express_product";
 
     // Place the modified records back in the context.
     replaceItems(context, records);

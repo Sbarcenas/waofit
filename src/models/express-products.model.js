@@ -107,6 +107,7 @@ class expressProducts extends Model {
         type: { type: "string", enum: ["scheduled", "not_scheduled"] },
         status: { type: "string", enum: ["active", "inactive"] },
         express_category_path_ids: { type: "string" },
+        shop_type: { type: "string", maxlength: 255 },
         tax_rule_id: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" }
       }
@@ -163,6 +164,7 @@ module.exports = function(app) {
                 .references("id")
                 .inTable("tax_rule")
                 .index();
+              table.string("shop_type");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");
