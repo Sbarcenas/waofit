@@ -28,9 +28,10 @@ module.exports = (options = {}) => {
           deletedAt: null,
           user_id: user.id,
           status: "active"
-        }),
+        })
+        .then(it => it[0]),
       context.app
-        .service("express-product")
+        .service("express-products")
         .getModel()
         .query()
         .where({
@@ -38,6 +39,7 @@ module.exports = (options = {}) => {
           status: "active",
           deletedAt: null
         })
+        .then(it => it[0])
     ]);
 
     if (!shoppingCart)

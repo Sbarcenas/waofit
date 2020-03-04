@@ -43,10 +43,13 @@ function defineAbilitiesFor(user) {
       [
         "users-addresses",
         "users-product-brand-favorites",
-        "users-credit-cards"
+        "users-credit-cards",
+        "users-addresses"
       ],
       { user_id: user.id }
     );
+
+    can("manage", ["shopping-cart-details"]);
 
     can("read", [
       "current-user",
@@ -56,8 +59,6 @@ function defineAbilitiesFor(user) {
     ]);
 
     can("update", ["users"], { id: user.id });
-
-    can("manage", ["users-addresses"], { user_id: user.id });
 
     if (user.role == "admin") {
       can("manage", ["all"]);
