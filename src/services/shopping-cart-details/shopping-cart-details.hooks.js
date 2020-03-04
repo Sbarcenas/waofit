@@ -2,6 +2,8 @@ const registerShoppingCartDetails = require("./hooks/register-shopping-cart-deta
 const registerExpressProduct = require("./hooks/register-express-product");
 const patchExpressProduct = require("./hooks/patch-express-product");
 const { discard, iff, isProvider } = require("feathers-hooks-common");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
+const restricRemove = require("./hooks/restrict-remove");
 
 module.exports = {
   before: {
@@ -17,7 +19,7 @@ module.exports = {
       ),
       patchExpressProduct()
     ],
-    remove: []
+    remove: [restricRemove(), removeSoftDelete()]
   },
 
   after: {
