@@ -14,7 +14,7 @@ class expressProductsOrdersHistory extends Model {
 
       properties: {
         express_product_order_id: { type: "integer" },
-        order_estatus_id: { type: "integer" },
+        order_status_id: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" }
       }
     };
@@ -46,7 +46,7 @@ module.exports = function(app) {
               .inTable("express_products_orders")
               .index();
             table
-              .integer("order_estatus_id")
+              .integer("order_status_id")
               .unsigned()
               .references("id")
               .inTable("orders_status")

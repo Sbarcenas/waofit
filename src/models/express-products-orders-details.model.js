@@ -74,6 +74,7 @@ module.exports = function(app) {
               .inTable("express_products")
               .index();
             table.enum("type_product", ["scheduled", "no scheduled"]);
+            table.integer("quantity");
             table.decimal("unit_price_tax_excl");
             table.decimal("unit_price_tax_incl");
             table.decimal("unit_price_tax");

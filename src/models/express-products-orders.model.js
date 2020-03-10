@@ -29,6 +29,7 @@ class expressProductsOrders extends Model {
         order_id: { type: "integer" },
         type_dispatch: { type: "string", enum: ["pick up", "delivery"] },
         meta_data: { type: "string" },
+        date_dispatch: { type: "string", format: "date" },
         shipping_address_meta_data: { type: "string" },
         total_price_tax_excl: { type: "number" },
         total_price_tax_incl: { type: "number" },
@@ -79,6 +80,7 @@ module.exports = function(app) {
               .enum("type_dispatch", ["pick up", "delivery"])
               .defaultTo("delivery");
             table.text("meta_data");
+            table.date("date_dispatch");
             table.text("shipping_address_meta_data");
             table.decimal("total_price_tax_excl");
             table.decimal("total_price_tax_incl");

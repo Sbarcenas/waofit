@@ -1,11 +1,15 @@
-const { authenticate } = require('@feathersjs/authentication').hooks;
+const registerOrders = require("./hooks/registers-orders");
+const changeStatusShoppingCart = require("./hooks/change-status-shopping-cart");
+const registerExpressProductsOrders = require("./hooks/register-express-products-orders");
+const registerExpressProductsOrdersDetails = require("./hooks/register-express-products-orders-details");
+const registerOrderHistory = require("./hooks/register-order-history");
 
 module.exports = {
   before: {
-    all: [ authenticate('jwt') ],
+    all: [],
     find: [],
     get: [],
-    create: [],
+    create: [registerOrders()],
     update: [],
     patch: [],
     remove: []
@@ -15,7 +19,12 @@ module.exports = {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [
+      registerOrderHistory(),
+      changeStatusShoppingCart(),
+      registerExpressProductsOrders(),
+      registerExpressProductsOrdersDetails()
+    ],
     update: [],
     patch: [],
     remove: []

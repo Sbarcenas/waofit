@@ -9,16 +9,15 @@ module.exports = (options = {}) => {
 
     const records = getItems(context);
 
-    if (records.quantity <= 0) throw new NotAcceptable("Cantidad no valida.");
-
     const shoppingCart = await context.app
       .service("shopping-cart")
       .getModel()
       .query()
-      .where({ user_id: user.id, status: "active" })
+      .where({ user_id: user.id, status: "active", deletedAt: null })
       .then(it => it[0]);
 
-    if (shoppingCart) throw new NotAcceptable("Tienes un carro activo.");
+    if (shoppingCart)
+      throw new NotAcceptable("Ya tienes un carro de compras activo.");
 
     records.user_id = user.id;
     records.status = "active";

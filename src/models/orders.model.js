@@ -57,9 +57,18 @@ module.exports = function(app) {
               .references("id")
               .inTable("shopping_cart")
               .index();
-            table.text("shopping_cart_meta_data");
-            table.text("payment_meta_data");
+            table
+              .integer("user_id")
+              .unsigned()
+              .references("id")
+              .inTable("users")
+              .index();
             table.integer("payment_id");
+            table.decimal("total_price");
+            table.decimal("total_price_tax_excl");
+            table.decimal("total_tax");
+            table.text("payment_meta_data");
+            table.text("shopping_cart_meta_data");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");

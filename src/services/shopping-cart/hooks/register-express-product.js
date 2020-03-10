@@ -25,9 +25,6 @@ module.exports = (options = {}) => {
         "La cantidad supera el stock actual de este producto."
       );
 
-    records.user_id = user.id;
-    records.status = "active";
-
     context.shopping_cart_details = {
       quantity: records.quantity,
       shop_type: product.shop_type,
