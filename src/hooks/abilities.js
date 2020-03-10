@@ -33,11 +33,14 @@ function defineAbilitiesFor(user) {
       "authors",
       "shopping-cart",
       "shopping-cart-details",
+      "shopping-cart-custom",
       "orders"
     ]);
 
     can("read", ["users"], { id: user.id });
     can("read", ["shopping-cart"], { user_id: user.id });
+
+    can("update", ["shopping-cart-details"]);
 
     can(
       "manage",
