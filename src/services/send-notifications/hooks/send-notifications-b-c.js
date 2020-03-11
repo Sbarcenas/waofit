@@ -47,7 +47,7 @@ module.exports = (options = {}) => {
             console.log(result.body);
           })
           .catch(err => {
-            console.log(err);
+            console.log(err, "------------");
           });
 
         break;

@@ -33,9 +33,20 @@ module.exports = function(options = {}) {
 
     if (!user) throw new NotFound("Usuario no encontrado.");
 
-    const data = await context.app
+    const token_reset_password = generate("123456789", 4);
+    await context.app
       .service("users")
-      .patch(user.id, { token_reset_password: generate("123456789", 4) });
+      .getModel()
+      .query()
+      .patch({ token_reset_password: token_reset_password })
+      .where({ id: user.id });
+
+    await context.app
+      .service("users")
+      .find({ query: { email: records.email }, paginate: false })
+      .then(it => it[0]);
+
+    const data = { ...user, token_reset_password };
 
     const sendNotication = {
       action: "recovery-password",
