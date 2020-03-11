@@ -30,7 +30,7 @@ module.exports = (options = {}) => {
           context.dataOrders.totalsShoppingCartDetailsExpressProducts.total_tax
       };
 
-      const expressProductOrderId = await context.app
+      context.dataOrders.expressProductOrderId = await context.app
         .service("express-products-orders")
         .getModel()
         .query()
@@ -38,7 +38,7 @@ module.exports = (options = {}) => {
         .then(it => it.id);
 
       await registerExpressProductsOrdersHistory({
-        express_product_order_id: expressProductOrderId,
+        express_product_order_id: context.dataOrders.expressProductOrderId,
         order_status_id: 2
       })(context);
     }
