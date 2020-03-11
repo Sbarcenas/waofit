@@ -53,8 +53,16 @@ const productsJoins = {
               .getModel()
               .query()
               .select(
-                "*",
-                "express_products_media.id AS express_products_media_id"
+                "express_products.id",
+                "express_products.price",
+                "express_products.regular_price",
+                "express_products.shop_type",
+                "express_products.status",
+                "express_products_media.source_path AS main_image",
+                "express_products.type AS type",
+                "express_products.regular_price",
+                "express_products_media.id AS express_products_media_id",
+                "express_products_media.type AS type_media"
               )
               .innerJoin(
                 "express_products_media",
@@ -68,7 +76,7 @@ const productsJoins = {
                 "express_products.deletedAt": null,
                 "express_products_media.main": "true",
                 "express_products_media.media_type": "normal",
-                "express_products_media.type": "image",
+                /* "express_products_media.type": "image", */
                 "express_products_media.deletedAt": null
               })
               .then(it => it[0]);
