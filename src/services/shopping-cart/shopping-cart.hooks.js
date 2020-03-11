@@ -54,6 +54,7 @@ const productsJoins = {
               .query()
               .select(
                 "express_products.id",
+                "express_products.name",
                 "express_products.price",
                 "express_products.regular_price",
                 "express_products.shop_type",
