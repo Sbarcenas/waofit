@@ -65,7 +65,7 @@ module.exports = function(options = {}) {
       currency: "COP",
       dues: `${dataPayment.dues}`
     };
-
+    let response_epayco = null;
     await epayco.charge
       .create(payment_info)
       .then(async payment_info => {
@@ -98,6 +98,8 @@ module.exports = function(options = {}) {
             .service("process-payment-response")
             .create({ ...data });
         }
+
+        response_epayco = payment_info.data;
         //guardamos en payment confirmations
         /* await paymentConfirmation({
           ...payment_info,
@@ -108,6 +110,7 @@ module.exports = function(options = {}) {
         console.log("err: " + err);
       });
 
+    records.response_epayco = response_epayco;
     // Place the modified records back in the context.
     replaceItems(context, records);
     // Best practice: hooks should always return the context.

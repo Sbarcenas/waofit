@@ -89,10 +89,11 @@ module.exports = (options = {}) => {
         break;
 
       case 3:
-        //PAGO RECHAZADO
+        //PAGO PENDIENTE
         console.log("Pago pendiente");
         //se tiene que guardar en el historial el pago rechazado
 
+        //
         await Promise.all([
           context.app
             .service("orders")
