@@ -7,12 +7,7 @@ const {
   replaceItems
 } = require("feathers-hooks-common");
 /* const paymentConfirmation = require("../../../hooks/payment-confirmation");
- */ const {
-  NotFound,
-  PaymentError,
-  NotAcceptable
-} = require("@feathersjs/errors");
-const moment = require("moment");
+ */ const { PaymentError } = require("@feathersjs/errors");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = function(options = {}) {
@@ -44,7 +39,7 @@ module.exports = function(options = {}) {
     const epayco = require("epayco-node")({
       apiKey: epaycoCredentials.PUBLIC_KEY,
       privateKey: epaycoCredentials.PRIVATE_KEY,
-      lang: "ES",
+      lang: "EN",
       test: true
     });
 
@@ -74,108 +69,34 @@ module.exports = function(options = {}) {
     await epayco.charge
       .create(payment_info)
       .then(async payment_info => {
-        console.log(payment_info, "------------");
         if (payment_info.status === false) {
           throw new PaymentError("payment error");
         }
 
-        console.log(payment_info, "----------");
         //obtenemos el id del product history payment
         const data = {
-          order_id: parseInt(payment_info.data.factura.split("-")[1])
+          order_id: parseInt(payment_info.data.factura.split("-")[1]),
+          response_code: payment_info.data.cod_respuesta,
+          payment_info: payment_info.data
         };
         //respuesta de pago con exito *se actualiza pdocut history payment a pagado*
         if (payment_info.data.cod_respuesta == 1) {
-          console.log("11111111111111111");
+          await context.app
+            .service("process-payment-response")
+            .create({ ...data });
           //actualizamos el historial de pagos
-          /*  const membershipPaymentHistory = await context.app
-            .service("memberships-payment-history")
-            .getModel()
-            .findOne({
-              where: { id: membershipHistoryPaymentId, deletedAt: -1 }
-            });
-
-          await context.app
-            .service("memberships-payment-history")
-            .getModel()
-            .update(
-              {
-                response_gateway: JSON.stringify(payment_info),
-                status: "Paga"
-              },
-              { where: { id: membershipPaymentHistory.id, deletedAt: -1 } }
-            );
-
-          const { membership, data } = JSON.parse(
-            membershipPaymentHistory.request
-          );
-
-          //calculamos la fecha sumando los dias a la fecha de hoy.
-          const membershipExpires = moment(moment(), "YYYY-MM-DD HH:mm").add(
-            membership.duration_days,
-            "days"
-          );
-
-          //actualizamos la membresia de la empresa
-          await context.app
-            .service("company-membership")
-            .getModel()
-            .update(
-              {
-                membership_id: membership.id,
-                total_days: membership.duration_days,
-                membership_expires: membershipExpires,
-                auto_renew: data.auto_renew
-              },
-              {
-                where: {
-                  company_id: membershipPaymentHistory.company_id,
-                  deletedAt: -1
-                }
-              }
-            ); */
         } else if (payment_info.data.cod_respuesta == 2) {
           await context.app
             .service("process-payment-response")
-            .create({ data });
-          console.log("22222222222222222222");
-
-          //si la respuesta de epayco es 2 entonces rechazaron el pago
-
-          /* context.app
-            .service("memberships-payment-history")
-            .getModel()
-            .update(
-              {
-                response_gateway: JSON.stringify(payment_info),
-                status: "Cancelada"
-              },
-              { where: { id: membershipPaymentHistory.id, deletedAt: -1 } }
-            );
+            .create({ ...data });
         } else if (payment_info.data.cod_respuesta == 3) {
-          context.app
-            .service("memberships-payment-history")
-            .getModel()
-            .update(
-              {
-                response_gateway: JSON.stringify(payment_info),
-                status: "Pendiente"
-              },
-              { where: { id: membershipPaymentHistory.id, deletedAt: -1 } }
-            ); */
+          await context.app
+            .service("process-payment-response")
+            .create({ ...data });
         } else if (payment_info.data.cod_respuesta > 3) {
-          console.log("33333333333333");
-
-          /*  context.app
-            .service("memberships-payment-history")
-            .getModel()
-            .update(
-              {
-                response_gateway: JSON.stringify(payment_info),
-                status: "Cancelada"
-              },
-              { where: { id: membershipPaymentHistory.id, deletedAt: -1 } }
-            ); */
+          await context.app
+            .service("process-payment-response")
+            .create({ ...data });
         }
         //guardamos en payment confirmations
         /* await paymentConfirmation({
