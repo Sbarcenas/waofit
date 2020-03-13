@@ -3,6 +3,8 @@
 const { getItems, replaceItems } = require("feathers-hooks-common");
 const registerExpressProductsOrdersHistory = require("../../../hooks/register-products-orders-history");
 const registerOrderHistory = require("../../../hooks/register-order-history");
+const discountStockProductuExpress = require("../../../hooks/discount-stock-express-products");
+
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
   return async context => {
@@ -51,7 +53,12 @@ module.exports = (options = {}) => {
               order_status_id: 6
             })(context)
           ]);
+
+          await discountStockProductuExpress({
+            express_product_order_id: expressProductOrder.id
+          })(context);
         }
+
         break;
 
       case 2:

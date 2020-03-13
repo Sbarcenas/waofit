@@ -7,6 +7,25 @@ class orders extends Model {
     return "orders";
   }
 
+  static get relationMappings() {
+    const orderStatusModel = require("./orders-status.model")();
+
+    return {
+      status: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: orderStatusModel,
+        join: {
+          from: "orders.order_status_id",
+          to: "orders_status.id"
+        },
+        filter: buildQuery => {
+          buildQuery.where({ deletedAt: null, type: "general" });
+          return buildQuery;
+        }
+      }
+    };
+  }
+
   static get jsonSchema() {
     return {
       type: "object",

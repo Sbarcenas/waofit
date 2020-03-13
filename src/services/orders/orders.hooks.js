@@ -4,6 +4,47 @@ const registerExpressProductsOrders = require("./hooks/register-express-products
 const registerExpressProductsOrdersDetails = require("./hooks/register-express-products-orders-details");
 const registerOrderHistory = require("./hooks/register-order-history");
 
+const { fastJoin } = require("feathers-hooks-common");
+
+const ordersJoin = {
+  joins: {
+    join: () => async (records, context) => {
+      const [expressProductsOrders] = await Promise.all([
+        context.app
+          .service("express-products-orders")
+          .getModel()
+          .query()
+          .where({ order_id: records.id })
+          .then(it => it[0])
+      ]);
+      if (expressProductsOrders) {
+        records.express_product_order = expressProductsOrders;
+
+        records.express_product_order.express_product_order_details = await context.app
+          .service("express-products-orders-details")
+          .getModel()
+          .query()
+          .where({ express_product_order_id: expressProductsOrders.id });
+
+        const expProductOrderDetails =
+          records.express_product_order.express_product_order_details;
+
+        for (let index = 0; index < expProductOrderDetails.length; index++) {
+          const product = await context.app
+            .service("express-products")
+            .getModel()
+            .query()
+            .where({ id: expProductOrderDetails[index].express_product_id })
+            .then(it => it[0]);
+          records.express_product_order.express_product_order_details[
+            index
+          ].product = product;
+        }
+      }
+    }
+  }
+};
+
 module.exports = {
   before: {
     all: [],
@@ -17,8 +58,8 @@ module.exports = {
 
   after: {
     all: [],
-    find: [],
-    get: [],
+    find: [fastJoin(ordersJoin)],
+    get: [fastJoin(ordersJoin)],
     create: [
       registerOrderHistory(),
       changeStatusShoppingCart(),

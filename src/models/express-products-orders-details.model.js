@@ -29,7 +29,7 @@ class expressProductsOrdersDetails extends Model {
           type: "string",
           enum: ["sent", "delivered", "pending shipping"]
         },
-        type_product: { type: "string", enum: ["scheduled", "no scheduled"] },
+        type_product: { type: "string", enum: ["scheduled", "no_scheduled"] },
         quantity: { type: "integer" },
         express_product_id: { type: "integer" },
         unit_price_tax_excl: { type: "number" },
@@ -73,7 +73,7 @@ module.exports = function(app) {
               .references("id")
               .inTable("express_products")
               .index();
-            table.enum("type_product", ["scheduled", "no scheduled"]);
+            table.enum("type_product", ["scheduled", "no_scheduled"]);
             table.integer("quantity");
             table.decimal("unit_price_tax_excl");
             table.decimal("unit_price_tax_incl");
