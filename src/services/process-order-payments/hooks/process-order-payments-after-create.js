@@ -81,9 +81,9 @@ module.exports = function(options = {}) {
         };
         //respuesta de pago con exito *se actualiza pdocut history payment a pagado*
 
-        await context.app
+        /* await context.app
           .service("process-payment-response")
-          .create({ ...data });
+          .create({ ...data }); */
 
         response_epayco = payment_info.data;
 
@@ -127,7 +127,14 @@ module.exports = function(options = {}) {
         console.log("err: " + err);
       });
 
-    records.response_epayco = response_epayco;
+    records.payment_status = response_epayco.cod_respuesta;
+    records.payment_type = "credit_card";
+    records.response = {
+      invoice: response_epayco.factura,
+      description: response_epayco.descripcion,
+      response: response_epayco.respuesta
+    };
+
     // Place the modified records back in the context.
     replaceItems(context, records);
     // Best practice: hooks should always return the context.
