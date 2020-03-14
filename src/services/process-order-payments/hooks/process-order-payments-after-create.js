@@ -8,7 +8,7 @@ const {
 } = require("feathers-hooks-common");
 /* const paymentConfirmation = require("../../../hooks/payment-confirmation");
  */ const { PaymentError } = require("@feathersjs/errors");
-
+const moment = require("moment");
 // eslint-disable-next-line no-unused-vars
 module.exports = function(options = {}) {
   // Return the actual hook.
@@ -80,31 +80,48 @@ module.exports = function(options = {}) {
           payment_info: payment_info.data
         };
         //respuesta de pago con exito *se actualiza pdocut history payment a pagado*
-        if (payment_info.data.cod_respuesta == 1) {
-          await context.app
-            .service("process-payment-response")
-            .create({ ...data });
-          //actualizamos el historial de pagos
-        } else if (payment_info.data.cod_respuesta == 2) {
-          await context.app
-            .service("process-payment-response")
-            .create({ ...data });
-        } else if (payment_info.data.cod_respuesta == 3) {
-          await context.app
-            .service("process-payment-response")
-            .create({ ...data });
-        } else if (payment_info.data.cod_respuesta > 3) {
-          await context.app
-            .service("process-payment-response")
-            .create({ ...data });
-        }
+
+        await context.app
+          .service("process-payment-response")
+          .create({ ...data });
 
         response_epayco = payment_info.data;
+
+        const paymentConfirmation = {
+          payment_reference: parseInt(payment_info.data.ref_payco),
+          invoice: payment_info.data.factura,
+          description: payment_info.data.descripcion,
+          value: parseFloat(payment_info.data.valor),
+          tax: parseFloat(payment_info.data.iva),
+          tax_base: parseInt(payment_info.data.baseiva),
+          dues: 0,
+          currency: payment_info.data.moneda,
+          bank: payment_info.data.banco,
+          status: payment_info.data.estado,
+          response: payment_info.data.respuesta,
+          authorization: payment_info.data.autorizacion,
+          gateway: "epayco",
+          receipt: `${payment_info.data.recibo}`,
+          date: moment(payment_info.data.fecha).format("YYYY-MM-DD HH:mm:ss"),
+          franchise: payment_info.data.franquicia,
+          cod_response: parseInt(payment_info.data.cod_respuesta),
+          ip: payment_info.data.ip,
+          type_document: payment_info.data.tipo_doc,
+          document: payment_info.data.documento,
+          name: payment_info.data.nombres,
+          last_name: payment_info.data.apellidos,
+          email: payment_info.data.email,
+          in_tests: (payment_info.data.enpruebas = 1 ? "TRUE" : "FALSE"),
+          city: payment_info.data.ciudad,
+          address: payment_info.data.direccion,
+          ind_country: payment_info.data.ind_pais,
+          deletedAt: null
+        };
+
         //guardamos en payment confirmations
-        /* await paymentConfirmation({
-          ...payment_info,
-          data: { ...payment_info.data, type: "membership", gateway: "epayco" }
-        })(context); */
+        await context.app
+          .service("payment-confirmations")
+          .create(paymentConfirmation);
       })
       .catch(err => {
         console.log("err: " + err);

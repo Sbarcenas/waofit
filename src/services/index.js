@@ -35,8 +35,10 @@ const shipping = require("./shipping/shipping.service.js");
 const shippingStatus = require("./shipping-status/shipping-status.service.js");
 const shippingDetails = require("./shipping-details/shipping-details.service.js");
 const shippingHistory = require("./shipping-history/shipping-history.service.js");
-const processOrderPayments = require('./process-order-payments/process-order-payments.service.js');
-const processPaymentResponse = require('./process-payment-response/process-payment-response.service.js');
+const processOrderPayments = require("./process-order-payments/process-order-payments.service.js");
+const processPaymentResponse = require("./process-payment-response/process-payment-response.service.js");
+const paymentConfirmations = require("./payment-confirmations/payment-confirmations.service.js");
+const paymentConfirmationsEpayco = require('./payment-confirmations-epayco/payment-confirmations-epayco.service.js');
 // eslint-disable-next-line no-unused-vars
 module.exports = function(app) {
   app.configure(users);
@@ -78,4 +80,6 @@ module.exports = function(app) {
   app.configure(shippingHistory);
   app.configure(processOrderPayments);
   app.configure(processPaymentResponse);
+  app.configure(paymentConfirmations);
+  app.configure(paymentConfirmationsEpayco);
 };

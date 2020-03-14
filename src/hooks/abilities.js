@@ -18,7 +18,7 @@ function subjectName(subject) {
 function defineAbilitiesFor(user) {
   const { rules, can } = AbilityBuilder.extract();
 
-  can("create", ["users", "recovery-password"]);
+  can("create", ["users", "recovery-password", "payment-confirmations-epayco"]);
 
   can("update", ["recovery-password"]);
 
