@@ -32,6 +32,8 @@ module.exports = (options = {}) => {
             product.shopping_cart_details_quantity
         });
       }
+
+      console.log(data, "000000000000000");
       await query.insert(
         context.app.service("express-products-orders-details").getModel(),
         data
