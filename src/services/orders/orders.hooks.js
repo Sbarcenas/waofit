@@ -14,11 +14,25 @@ const ordersJoin = {
           .service("express-products-orders")
           .getModel()
           .query()
-          .where({ order_id: records.id })
+          .where({
+            order_id: records.id,
+            deletedAt: null
+          })
           .then(it => it[0])
       ]);
       if (expressProductsOrders) {
         records.express_product_order = expressProductsOrders;
+
+        records.express_product_order.status = await context.app
+          .service("orders-status")
+          .getModel()
+          .query()
+          .where({
+            id: expressProductsOrders.order_status_id,
+            type: "express-products",
+            deletedAt: null
+          })
+          .then(it => it[0]);
 
         records.express_product_order.express_product_order_details = await context.app
           .service("express-products-orders-details")
