@@ -26,13 +26,7 @@ module.exports = {
     create: [
       iff(
         isProvider("external"),
-        discard(
-          "credits",
-          "status",
-          "role",
-          "facebookId",
-          "token_reset_password"
-        )
+        discard("credits", "status", "role", "token_reset_password")
       ),
       hashPassword("password"),
       proccessUsersFaceboookBC(),
@@ -66,9 +60,11 @@ module.exports = {
     ],
     find: [],
     get: [],
-    create: [createAuthor()],
+    create: [
+      /* createAuthor() */
+    ],
     update: [],
-    patch: [proccessUsersFacebookBP(), updateAuthor()],
+    patch: [proccessUsersFacebookBP() /* updateAuthor() */],
     remove: []
   },
 

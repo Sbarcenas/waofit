@@ -4,11 +4,9 @@
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
   return async context => {
-
     if (context.params.query.facebookId) {
-      // context.params.query['email'] = 
+      // context.params.query['email'] =
       //Estas aqui
-
     }
 
     return context;

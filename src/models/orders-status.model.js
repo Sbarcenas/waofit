@@ -21,7 +21,8 @@ class ordersStatus extends Model {
         description: { type: "string" },
         type: {
           type: "string",
-          enum: ["general", "express-products", "coffe"]
+          enum: ["general", "express-products", "coffe"],
+          status_code: { type: "string" }
         },
         deletedAt: { type: "string", format: "date-time" }
       }
@@ -53,6 +54,7 @@ module.exports = function(app) {
               table
                 .enum("type", ["general", "express-products", "coffe"])
                 .defaultTo("general");
+              table.string("status_code");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");
