@@ -21,7 +21,7 @@ module.exports = function(options = {}) {
       "patch",
       "remove"
     ]);
-
+    2;
     // Get the authenticated user.
     // eslint-disable-next-line no-unused-vars
     const { user } = context.params;

@@ -6,7 +6,7 @@ const removeAlgolia = require("./hooks/remove-algolia");
 const registerProduct = require("./hooks/register-product");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
 
-const { fastJoin } = require("feathers-hooks-common");
+const { fastJoin, iff, isProvider } = require("feathers-hooks-common");
 
 const resolves = {
   joins: {
@@ -78,8 +78,8 @@ module.exports = {
 
   after: {
     all: [],
-    find: [fastJoin(resolves)],
-    get: [fastJoin(resolves)],
+    find: [iff(isProvider("external"), fastJoin(resolves))],
+    get: [iff(isProvider("external"), fastJoin(resolves))],
     create: [pushAlgolia()],
     update: [],
     patch: [fastJoin(resolves), updateAlgolia()],
