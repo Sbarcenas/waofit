@@ -61,7 +61,8 @@ function defineAbilitiesFor(user) {
       "credentials",
       "express-products",
       "express-categories",
-      "blogs-and-guides"
+      "blogs-and-guides",
+      "express-products-hubs"
     ]);
 
     can("update", ["users"], { id: user.id });
