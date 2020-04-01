@@ -22,6 +22,7 @@ class brands extends softDelete({ columnName: "deletedAt" })(Model) {
         description: { type: "string" },
         status: { type: "string", enum: ["active", "inactive"] },
         priority: { type: "integer" },
+        path_logo: { type: "string" },
         deletedAt: { type: "string", format: "date-time" }
       }
     };
@@ -52,6 +53,7 @@ module.exports = function(app) {
               table.text("description");
               table.enum("status", ["active", "inactive"]);
               table.integer("priority").defaultTo(0);
+              table.text("path_logo");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");
