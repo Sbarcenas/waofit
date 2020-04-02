@@ -20,6 +20,7 @@ class expressHubs extends Model {
         name: { type: "string", maxLength: 255 },
         path_image: { type: "string" },
         position: { type: "integer" },
+        short_description: { type: "string" },
         deletedAt: { type: "string", format: "date-time" }
       }
     };
@@ -49,6 +50,7 @@ module.exports = function(app) {
               table.string("name", 255);
               table.string("path_image");
               table.integer("position").defaultTo(0);
+              table.sting("short_description");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");
