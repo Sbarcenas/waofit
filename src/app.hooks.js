@@ -10,6 +10,7 @@ const deleted = softDelete({
   // context is the normal hook context
   deletedQuery: async context => {
     if (context.path == "current-user") return context;
+    if (context.path == "recovery-password") return context;
     const field = `${context.service.getModel().tableName}.deletedAt`;
     return { [field]: null };
   },
