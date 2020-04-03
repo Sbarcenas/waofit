@@ -19,8 +19,8 @@ class expressProductsHubs extends Model {
       properties: {
         hub_id: { type: "integer" },
         product_id: { type: "integer" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -33,17 +33,17 @@ class expressProductsHubs extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   if (app) {
     expressProductsHubs.setup(app);
     const db = app.get("knex");
 
     db.schema
       .hasTable("express_products_hubs")
-      .then(exists => {
+      .then((exists) => {
         if (!exists) {
           db.schema
-            .createTable("express_products_hubs", table => {
+            .createTable("express_products_hubs", (table) => {
               table.increments("id");
               table
                 .integer("hub_id")
@@ -62,12 +62,12 @@ module.exports = function(app) {
               table.timestamp("updatedAt");
             })
             .then(() => console.log("Created express_products_hubs table")) // eslint-disable-line no-console
-            .catch(e =>
+            .catch((e) =>
               console.error("Error creating express_products_hubs table", e)
             ); // eslint-disable-line no-console
         }
       })
-      .catch(e =>
+      .catch((e) =>
         console.error("Error creating express_products_hubs table", e)
       ); // eslint-disable-line no-console
   }

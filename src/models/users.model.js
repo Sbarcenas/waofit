@@ -16,9 +16,9 @@ class users extends Model {
         modelClass: userDeviceTokens,
         join: {
           from: "users.id",
-          to: "user_device_tokens.user_id"
-        }
-      }
+          to: "user_device_tokens.user_id",
+        },
+      },
     };
   }
 
@@ -36,7 +36,7 @@ class users extends Model {
         status: {
           type: "string",
           enum: ["active", "disabled"],
-          default: "active"
+          default: "active",
         },
         role: { type: "string", enum: ["user", "admin"] },
         facebookId: { type: "string" },
@@ -46,8 +46,8 @@ class users extends Model {
         phone: { type: "string", maxLength: 255 },
         credits: { type: "integer" },
         profile_picture: { type: "string" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -60,16 +60,16 @@ class users extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   if (app) {
     const db = app.get("knex");
 
     db.schema
       .hasTable("users")
-      .then(exists => {
+      .then((exists) => {
         if (!exists) {
           db.schema
-            .createTable("users", table => {
+            .createTable("users", (table) => {
               table.increments("id").primary();
               table.string("email").unique();
               table.string("password");
@@ -89,10 +89,10 @@ module.exports = function(app) {
               table.timestamp("updatedAt");
             })
             .then(() => console.log("Created users table")) // eslint-disable-line no-console
-            .catch(e => console.error("Error creating users table", e)); // eslint-disable-line no-console
+            .catch((e) => console.error("Error creating users table", e)); // eslint-disable-line no-console
         }
       })
-      .catch(e => console.error("Error creating users table", e)); // eslint-disable-line no-console
+      .catch((e) => console.error("Error creating users table", e)); // eslint-disable-line no-console
   }
 
   return users;

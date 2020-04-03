@@ -14,7 +14,7 @@ const resolves = {
       const [
         countCalifications,
         sumCalifications,
-        imageMain
+        imageMain,
       ] = await Promise.all([
         context.app
           .service("reviews")
@@ -24,7 +24,7 @@ const resolves = {
           .where({
             type: "express-product",
             type_id: records.id,
-            deletedAt: null
+            deletedAt: null,
           }),
         context.app
           .service("reviews")
@@ -34,7 +34,7 @@ const resolves = {
           .where({
             type: "express-product",
             type_id: records.id,
-            deletedAt: null
+            deletedAt: null,
           }),
         context.app
           .service("express-products-media")
@@ -44,9 +44,9 @@ const resolves = {
             product_id: records.id,
             main: "true",
             media_type: "normal",
-            deletedAt: null
+            deletedAt: null,
           })
-          .then(it => it[0])
+          .then((it) => it[0]),
       ]);
       records.rating_average =
         parseInt(sumCalifications[0].totalCalifications) /
@@ -56,9 +56,9 @@ const resolves = {
         ? records.rating_average
         : 0;
       records.count_reviews = countCalifications[0].quantity;
-      records.image_main = imageMain.source_path;
-    }
-  }
+      if (imageMain) records.image_main = imageMain.source_path;
+    },
+  },
 };
 
 module.exports = {
@@ -69,11 +69,11 @@ module.exports = {
     create: [
       registerProduct(),
       assingPathCategory(),
-      prepareRecordsForAlgolia()
+      prepareRecordsForAlgolia(),
     ],
     update: [],
     patch: [prepareRecordsForAlgolia()],
-    remove: [removeSoftDelete()]
+    remove: [removeSoftDelete()],
   },
 
   after: {
@@ -83,7 +83,7 @@ module.exports = {
     create: [pushAlgolia()],
     update: [],
     patch: [fastJoin(resolves), updateAlgolia()],
-    remove: [removeAlgolia()]
+    remove: [removeAlgolia()],
   },
 
   error: {
@@ -93,6 +93,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };
