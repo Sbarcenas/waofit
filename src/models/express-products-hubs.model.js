@@ -11,6 +11,38 @@ class expressProductsHubs extends Model {
     return "express_products_hubs";
   }
 
+  static get relationMappings() {
+    const expressHubsModel = require("./express-hubs.model")();
+    const expressProductModel = require("./express-products.model")();
+
+    return {
+      hubs: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: expressHubsModel,
+        join: {
+          from: "express_products_hubs.hub_id",
+          to: "express_hubs.id",
+        },
+        filter: (buildQuery) => {
+          buildQuery.where({ deletedAt: null });
+          return buildQuery;
+        },
+      },
+      products: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: expressProductModel,
+        join: {
+          from: "express_products_hubs.product_id",
+          to: "express_products.id",
+        },
+        filter: (buildQuery) => {
+          buildQuery.where({ deletedAt: null });
+          return buildQuery;
+        },
+      },
+    };
+  }
+
   static get jsonSchema() {
     return {
       type: "object",
