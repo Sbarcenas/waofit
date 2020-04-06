@@ -4,14 +4,14 @@
 const {
   checkContext,
   getItems,
-  replaceItems
+  replaceItems,
 } = require("feathers-hooks-common");
 const { NotAcceptable } = require("@feathersjs/errors");
 
 // eslint-disable-next-line no-unused-vars
-module.exports = function(options = {}) {
+module.exports = function (options = {}) {
   // Return the actual hook.
-  return async context => {
+  return async (context) => {
     // Throw if the hook is being called from an unexpected location.
     checkContext(context, null, [
       "find",
@@ -19,7 +19,7 @@ module.exports = function(options = {}) {
       "create",
       "update",
       "patch",
-      "remove"
+      "remove",
     ]);
 
     // Get the authenticated user.
@@ -35,7 +35,7 @@ module.exports = function(options = {}) {
         delete records.deletedAt;
       }
 
-      const [imageMain, multimedia] = await Promise.all([
+      const [imageMain /* multimedia */] = await Promise.all([
         context.app
           .service("express-products-media")
           .getModel()
@@ -44,10 +44,10 @@ module.exports = function(options = {}) {
             product_id: context.id,
             main: "true",
             media_type: "normal",
-            deletedAt: null
+            deletedAt: null,
           })
-          .then(it => it[0]),
-        context.app
+          .then((it) => it[0]),
+        /*  context.app
           .service("express-products-media")
           .getModel()
           .query()
@@ -56,7 +56,7 @@ module.exports = function(options = {}) {
             main: "false",
             deletedAt: null
           })
-          .then(it => it[0])
+          .then(it => it[0]) */
       ]);
 
       if (!imageMain)
@@ -64,13 +64,13 @@ module.exports = function(options = {}) {
           "No se puede activar el producto por que no tiene una imagen principal."
         );
 
-      if (!multimedia)
+      /* if (!multimedia)
         throw new NotAcceptable(
           "No se puede activar el producto por que no tiene galeria."
-        );
+        ); */
 
       context.params.query = {
-        $eager: "[brand,category,hubs]"
+        $eager: "[brand,category,hubs]",
       };
     }
 
