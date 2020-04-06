@@ -35,7 +35,7 @@ function defineAbilitiesFor(user) {
       "shopping-cart-details",
       "shopping-cart-custom",
       "orders",
-      "process-order-payments"
+      "process-order-payments",
     ]);
 
     can("read", ["users"], { id: user.id });
@@ -49,7 +49,7 @@ function defineAbilitiesFor(user) {
         "users-addresses",
         "users-product-brand-favorites",
         "users-credit-cards",
-        "users-addresses"
+        "users-addresses",
       ],
       { user_id: user.id }
     );
@@ -64,7 +64,8 @@ function defineAbilitiesFor(user) {
       "blogs-and-guides",
       "express-products-hubs",
       "express-hubs",
-      "brands"
+      "brands",
+      "reviews",
     ]);
 
     can("update", ["users"], { id: user.id });
@@ -86,7 +87,7 @@ function canReadQuery(query) {
 }
 
 module.exports = function authorize(name = null) {
-  return async function(hook) {
+  return async function (hook) {
     const action = hook.method;
     const service = name ? hook.app.service(name) : hook.service;
     const serviceName = name || hook.path;
