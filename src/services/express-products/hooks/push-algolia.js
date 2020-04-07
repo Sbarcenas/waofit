@@ -31,6 +31,8 @@ module.exports = function (options = {}) {
 
     const algoliaCredemtials = context.app.get("algolia");
 
+    console.log(records, "------00000000");
+
     if (records.status == "active" && records.quantity > 0) {
       const Algolia = new algolia(
         "expressProducts",

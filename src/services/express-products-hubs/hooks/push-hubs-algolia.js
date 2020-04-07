@@ -5,12 +5,12 @@ const lodash = require("lodash");
 const updateExpressProductsAlgolia = require("../../../hooks/update-express-products-algolia");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
-    records = lodash.flattenDeep(records)[0];
+    /* records = lodash.flattenDeep(records)[0]; */
 
-    await updateExpressProductsAlgolia(records)(context);
+    await updateExpressProductsAlgolia(records.product_id)(context);
 
     replaceItems(context, records);
 

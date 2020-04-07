@@ -8,7 +8,11 @@ module.exports = (options = {}) => {
   return async (context) => {
     let records = getItems(context);
 
-    if (records.hubs_id) return context;
+    if (records.hub_id) {
+      delete records.deletedAt;
+      return context;
+    }
+
     if (records.hub_ids.length < 1)
       throw new NotAcceptable("Debes enviar los ids de los hubs en un array.");
 

@@ -29,11 +29,10 @@ module.exports = function (options = {}) {
     // getItems always returns an array to simplify your processing.
     const records = getItems(context);
 
-    if (records.status == "active") {
-      if (records.id) {
-        context.id = records.id;
-        delete records.deletedAt;
-      }
+    records.id = context.id;
+    if (records.id) {
+      context.id = records.id;
+      // delete records.deletedAt;
 
       const [imageMain /* multimedia */] = await Promise.all([
         context.app

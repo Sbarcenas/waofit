@@ -8,39 +8,39 @@ const removeSoftdelete = require("./hooks/remove-softdelete");
 
 const deleted = softDelete({
   // context is the normal hook context
-  deletedQuery: async context => {
+  deletedQuery: async (context) => {
     if (context.path == "current-user") return context;
     if (context.path == "recovery-password") return context;
     const field = `${context.service.getModel().tableName}.deletedAt`;
     return { [field]: null };
   },
-  removeData: async context => {
+  removeData: async (context) => {
     return { deletedAt: new Date().toISOString() };
-  }
+  },
 });
 
 module.exports = {
   before: {
     all: [
       when(
-        hook =>
+        (hook) =>
           hook.params.provider &&
           `/${hook.path}` !== hook.app.get("authentication").path,
         authenticate,
         authorize()
       ),
-      logger()
+      logger(),
     ],
     find: [deleted],
     get: [deleted],
     create: [
-      context => {
+      (context) => {
         delete context.data.deletedAt;
-      }
+      },
     ],
     update: [deleted],
     patch: [deleted],
-    remove: []
+    remove: [],
   },
 
   after: {
@@ -50,7 +50,7 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -60,6 +60,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };

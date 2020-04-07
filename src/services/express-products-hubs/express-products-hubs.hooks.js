@@ -10,7 +10,7 @@ module.exports = {
     create: [preparePushHubsAlgolia()],
     update: [],
     patch: [],
-    remove: [removeSoftDelete()]
+    remove: [removeSoftDelete()],
   },
 
   after: {
@@ -20,7 +20,7 @@ module.exports = {
     create: [pushHubsAlgolia()],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -30,6 +30,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };

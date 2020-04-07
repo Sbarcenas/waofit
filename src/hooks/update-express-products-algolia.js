@@ -3,10 +3,10 @@
 const { getItems, replaceItems } = require("feathers-hooks-common");
 // eslint-disable-next-line no-unused-vars
 module.exports = (id = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
-    await context.app.service("express-products").patch(id, records[0]);
+    await context.app.service("express-products").patch(id, {});
 
     replaceItems(context, records);
 
