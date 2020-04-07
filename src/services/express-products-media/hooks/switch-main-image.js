@@ -3,10 +3,10 @@
 const { getItems, replaceItems } = require("feathers-hooks-common");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
-    if (records.main == "true" || records.main) {
+    if (records.main == "true" || records.main == true) {
       await context.app
         .service("express-products-media")
         .getModel()
