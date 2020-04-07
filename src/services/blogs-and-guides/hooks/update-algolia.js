@@ -40,6 +40,7 @@ module.exports = function (options = {}) {
     if (records.status == "active") {
       records.objectID = parseInt(records.id);
       records.description ? delete records.description : null;
+      records.createdAtUnix = Math.floor(records.createdAt / 1000);
       Algolia.save(records);
     } else if (records.status == "inactive") {
       Algolia.remove(records.id);

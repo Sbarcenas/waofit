@@ -41,6 +41,7 @@ module.exports = function (options = {}) {
       );
 
       records.objectID = records.id;
+      records.createdAtUnix = Math.floor(records.createdAt / 1000);
       Algolia.create(records);
     }
 
