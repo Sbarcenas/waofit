@@ -6,12 +6,12 @@ const registerShoppingCartEmpty = require("./hooks/register-shopping-cart-empty"
 const {
   disallow,
   paramsFromClient,
-  fastJoin
+  fastJoin,
 } = require("feathers-hooks-common");
 
 const switchRegisterShoppingCartBefore = [
   paramsFromClient("shopping_cart_empty"),
-  async context => {
+  async (context) => {
     if (
       context.params.shopping_cart_empty == "true" ||
       context.params.shopping_cart_empty == true
@@ -23,12 +23,12 @@ const switchRegisterShoppingCartBefore = [
         await registerExpressProduct()(context)
       );
     }
-  }
+  },
 ];
 
 const switchRegisterShoppingCartAfter = [
   paramsFromClient("shopping_cart_empty"),
-  async context => {
+  async (context) => {
     if (
       context.params.shopping_cart_empty == "true" ||
       context.params.shopping_cart_empty == true
@@ -38,7 +38,7 @@ const switchRegisterShoppingCartAfter = [
       console.log("en el after");
       return registerExpressProductAfterCreate()(context);
     }
-  }
+  },
 ];
 
 const productsJoins = {
@@ -48,7 +48,9 @@ const productsJoins = {
         const shopping_cart_details = records.shopping_cart_details;
         for (let index = 0; index < shopping_cart_details.length; index++) {
           if (shopping_cart_details[index].shop_type == "express_product") {
-            records.shopping_cart_details[index].product = await context.app
+            (records.shopping_cart_details[
+              index
+            ].product = await context.app
               .service("express-products")
               .getModel()
               .query()
@@ -59,33 +61,33 @@ const productsJoins = {
                 "express_products.regular_price",
                 "express_products.shop_type",
                 "express_products.status",
-                "express_products_media.source_path AS main_image",
                 "express_products.type AS type",
                 "express_products.regular_price",
-                "express_products_media.id AS express_products_media_id",
-                "express_products_media.type AS type_media"
+                "express_products_media.type AS type_media",
+                "express_products_media.source_path AS main_image",
+                "express_products_media.video_cover_path",
+                "express_products_media.id AS express_products_media_id"
               )
-              .innerJoin(
-                "express_products_media",
-                "express_products.id",
-                "=",
-                "express_products_media.product_id"
-              )
-              .where({
-                "express_products.id":
-                  records.shopping_cart_details[index].product_id,
-                "express_products.deletedAt": null,
-                "express_products_media.main": "true",
-                "express_products_media.media_type": "normal",
-                /* "express_products_media.type": "image", */
-                "express_products_media.deletedAt": null
-              })
-              .then(it => it[0]);
+              .innerJoin()),
+              "express_products_media",
+              "express_products.id",
+              "=",
+              "express_products_media.product_id"
+                .where({
+                  "express_products.id":
+                    records.shopping_cart_details[index].product_id,
+                  "express_products.deletedAt": null,
+                  "express_products_media.main": "true",
+                  "express_products_media.media_type": "normal",
+                  /* "express_products_media.type": "image", */
+                  "express_products_media.deletedAt": null,
+                })
+                .then((it) => it[0]);
           }
         }
       }
-    }
-  }
+    },
+  },
 };
 
 module.exports = {
@@ -96,7 +98,7 @@ module.exports = {
     create: [...switchRegisterShoppingCartBefore],
     update: [disallow("external")],
     patch: [disallow("external")],
-    remove: [disallow("external")]
+    remove: [disallow("external")],
   },
 
   after: {
@@ -106,7 +108,7 @@ module.exports = {
     create: [...switchRegisterShoppingCartAfter],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -116,6 +118,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };
