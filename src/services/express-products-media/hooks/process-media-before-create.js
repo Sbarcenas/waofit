@@ -4,7 +4,7 @@ const { getItems, replaceItems } = require("feathers-hooks-common");
 const { NotAcceptable, NotFound } = require("@feathersjs/errors");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
     const product = await context.app
@@ -12,7 +12,7 @@ module.exports = (options = {}) => {
       .getModel()
       .query()
       .where({ id: records.product_id, deletedAt: null })
-      .then(it => it[0]);
+      .then((it) => it[0]);
 
     if (!product) throw new NotFound("No se encontró el producto.");
 
@@ -30,14 +30,14 @@ module.exports = (options = {}) => {
       records.main = "true";
     }
 
-    if (records.type == "video") {
+    /* if (records.type == "video") {
       //validar la extencion del video
       if (!records.video_cover_path || !records.source_path)
         throw new NotAcceptable(
           "Debes enviar el cover del video y la ruta de donde esta guardado el video."
         );
       records.main = "false";
-    }
+    } */
 
     replaceItems(context, records);
 
