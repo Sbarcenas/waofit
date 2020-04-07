@@ -4,14 +4,14 @@
 const {
   checkContext,
   getItems,
-  replaceItems
+  replaceItems,
 } = require("feathers-hooks-common");
 const algolia = require("../../../utils/algolia");
 
 // eslint-disable-next-line no-unused-vars
-module.exports = function(options = {}) {
+module.exports = function (options = {}) {
   // Return the actual hook.
-  return async context => {
+  return async (context) => {
     // Throw if the hook is being called from an unexpected location.
     checkContext(context, null, [
       "find",
@@ -19,7 +19,7 @@ module.exports = function(options = {}) {
       "create",
       "update",
       "patch",
-      "remove"
+      "remove",
     ]);
     2;
     // Get the authenticated user.
@@ -39,6 +39,7 @@ module.exports = function(options = {}) {
 
     if (records.status == "active") {
       records.objectID = parseInt(records.id);
+      records.description ? delete records.description : null;
       Algolia.save(records);
     } else if (records.status == "inactive") {
       Algolia.remove(records.id);
