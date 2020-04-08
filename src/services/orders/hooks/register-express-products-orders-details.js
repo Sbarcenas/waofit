@@ -6,7 +6,7 @@ const { query } = require("../../../utils/query-builders/batch-insert");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
     const { user } = context.params;
@@ -16,24 +16,25 @@ module.exports = (options = {}) => {
 
       const data = [];
       for (const product of products) {
+        console.log(product);
+
         data.push({
           express_product_order_id: context.dataOrders.expressProductOrderId,
           express_product_id: product.product_id,
           type_product: product.type,
-          unit_price_tax_excl:
-            product.price - (product.price * product.tax_value) / 100,
+          unit_price_tax_excl: product.price / `1.${product.tax_value}`,
           quantity: product.shopping_cart_details_quantity,
           unit_price_tax_incl: product.price,
-          unit_price_tax: (product.price * product.tax_value) / 100,
+          unit_price_tax:
+            product.price - product.price / `1.${product.tax_value}`,
           total_price_tax_incl:
             product.price * product.shopping_cart_details_quantity,
           total_price_tax:
-            ((product.price * product.tax_value) / 100) *
-            product.shopping_cart_details_quantity
+            (product.price - product.price / `1.${product.tax_value}`) *
+            product.shopping_cart_details_quantity,
         });
       }
 
-      console.log(data, "000000000000000");
       await query.insert(
         context.app.service("express-products-orders-details").getModel(),
         data

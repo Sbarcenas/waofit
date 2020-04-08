@@ -4,14 +4,14 @@
 const {
   checkContext,
   getItems,
-  replaceItems
+  replaceItems,
 } = require("feathers-hooks-common");
 const { NotAcceptable, NotFound } = require("@feathersjs/errors");
 const moment = require("moment");
 // eslint-disable-next-line no-unused-vars
-module.exports = function(options = {}) {
+module.exports = function (options = {}) {
   // Return the actual hook.
-  return async context => {
+  return async (context) => {
     // Throw if the hook is being called from an unexpected location.
     checkContext(context, null, [
       "find",
@@ -19,7 +19,7 @@ module.exports = function(options = {}) {
       "create",
       "update",
       "patch",
-      "remove"
+      "remove",
     ]);
 
     // Get the authenticated user.
@@ -34,7 +34,7 @@ module.exports = function(options = {}) {
       .getModel()
       .query()
       .where({ user_id: user.id, deletedAt: null, status: "active" })
-      .then(it => it[0]);
+      .then((it) => it[0]);
 
     let userAddress = null;
 
@@ -46,9 +46,9 @@ module.exports = function(options = {}) {
         .where({
           id: records.user_address_id,
           deletedAt: null,
-          user_id: user.id
+          user_id: user.id,
         })
-        .then(it => it[0]);
+        .then((it) => it[0]);
     } else {
       userAddress = await context.app
         .service("users-addresses")
@@ -57,9 +57,9 @@ module.exports = function(options = {}) {
         .where({
           deletedAt: null,
           user_id: user.id,
-          main: "true"
+          main: "true",
         })
-        .then(it => it[0]);
+        .then((it) => it[0]);
     }
 
     if (moment(records.shipping_date).isBefore(moment().format("YYYY-MM-DD")))
@@ -104,15 +104,15 @@ module.exports = function(options = {}) {
           shopping_cart_id: shoppingCart.id,
           "shopping_cart_details.deletedAt": null,
           "express_products.deletedAt": null,
-          "express_products.status": "active"
-        })
+          "express_products.status": "active",
+        }),
     ]);
 
     //----------------------------------CALCULOS PRODUCTOS EXPRESS--------------------------------------------
     let [
       totalPriceExpressProduct,
       totalPriceExpressProductTaxExcl,
-      totalTaxExpressProduct
+      totalTaxExpressProduct,
     ] = [null, null, null];
     //for de productos express
     for (const expressProduct of shoppingCartDetailsExpressProduct) {
@@ -143,8 +143,8 @@ module.exports = function(options = {}) {
       totalsShoppingCartDetailsExpressProducts: {
         total_price_tax_excl: totalPriceExpressProductTaxExcl,
         total_tax: totalTaxExpressProduct,
-        total_price_tax_incl: totalPriceExpressProduct
-      }
+        total_price_tax_incl: totalPriceExpressProduct,
+      },
     };
 
     //activadores de hooks en el after y validaciones de que si tienen algo dentro,
