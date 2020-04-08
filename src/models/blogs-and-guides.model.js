@@ -7,6 +7,25 @@ class blogsAndGuides extends Model {
     return "blogs_and_guides";
   }
 
+  static get relationMappings() {
+    const authorsModel = require("./authors.model")();
+
+    return {
+      author: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: authorsModel,
+        join: {
+          from: "blogs_and_guides.author_id",
+          to: "authors.id",
+        },
+        filter: (buildQuery) => {
+          buildQuery.where({ deletedAt: null });
+          return buildQuery;
+        },
+      },
+    };
+  }
+
   static get jsonSchema() {
     return {
       type: "object",
@@ -19,9 +38,10 @@ class blogsAndGuides extends Model {
         shared_number: { type: "integer" },
         type: { type: "string", enum: ["blog", "guide"] },
         status: { type: "string", enum: ["active", "inactive"] },
+        short_description: { type: "string", maxLength: 255 },
         priority: { type: "integer" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -34,16 +54,17 @@ class blogsAndGuides extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("blogs_and_guides")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("blogs_and_guides", table => {
+          .createTable("blogs_and_guides", (table) => {
             table.increments("id");
+            table.text("image_cover");
             table.string("title");
             table.text("description");
             table.text("image_cover");
@@ -51,17 +72,19 @@ module.exports = function(app) {
             table.enum("type", ["blog", "guide"]);
             table.enum("status", ["active", "inactive"]).defaultTo("inactive");
             table.integer("priority");
+            table.string("short_description");
+            table.integer("author_id");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
           })
           .then(() => console.log("Created blogs_and_guides table")) // eslint-disable-line no-console
-          .catch(e =>
+          .catch((e) =>
             console.error("Error creating blogs_and_guides table", e)
           ); // eslint-disable-line no-console
       }
     })
-    .catch(e => console.error("Error creating blogs_and_guides table", e)); // eslint-disable-line no-console
+    .catch((e) => console.error("Error creating blogs_and_guides table", e)); // eslint-disable-line no-console
 
   return blogsAndGuides;
 };

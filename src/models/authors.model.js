@@ -3,6 +3,9 @@
 const { Model } = require("objection");
 
 class authors extends Model {
+  static setup(app) {
+    this.app = app;
+  }
   static get tableName() {
     return "authors";
   }
@@ -16,8 +19,8 @@ class authors extends Model {
         user_id: { type: "integer" },
         name: { type: "string", maxLength: 255 },
         profile_picture: { type: "string" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -30,33 +33,34 @@ class authors extends Model {
   }
 }
 
-module.exports = function(app) {
-  const db = app.get("knex");
+module.exports = function (app) {
+  if (app) {
+    const db = app.get("knex");
 
-  db.schema
-    .hasTable("authors")
-    .then(exists => {
-      if (!exists) {
-        db.schema
-          .createTable("authors", table => {
-            table.increments("id");
-            table
-              .integer("user_id")
-              .unsigned()
-              .references("id")
-              .inTable("users")
-              .index();
-            table.string("name");
-            table.text("profile_picture");
-            table.timestamp("deletedAt").nullable();
-            table.timestamp("createdAt");
-            table.timestamp("updatedAt");
-          })
-          .then(() => console.log("Created authors table")) // eslint-disable-line no-console
-          .catch(e => console.error("Error creating authors table", e)); // eslint-disable-line no-console
-      }
-    })
-    .catch(e => console.error("Error creating authors table", e)); // eslint-disable-line no-console
-
+    db.schema
+      .hasTable("authors")
+      .then((exists) => {
+        if (!exists) {
+          db.schema
+            .createTable("authors", (table) => {
+              table.increments("id");
+              table
+                .integer("user_id")
+                .unsigned()
+                .references("id")
+                .inTable("users")
+                .index();
+              table.string("name");
+              table.text("profile_picture");
+              table.timestamp("deletedAt").nullable();
+              table.timestamp("createdAt");
+              table.timestamp("updatedAt");
+            })
+            .then(() => console.log("Created authors table")) // eslint-disable-line no-console
+            .catch((e) => console.error("Error creating authors table", e)); // eslint-disable-line no-console
+        }
+      })
+      .catch((e) => console.error("Error creating authors table", e)); // eslint-disable-line no-console
+  }
   return authors;
 };

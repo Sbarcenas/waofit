@@ -15,10 +15,14 @@ class shippingDetails extends Model {
       properties: {
         shipping_id: { type: "integer" },
         sub_order_id: { type: "integer" },
+        type_sub_order: {
+          type: "string",
+          enum: ["express products", "coffee", "restaurant"],
+        },
         product_id: { type: "integer" },
         quantity: { type: "integer" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -31,15 +35,15 @@ class shippingDetails extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("shipping_details")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("shipping_details", table => {
+          .createTable("shipping_details", (table) => {
             table.increments("id");
             table
               .integer("shipping_id")
@@ -48,6 +52,11 @@ module.exports = function(app) {
               .inTable("shipping")
               .index();
             table.integer("sub_order_id");
+            table.enum("type_sub_order", [
+              "express products",
+              "coffee",
+              "restaurant",
+            ]);
             table.integer("product_id");
             table.integer("quantity");
             table.timestamp("deletedAt").nullable();
@@ -55,12 +64,12 @@ module.exports = function(app) {
             table.timestamp("updatedAt");
           })
           .then(() => console.log("Created shipping_details table")) // eslint-disable-line no-console
-          .catch(e =>
+          .catch((e) =>
             console.error("Error creating shipping_details table", e)
           ); // eslint-disable-line no-console
       }
     })
-    .catch(e => console.error("Error creating shipping_details table", e)); // eslint-disable-line no-console
+    .catch((e) => console.error("Error creating shipping_details table", e)); // eslint-disable-line no-console
 
   return shippingDetails;
 };
