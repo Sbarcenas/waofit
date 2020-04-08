@@ -1,27 +1,53 @@
 const { authenticate } = require("@feathersjs/authentication").hooks;
 const {
   hashPassword,
-  protect
+  protect,
 } = require("@feathersjs/authentication-local").hooks;
 const proccessUsersFaceboookBC = require("./hooks/proccess-users-faceboook-b-c");
 const proccessUsersFacebookBP = require("./hooks/proccess-users-facebook-b-p");
 const proccessUsersBC = require("./hooks/proccess-users-b-c");
 const proccessFindFacebookBC = require("./hooks/proccess-find-facebook-b-c");
-const { discard, iff, isProvider, disallow } = require("feathers-hooks-common");
+const {
+  discard,
+  iff,
+  isProvider,
+  disallow,
+  fastJoin,
+} = require("feathers-hooks-common");
 const createAuthor = require("./hooks/create-author");
 const updateAuthor = require("./hooks/update-author");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
+
+const resolves = {
+  joins: {
+    join: () => async (records, context) => {
+      if (context.params.user)
+        [records.credit_cards, records.user_addresses] = await Promise.all([
+          context.app
+            .service("users-credit-cards")
+            .getModel()
+            .query()
+            .where({ user_id: records.id, deletedAt: null }),
+          context.app
+            .service("users-addresses")
+            .getModel()
+            .query()
+            .where({ user_id: records.id, deletedAt: null }),
+        ]);
+    },
+  },
+};
 
 module.exports = {
   before: {
     all: [],
     find: [
       authenticate("jwt"),
-      iff(isProvider("external"), proccessFindFacebookBC())
+      iff(isProvider("external"), proccessFindFacebookBC()),
     ],
     get: [
       authenticate("jwt"),
-      iff(isProvider("external"), proccessFindFacebookBC())
+      iff(isProvider("external"), proccessFindFacebookBC()),
     ],
     create: [
       iff(
@@ -30,7 +56,7 @@ module.exports = {
       ),
       hashPassword("password"),
       proccessUsersFaceboookBC(),
-      proccessUsersBC()
+      proccessUsersBC(),
     ],
     update: [disallow("external")],
     patch: [
@@ -47,25 +73,25 @@ module.exports = {
         )
       ),
       hashPassword("password"),
-      authenticate("jwt") /* proccessUsersBC(), proccessUsersFacebookBP() */
+      authenticate("jwt") /* proccessUsersBC(), proccessUsersFacebookBP() */,
     ],
-    remove: [authenticate("jwt"), removeSoftDelete()]
+    remove: [authenticate("jwt"), removeSoftDelete()],
   },
 
   after: {
     all: [
       // Make sure the password field is never sent to the client
       // Always must be the last hook
-      protect("password")
+      protect("password"),
     ],
-    find: [],
-    get: [],
+    find: [fastJoin(resolves)],
+    get: [fastJoin(resolves)],
     create: [
       /* createAuthor() */
     ],
     update: [],
     patch: [proccessUsersFacebookBP() /* updateAuthor() */],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -75,6 +101,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };
