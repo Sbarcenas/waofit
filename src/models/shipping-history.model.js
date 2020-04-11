@@ -15,8 +15,9 @@ class shippingHistory extends Model {
       properties: {
         shipping_id: { type: "integer" },
         shipping_status_id: { type: "integer" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        user_id: { type: "integer" },
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -29,15 +30,15 @@ class shippingHistory extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("shipping_history")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("shipping_history", table => {
+          .createTable("shipping_history", (table) => {
             table.increments("id");
             table
               .integer("shipping_id")
@@ -51,17 +52,23 @@ module.exports = function(app) {
               .references("id")
               .inTable("shipping_status")
               .index();
+            table
+              .integer("user_id")
+              .unsigned()
+              .references("id")
+              .inTable("users")
+              .index();
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
           })
           .then(() => console.log("Created shipping_history table")) // eslint-disable-line no-console
-          .catch(e =>
+          .catch((e) =>
             console.error("Error creating shipping_history table", e)
           ); // eslint-disable-line no-console
       }
     })
-    .catch(e => console.error("Error creating shipping_history table", e)); // eslint-disable-line no-console
+    .catch((e) => console.error("Error creating shipping_history table", e)); // eslint-disable-line no-console
 
   return shippingHistory;
 };

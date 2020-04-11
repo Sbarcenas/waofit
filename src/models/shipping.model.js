@@ -16,21 +16,21 @@ class shipping extends Model {
         "order_id",
         "private_notes",
         "delivery_guy_user_id",
-        "shipping_status"
+        "shipping_status_id",
       ],
 
       properties: {
         type_sub_order: {
           type: "string",
-          enum: ["express products", "coffee", "restaurant"]
+          enum: ["express products", "coffee", "restaurant"],
         },
         sub_order_id: { type: "integer" },
         order_id: { type: "integer" },
         private_notes: { type: "string" },
         delivery_guy_user_id: { type: "integer" },
         shipping_status: { type: "integer" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -43,21 +43,21 @@ class shipping extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("shipping")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("shipping", table => {
+          .createTable("shipping", (table) => {
             table.increments("id");
             table.integer("sub_order_id");
             table.enum("type_sub_order", [
               "express products",
               "coffee",
-              "restaurant"
+              "restaurant",
             ]);
             table
               .integer("order_id")
@@ -83,10 +83,10 @@ module.exports = function(app) {
             table.timestamp("updatedAt");
           })
           .then(() => console.log("Created shipping table")) // eslint-disable-line no-console
-          .catch(e => console.error("Error creating shipping table", e)); // eslint-disable-line no-console
+          .catch((e) => console.error("Error creating shipping table", e)); // eslint-disable-line no-console
       }
     })
-    .catch(e => console.error("Error creating shipping table", e)); // eslint-disable-line no-console
+    .catch((e) => console.error("Error creating shipping table", e)); // eslint-disable-line no-console
 
   return shipping;
 };

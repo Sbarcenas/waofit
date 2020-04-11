@@ -20,48 +20,48 @@ class expressProducts extends Model {
         modelClass: expressCategoryModel,
         join: {
           from: "express_products.express_category_id",
-          to: "express_categories.id"
+          to: "express_categories.id",
         },
-        filter: buildQuery => {
+        filter: (buildQuery) => {
           buildQuery.where({ deletedAt: null });
           return buildQuery;
-        }
+        },
       },
       brand: {
         relation: Model.HasOneRelation,
         modelClass: branModel,
         join: {
           from: "express_products.brand_id",
-          to: "brands.id"
+          to: "brands.id",
         },
-        filter: buildQuery => {
+        filter: (buildQuery) => {
           buildQuery.where({ deletedAt: null });
           return buildQuery;
-        }
+        },
       },
       tax: {
         relation: Model.HasOneRelation,
         modelClass: taxModel,
         join: {
           from: "express_products.tax_rule_id",
-          to: "tax_rule.id"
+          to: "tax_rule.id",
         },
-        filter: buildQuery => {
+        filter: (buildQuery) => {
           buildQuery.where({ deletedAt: null });
           return buildQuery;
-        }
+        },
       },
       media: {
         relation: Model.HasManyRelation,
         modelClass: mediaModel,
         join: {
           from: "express_products.id",
-          to: "express_products_media.product_id"
+          to: "express_products_media.product_id",
         },
-        filter: buildQuery => {
+        filter: (buildQuery) => {
           buildQuery.where({ deletedAt: null });
           return buildQuery;
-        }
+        },
       },
       hubs: {
         relation: Model.ManyToManyRelation,
@@ -70,15 +70,15 @@ class expressProducts extends Model {
           from: "express_products.id",
           through: {
             from: "express_products_hubs.product_id",
-            to: "express_products_hubs.hub_id"
+            to: "express_products_hubs.hub_id",
           },
-          to: "express_hubs.id"
+          to: "express_hubs.id",
         },
-        filter: buildQuery => {
+        filter: (buildQuery) => {
           buildQuery.where({ "express_products_hubs.deletedAt": null });
           return buildQuery;
-        }
-      }
+        },
+      },
     };
   }
 
@@ -94,7 +94,7 @@ class expressProducts extends Model {
         "type",
         "tax_rule_id",
         "status",
-        "quantity"
+        "quantity",
       ],
 
       properties: {
@@ -111,8 +111,9 @@ class expressProducts extends Model {
         shop_type: { type: "string", maxlength: 255 },
         tax_rule_id: { type: "integer" },
         quantity: { type: "integer" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        code: { type: "integer" },
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -125,16 +126,16 @@ class expressProducts extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   if (app) {
     const db = app.get("knex");
 
     db.schema
       .hasTable("express_products")
-      .then(exists => {
+      .then((exists) => {
         if (!exists) {
           db.schema
-            .createTable("express_products", table => {
+            .createTable("express_products", (table) => {
               table.increments("id");
               table.string("name", 255);
               table
@@ -168,17 +169,18 @@ module.exports = function(app) {
                 .index();
               table.string("shop_type");
               table.integer("quantity");
+              table.integer("code");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");
             })
             .then(() => console.log("Created express_products table")) // eslint-disable-line no-console
-            .catch(e =>
+            .catch((e) =>
               console.error("Error creating express_products table", e)
             ); // eslint-disable-line no-console
         }
       })
-      .catch(e => console.error("Error creating express_products table", e)); // eslint-disable-line no-console
+      .catch((e) => console.error("Error creating express_products table", e)); // eslint-disable-line no-console
   }
   return expressProducts;
 };

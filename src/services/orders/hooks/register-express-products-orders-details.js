@@ -32,6 +32,7 @@ module.exports = (options = {}) => {
           total_price_tax:
             (product.price - product.price / `1.${product.tax_value}`) *
             product.shopping_cart_details_quantity,
+          sent: 0,
         });
       }
 

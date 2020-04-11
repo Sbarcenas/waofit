@@ -20,14 +20,14 @@ class expressProductsOrdersDetails extends Model {
         "unit_price_tax_incl",
         "unit_price_tax",
         "total_price_tax_incl",
-        "total_price_tax"
+        "total_price_tax",
       ],
 
       properties: {
         express_product_order_id: { type: "integer" },
         shipping_status: {
           type: "string",
-          enum: ["sent", "delivered", "pending shipping"]
+          enum: ["sent", "delivered", "pending shipping"],
         },
         type_product: { type: "string", enum: ["scheduled", "not_scheduled"] },
         quantity: { type: "integer" },
@@ -37,8 +37,9 @@ class expressProductsOrdersDetails extends Model {
         unit_price_tax: { type: "number" },
         total_price_tax: { type: "number" },
         total_price_tax_incl: { type: "number" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        sent: { type: "integer" },
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -51,15 +52,15 @@ class expressProductsOrdersDetails extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("express_products_orders_details")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("express_products_orders_details", table => {
+          .createTable("express_products_orders_details", (table) => {
             table.increments("id");
             table
               .integer("express_product_order_id")
@@ -80,6 +81,7 @@ module.exports = function(app) {
             table.decimal("unit_price_tax");
             table.decimal("total_price_tax");
             table.decimal("total_price_tax_incl");
+            table.integer("sent");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
@@ -87,7 +89,7 @@ module.exports = function(app) {
           .then(() =>
             console.log("Created express_products_orders_details table")
           ) // eslint-disable-line no-console
-          .catch(e =>
+          .catch((e) =>
             console.error(
               "Error creating express_products_orders_details table",
               e
@@ -95,7 +97,7 @@ module.exports = function(app) {
           ); // eslint-disable-line no-console
       }
     })
-    .catch(e =>
+    .catch((e) =>
       console.error("Error creating express_products_orders_details table", e)
     ); // eslint-disable-line no-console
 

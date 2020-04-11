@@ -10,7 +10,12 @@ class shippingDetails extends Model {
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["shipping_id", "sub_order_id", "product_id", "quantity"],
+      required: [
+        "shipping_id",
+        "sub_order_id",
+        "sub_order_detail_id",
+        "quantity",
+      ],
 
       properties: {
         shipping_id: { type: "integer" },
@@ -19,7 +24,7 @@ class shippingDetails extends Model {
           type: "string",
           enum: ["express products", "coffee", "restaurant"],
         },
-        product_id: { type: "integer" },
+        sub_order_detail_id: { type: "integer" },
         quantity: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" },
       },
@@ -57,7 +62,7 @@ module.exports = function (app) {
               "coffee",
               "restaurant",
             ]);
-            table.integer("product_id");
+            table.integer("sub_order_detail_id");
             table.integer("quantity");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
