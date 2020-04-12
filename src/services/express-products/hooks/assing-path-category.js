@@ -4,13 +4,13 @@
 const {
   checkContext,
   getItems,
-  replaceItems
+  replaceItems,
 } = require("feathers-hooks-common");
 
 // eslint-disable-next-line no-unused-vars
-module.exports = function(options = {}) {
+module.exports = function (options = {}) {
   // Return the actual hook.
-  return async context => {
+  return async (context) => {
     // Throw if the hook is being called from an unexpected location.
     checkContext(context, null, [
       "find",
@@ -18,7 +18,7 @@ module.exports = function(options = {}) {
       "create",
       "update",
       "patch",
-      "remove"
+      "remove",
     ]);
 
     // Get the authenticated user.
@@ -28,14 +28,14 @@ module.exports = function(options = {}) {
     // getItems always returns an array to simplify your processing.
     const records = getItems(context);
 
-    const x = parent_id => {
-      return new Promise(async resolve => {
+    const x = (parent_id) => {
+      return new Promise(async (resolve) => {
         let r = [];
         r.push(
           await context.app.service("express-categories").get(parent_id, {
             query: {
-              $select: ["id", "parent_id"]
-            }
+              $select: ["id", "parent_id"],
+            },
           })
         );
         if (r[r.length - 1].parent_id != 0) {
@@ -47,12 +47,13 @@ module.exports = function(options = {}) {
       });
     };
 
-    const a = await x(records.express_category_id);
-    a.pop();
-
-    records.express_category_path_ids = `-${a.map(it => it.id).join("-")}-${
-      records.express_category_id
-    }`;
+    if (records.express_category_id) {
+      const a = await x(records.express_category_id);
+      a.pop();
+      records.express_category_path_ids = `-${a.map((it) => it.id).join("-")}-${
+        records.express_category_id
+      }`;
+    }
 
     // Place the modified records back in the context.
     replaceItems(context, records);

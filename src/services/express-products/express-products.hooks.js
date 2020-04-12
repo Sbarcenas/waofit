@@ -72,7 +72,7 @@ module.exports = {
       prepareRecordsForAlgolia(),
     ],
     update: [],
-    patch: [prepareRecordsForAlgolia()],
+    patch: [assingPathCategory(), prepareRecordsForAlgolia()],
     remove: [removeSoftDelete()],
   },
 
