@@ -58,10 +58,10 @@ module.exports = function (options = {}) {
           .then(it => it[0]) */
       ]);
 
-      if (!imageMain)
+      /*  if (!imageMain)
         throw new NotAcceptable(
           "No se puede activar el producto por que no tiene una imagen principal."
-        );
+        ); */
 
       /* if (!multimedia)
         throw new NotAcceptable(
