@@ -5,7 +5,7 @@ const registerExpressProductsOrdersHistory = require("../../../hooks/register-pr
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
     const { user } = context.params;
@@ -27,7 +27,7 @@ module.exports = (options = {}) => {
           context.dataOrders.totalsShoppingCartDetailsExpressProducts
             .total_price_tax_incl,
         total_tax:
-          context.dataOrders.totalsShoppingCartDetailsExpressProducts.total_tax
+          context.dataOrders.totalsShoppingCartDetailsExpressProducts.total_tax,
       };
 
       context.dataOrders.expressProductOrderId = await context.app
@@ -35,11 +35,11 @@ module.exports = (options = {}) => {
         .getModel()
         .query()
         .insert({ ...data, meta_data: JSON.stringify(data) })
-        .then(it => it.id);
+        .then((it) => it.id);
 
       await registerExpressProductsOrdersHistory({
         express_product_order_id: context.dataOrders.expressProductOrderId,
-        order_status_id: 2
+        order_status_id: 2,
       })(context);
     }
 

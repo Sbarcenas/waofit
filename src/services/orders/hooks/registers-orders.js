@@ -43,29 +43,59 @@ module.exports = function (options = {}) {
         .service("users-addresses")
         .getModel()
         .query()
-        // .innerJoin(
-        //   "express_products_media",
-        //   "express_products.id",
-        //   "=",
-        //   "express_products_media.product_id"
-        // )
+        .select(
+          "users_addresses.*",
+          "users_addresses.name AS address_name",
+          "users_addresses.id AS user_address_id",
+          "locations_states.name AS state_name",
+          "locations_cities.name AS city_name"
+        )
+        .innerJoin(
+          "locations_states",
+          "users_addresses.state_id",
+          "=",
+          "locations_states.id"
+        )
+        .innerJoin(
+          "locations_cities",
+          "users_addresses.city_id",
+          "=",
+          "locations_cities.id"
+        )
         .where({
-          id: records.user_address_id,
-          deletedAt: null,
-          user_id: user.id,
+          "users_addresses.id": records.user_address_id,
+          "users_addresses.deletedAt": null,
+          "users_addresses.user_id": user.id,
         })
         .then((it) => it[0]);
-
-      // console.log(userAddress, "---------");
     } else {
       userAddress = await context.app
         .service("users-addresses")
         .getModel()
         .query()
+        .select(
+          "users_addresses.*",
+          "users_addresses.name AS address_name",
+          "users_addresses.id AS user_address_id",
+          "locations_states.name AS state_name",
+          "locations_cities.name AS city_name"
+        )
+        .innerJoin(
+          "locations_states",
+          "users_addresses.state_id",
+          "=",
+          "locations_states.id"
+        )
+        .innerJoin(
+          "locations_cities",
+          "users_addresses.city_id",
+          "=",
+          "locations_cities.id"
+        )
         .where({
-          deletedAt: null,
-          user_id: user.id,
-          main: "true",
+          "users_addresses.deletedAt": null,
+          "users_addresses.user_id": user.id,
+          "users_addresses.main": "true",
         })
         .then((it) => it[0]);
     }
