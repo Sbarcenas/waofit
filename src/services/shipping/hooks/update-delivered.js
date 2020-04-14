@@ -2,6 +2,7 @@
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 const { NotAcceptable, NotFound } = require("@feathersjs/errors");
 const { getItems, replaceItems } = require("feathers-hooks-common");
+const registerOrderHistory = require("../../../hooks/register-order-history");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
@@ -22,7 +23,6 @@ module.exports = (options = {}) => {
     if (!shipping) throw new NotFound("No se encontró el envío.");
 
     if (records.shipping_status_id == 3) {
-      console.log("------------");
       const [shippings, shippingsSent] = await Promise.all([
         context.app
           .service("shipping")
@@ -38,24 +38,30 @@ module.exports = (options = {}) => {
           .then((it) => it),
       ]);
 
-      console.log(shippings);
-      console.log(shippingsSent);
-
+      //se actualiza la orden a entregada o entregada parcialmente
+      let order_status_id = null;
       if (shippings.length === shippingsSent.length) {
+        order_status_id = 19;
         await context.app
           .service("orders")
           .getModel()
           .query()
-          .patch({ order_status_id: 19 })
+          .patch({ order_status_id: order_status_id })
           .where({ id: shipping.order_id });
       } else {
+        order_status_id = 11;
         await context.app
           .service("orders")
           .getModel()
           .query()
-          .patch({ order_status_id: 11 })
+          .patch({ order_status_id: order_status_id })
           .where({ id: shipping.order_id });
       }
+
+      registerOrderHistory({
+        order_id: shipping.order_id,
+        order_status_id: order_status_id,
+      })(context);
     }
 
     replaceItems(context, records);

@@ -5,7 +5,7 @@ const { getItems, replaceItems } = require("feathers-hooks-common");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
     const { user } = context.params;
@@ -16,7 +16,8 @@ module.exports = (options = {}) => {
       .query()
       .insert({
         express_product_order_id: options.express_product_order_id,
-        order_status_id: options.order_status_id
+        order_status_id: options.order_status_id,
+        user_id: user.id,
       });
 
     replaceItems(context, records);

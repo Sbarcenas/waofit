@@ -36,7 +36,7 @@ module.exports = (options = {}) => {
           .where({
             id: records.sub_order_id,
           })
-          .whereIn("order_status_id", [10, 14])
+          .whereIn("order_status_id", [10, 14, 12])
           .then((it) => it[0]);
 
         if (!subOrder) throw new NotFound("No se encontró la orden.");
