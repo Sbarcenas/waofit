@@ -18,6 +18,8 @@ const resolves = {
           .where({ id: records.user_id })
           .then((it) => it[0]),
       ]);
+      delete records.user.token_reset_password;
+      delete records.user.password;
     },
   },
 };
