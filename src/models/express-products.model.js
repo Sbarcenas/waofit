@@ -112,6 +112,7 @@ class expressProducts extends Model {
         tax_rule_id: { type: "integer" },
         quantity: { type: "integer" },
         code: { type: "integer" },
+        nutritional_table_path: { type: "string" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -170,6 +171,7 @@ module.exports = function (app) {
               table.string("shop_type");
               table.integer("quantity");
               table.integer("code");
+              table.text("nutritional_table_path");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");

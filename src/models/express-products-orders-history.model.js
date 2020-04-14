@@ -15,8 +15,9 @@ class expressProductsOrdersHistory extends Model {
       properties: {
         express_product_order_id: { type: "integer" },
         order_status_id: { type: "integer" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        user_id: { type: "integer" },
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -29,15 +30,15 @@ class expressProductsOrdersHistory extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("express_products_orders_history")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("express_products_orders_history", table => {
+          .createTable("express_products_orders_history", (table) => {
             table.increments("id");
             table
               .integer("express_product_order_id")
@@ -51,6 +52,12 @@ module.exports = function(app) {
               .references("id")
               .inTable("orders_status")
               .index();
+            table
+              .integer("user_id")
+              .unsigned()
+              .references("id")
+              .inTable("users")
+              .index();
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
@@ -58,7 +65,7 @@ module.exports = function(app) {
           .then(() =>
             console.log("Created express_products_orders_history table")
           ) // eslint-disable-line no-console
-          .catch(e =>
+          .catch((e) =>
             console.error(
               "Error creating express_products_orders_history table",
               e
@@ -66,7 +73,7 @@ module.exports = function(app) {
           ); // eslint-disable-line no-console
       }
     })
-    .catch(e =>
+    .catch((e) =>
       console.error("Error creating express_products_orders_history table", e)
     ); // eslint-disable-line no-console
 
