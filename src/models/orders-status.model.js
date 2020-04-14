@@ -22,10 +22,11 @@ class ordersStatus extends Model {
         type: {
           type: "string",
           enum: ["general", "express-products", "coffe"],
-          status_code: { type: "string" }
+          status_code: { type: "string" },
         },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        color: { type: "string" },
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -38,16 +39,16 @@ class ordersStatus extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   if (app) {
     const db = app.get("knex");
 
     db.schema
       .hasTable("orders_status")
-      .then(exists => {
+      .then((exists) => {
         if (!exists) {
           db.schema
-            .createTable("orders_status", table => {
+            .createTable("orders_status", (table) => {
               table.increments("id");
               table.string("name");
               table.text("description");
@@ -55,15 +56,18 @@ module.exports = function(app) {
                 .enum("type", ["general", "express-products", "coffe"])
                 .defaultTo("general");
               table.string("status_code");
+              table.string("color");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");
             })
             .then(() => console.log("Created orders_status table")) // eslint-disable-line no-console
-            .catch(e => console.error("Error creating orders_status table", e)); // eslint-disable-line no-console
+            .catch((e) =>
+              console.error("Error creating orders_status table", e)
+            ); // eslint-disable-line no-console
         }
       })
-      .catch(e => console.error("Error creating orders_status table", e)); // eslint-disable-line no-console
+      .catch((e) => console.error("Error creating orders_status table", e)); // eslint-disable-line no-console
   }
 
   return ordersStatus;
