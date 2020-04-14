@@ -3,10 +3,13 @@ const { ExpressCategories } = require("./express-categories.class");
 const createModel = require("../../models/express-categories.model");
 const hooks = require("./express-categories.hooks");
 
-module.exports = function(app) {
+module.exports = function (app) {
   const options = {
     Model: createModel(app),
-    paginate: app.get("paginate")
+    paginate: {
+      max: 5000,
+      default: 200,
+    },
   };
 
   // Initialize our service with any options it requires
