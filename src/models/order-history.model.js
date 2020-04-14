@@ -15,8 +15,9 @@ class orderHistory extends Model {
       properties: {
         order_id: { type: "integer" },
         order_status_id: { type: "integer" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        user_id: { type: "integer" },
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -29,15 +30,15 @@ class orderHistory extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("order_history")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("order_history", table => {
+          .createTable("order_history", (table) => {
             table.increments("id");
             table
               .integer("order_id")
@@ -51,15 +52,21 @@ module.exports = function(app) {
               .references("id")
               .inTable("orders_status")
               .index();
+            table
+              .integer("user_id")
+              .unsigned()
+              .references("id")
+              .inTable("users")
+              .index();
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
           })
           .then(() => console.log("Created order_history table")) // eslint-disable-line no-console
-          .catch(e => console.error("Error creating order_history table", e)); // eslint-disable-line no-console
+          .catch((e) => console.error("Error creating order_history table", e)); // eslint-disable-line no-console
       }
     })
-    .catch(e => console.error("Error creating order_history table", e)); // eslint-disable-line no-console
+    .catch((e) => console.error("Error creating order_history table", e)); // eslint-disable-line no-console
 
   return orderHistory;
 };

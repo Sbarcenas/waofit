@@ -5,19 +5,16 @@ const { getItems, replaceItems } = require("feathers-hooks-common");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
     const { user } = context.params;
 
-    await context.app
-      .service("order-history")
-      .getModel()
-      .query()
-      .insert({
-        order_id: options.order_id,
-        order_status_id: options.order_status_id
-      });
+    await context.app.service("order-history").getModel().query().insert({
+      order_id: options.order_id,
+      order_status_id: options.order_status_id,
+      user_id: user.id,
+    });
 
     replaceItems(context, records);
 
