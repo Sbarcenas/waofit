@@ -38,6 +38,9 @@ class expressProductsOrdersDetails extends Model {
         total_price_tax: { type: "number" },
         total_price_tax_incl: { type: "number" },
         sent: { type: "integer" },
+        express_product_name: { type: "string" },
+        express_product_image: { type: "string" },
+        express_product_details_meta_data: { type: "string" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -82,6 +85,9 @@ module.exports = function (app) {
             table.decimal("total_price_tax");
             table.decimal("total_price_tax_incl");
             table.integer("sent");
+            table.string("express_product_name");
+            table.string("express_product_main_image");
+            table.string("express_product_details_meta_data");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");

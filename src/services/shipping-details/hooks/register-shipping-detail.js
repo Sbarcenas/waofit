@@ -35,9 +35,11 @@ module.exports = (options = {}) => {
           .query()
           .where({
             id: records.sub_order_id,
-            order_status_id: 6,
           })
+          .whereIn("order_status_id", [10, 14])
           .then((it) => it[0]);
+
+        if (!subOrder) throw new NotFound("No se encontró la orden.");
 
         shipping = await context.app
           .service("shipping")
@@ -60,7 +62,6 @@ module.exports = (options = {}) => {
     if (!subOrderDetail)
       throw new NotFound("No se encontró el detalle de la orden.");
     if (!shipping) throw new NotFound("No se encontró el shipping.");
-    if (!subOrder) throw new NotFound("No se encontró la orden.");
 
     const sumDetailsInPreparation = await context.app
       .service("shipping-details")
@@ -70,7 +71,6 @@ module.exports = (options = {}) => {
       .where({
         type_sub_order: records.type_sub_order,
         sub_order_detail_id: records.sub_order_detail_id,
-        shipping_id: shipping.id,
       })
       .then((it) => parseInt(it[0].sum));
 

@@ -43,12 +43,20 @@ module.exports = function (options = {}) {
         .service("users-addresses")
         .getModel()
         .query()
+        // .innerJoin(
+        //   "express_products_media",
+        //   "express_products.id",
+        //   "=",
+        //   "express_products_media.product_id"
+        // )
         .where({
           id: records.user_address_id,
           deletedAt: null,
           user_id: user.id,
         })
         .then((it) => it[0]);
+
+      // console.log(userAddress, "---------");
     } else {
       userAddress = await context.app
         .service("users-addresses")
@@ -84,9 +92,13 @@ module.exports = function (options = {}) {
         .query()
         .select(
           "*",
+          "express_products.name AS product_name",
+          "express_products.type AS product_type",
           "shopping_cart_details.id AS shopping_cart_details_id",
           "shopping_cart_details.quantity AS shopping_cart_details_quantity",
-          "tax_rule.value AS tax_value"
+          "tax_rule.value AS tax_value",
+          "tax_rule.name AS tax_name",
+          "express_products_media.source_path AS main_image"
         )
         .innerJoin(
           "express_products",
@@ -100,11 +112,20 @@ module.exports = function (options = {}) {
           "=",
           "tax_rule.id"
         )
+        .innerJoin(
+          "express_products_media",
+          "express_products.id",
+          "=",
+          "express_products_media.product_id"
+        )
         .where({
           shopping_cart_id: shoppingCart.id,
           "shopping_cart_details.deletedAt": null,
           "express_products.deletedAt": null,
           "express_products.status": "active",
+          "express_products_media.main": "true",
+          "express_products_media.media_type": "normal",
+          "express_products_media.deletedAt": null,
         }),
     ]);
 

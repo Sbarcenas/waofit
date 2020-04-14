@@ -21,23 +21,24 @@ module.exports = (options = {}) => {
         .query()
         .where({ id: context.id, shipping_status_id: 1 })
         .then((it) => it[0]);
+
+      if (!shipping) throw new NotFound("No se encontró el envio.");
+
+      const shippingDetails = await context.app
+        .service("shipping-details")
+        .getModel()
+        .query()
+        .where({ shipping_id: shipping.id })
+        .then((it) => it);
+
+      if (shippingDetails < 1)
+        throw new NotAcceptable(
+          "Para enviar un envio, el envio debe contener productos dentro."
+        );
+
+      context.shippingDetails = shippingDetails;
     }
 
-    if (!shipping) throw new NotFound("No se encontró el envio.");
-
-    const shippingDetails = await context.app
-      .service("shipping-details")
-      .getModel()
-      .query()
-      .where({ shipping_id: shipping.id })
-      .then((it) => it);
-
-    if (shippingDetails < 1)
-      throw new NotAcceptable(
-        "Para enviar un envio, el envio debe contener productos dentro."
-      );
-
-    context.shippingDetails = shippingDetails;
     replaceItems(context, records);
 
     return context;

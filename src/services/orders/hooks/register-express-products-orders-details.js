@@ -15,13 +15,15 @@ module.exports = (options = {}) => {
       const products = context.dataOrders.shoppingCartDetailsExpressProduct;
 
       const data = [];
-      for (const product of products) {
-        console.log(product);
 
+      for (let index = 0; index < products.length; index++) {
+        const product = products[index];
+
+        // console.log(JSON.stringify(product), "----------");
         data.push({
           express_product_order_id: context.dataOrders.expressProductOrderId,
           express_product_id: product.product_id,
-          type_product: product.type,
+          type_product: product.product_type,
           unit_price_tax_excl: product.price / `1.${product.tax_value}`,
           quantity: product.shopping_cart_details_quantity,
           unit_price_tax_incl: product.price,
@@ -33,8 +35,24 @@ module.exports = (options = {}) => {
             (product.price - product.price / `1.${product.tax_value}`) *
             product.shopping_cart_details_quantity,
           sent: 0,
+          express_product_name: product.product_name,
+          express_product_main_image: product.main_image,
+          express_product_details_meta_data: product,
         });
       }
+      /*  for (const product of products) {
+        console.log("-----------------");
+
+        console.log(product, "------------");
+
+        console.log(
+          JSON.stringify(JSON.parse(JSON.stringify(product))),
+          "------------"
+        );
+      }
+ */
+
+      // console.log(data, "----------------");
 
       await query.insert(
         context.app.service("express-products-orders-details").getModel(),

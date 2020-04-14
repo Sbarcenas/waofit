@@ -1,4 +1,5 @@
 const RegisterShippingDetail = require("./hooks/register-shipping-detail");
+const RestricUpdateQuantity = require("./hooks/restrict-update-quantity-shipped");
 
 module.exports = {
   before: {
@@ -7,7 +8,7 @@ module.exports = {
     get: [],
     create: [RegisterShippingDetail()],
     update: [],
-    patch: [],
+    patch: [RestricUpdateQuantity()],
     remove: [],
   },
 
