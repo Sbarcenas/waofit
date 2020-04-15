@@ -20,11 +20,12 @@ module.exports = (options = {}) => {
         throw new NotAcceptable(
           "Para poder activar una receta debe tener una descripcion en texto o un video."
         );
+
+      if (!recipe.image_cover)
+        throw new NotAcceptable(
+          "No se puede activar la receta por que no tiene una imagen de cover."
+        );
     }
-    if (!recipe.image_cover)
-      throw new NotAcceptable(
-        "No se puede activar la receta por que no tiene una imagen de cover."
-      );
 
     replaceItems(context, records);
 
