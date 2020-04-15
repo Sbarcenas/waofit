@@ -41,6 +41,7 @@ const paymentConfirmations = require("./payment-confirmations/payment-confirmati
 const paymentConfirmationsEpayco = require('./payment-confirmations-epayco/payment-confirmations-epayco.service.js');
 const blogsAndGuides = require('./blogs-and-guides/blogs-and-guides.service.js');
 const recipes = require('./recipes/recipes.service.js');
+const expressProductsRecipes = require('./express-products-recipes/express-products-recipes.service.js');
 // eslint-disable-next-line no-unused-vars
 module.exports = function(app) {
   app.configure(users);
@@ -86,4 +87,5 @@ module.exports = function(app) {
   app.configure(paymentConfirmationsEpayco);
   app.configure(blogsAndGuides);
   app.configure(recipes);
+  app.configure(expressProductsRecipes);
 };

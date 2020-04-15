@@ -1,17 +1,23 @@
-const activateRecipe = require("./hooks/activate-recipe");
-const removeSoftDelete = require("../../hooks/remove-softdelete");
-
+const registerRecipe = require("./hooks/register-recipe");
+const retrictPatch = require("./hooks/restrict-patch");
 const { fastJoin } = require("feathers-hooks-common");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 const resolves = {
   joins: {
     join: () => async (records, context) => {
-      [records.author] = await Promise.all([
+      [records.express_product, records.recipe] = await Promise.all([
         context.app
-          .service("authors")
+          .service("express-products")
           .getModel()
           .query()
-          .where({ id: records.author_id, deletedAt: null })
+          .where({ id: records.express_product_id })
+          .then((it) => it[0]),
+        context.app
+          .service("recipes")
+          .getModel()
+          .query()
+          .where({ id: records.recipe_id })
           .then((it) => it[0]),
       ]);
     },
@@ -23,9 +29,9 @@ module.exports = {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [registerRecipe()],
     update: [],
-    patch: [activateRecipe()],
+    patch: [retrictPatch()],
     remove: [removeSoftDelete()],
   },
 
