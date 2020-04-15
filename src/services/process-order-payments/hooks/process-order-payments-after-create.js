@@ -4,15 +4,15 @@
 const {
   checkContext,
   getItems,
-  replaceItems
+  replaceItems,
 } = require("feathers-hooks-common");
 /* const paymentConfirmation = require("../../../hooks/payment-confirmation");
  */ const { PaymentError } = require("@feathersjs/errors");
 const moment = require("moment");
 // eslint-disable-next-line no-unused-vars
-module.exports = function(options = {}) {
+module.exports = function (options = {}) {
   // Return the actual hook.
-  return async context => {
+  return async (context) => {
     // Throw if the hook is being called from an unexpected location.
     checkContext(context, null, [
       "find",
@@ -20,7 +20,7 @@ module.exports = function(options = {}) {
       "create",
       "update",
       "patch",
-      "remove"
+      "remove",
     ]);
 
     // Get the authenticated user.
@@ -40,7 +40,7 @@ module.exports = function(options = {}) {
       apiKey: epaycoCredentials.PUBLIC_KEY,
       privateKey: epaycoCredentials.PRIVATE_KEY,
       lang: "EN",
-      test: true
+      test: true,
     });
 
     //consultamos al usuario - No el de la sesion
@@ -63,12 +63,12 @@ module.exports = function(options = {}) {
       tax: dataPayment.order.total_tax,
       tax_base: dataPayment.order.total_price_tax_excl,
       currency: "COP",
-      dues: `${dataPayment.dues}`
+      dues: `${dataPayment.dues}`,
     };
     let response_epayco = null;
     await epayco.charge
       .create(payment_info)
-      .then(async payment_info => {
+      .then(async (payment_info) => {
         if (payment_info.status === false) {
           throw new PaymentError("payment error");
         }
@@ -77,7 +77,7 @@ module.exports = function(options = {}) {
         const data = {
           order_id: parseInt(payment_info.data.factura.split("-")[1]),
           response_code: payment_info.data.cod_respuesta,
-          payment_info: payment_info.data
+          payment_info: payment_info.data,
         };
         //respuesta de pago con exito *se actualiza pdocut history payment a pagado*
 
@@ -115,15 +115,25 @@ module.exports = function(options = {}) {
           city: payment_info.data.ciudad,
           address: payment_info.data.direccion,
           ind_country: payment_info.data.ind_pais,
-          deletedAt: null
+          deletedAt: null,
         };
 
         //guardamos en payment confirmations
-        await context.app
+        const paymentConfirmationCreated = await context.app
           .service("payment-confirmations")
           .create(paymentConfirmation);
+
+        await context.app
+          .service("orders")
+          .getModel()
+          .query()
+          .patch({
+            payment_id: paymentConfirmationCreated.id,
+            payment_meta_data: JSON.stringify(response_epayco),
+          })
+          .where({ id: data.order_id });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log("err: " + err);
       });
 
@@ -132,7 +142,7 @@ module.exports = function(options = {}) {
     records.response = {
       invoice: response_epayco.factura,
       description: response_epayco.descripcion,
-      response: response_epayco.respuesta
+      response: response_epayco.respuesta,
     };
 
     // Place the modified records back in the context.

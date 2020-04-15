@@ -5,7 +5,7 @@ const sha256 = require("sha256");
 const { PaymentError } = require("@feathersjs/errors");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
     const { user } = context.params;
@@ -34,7 +34,7 @@ module.exports = (options = {}) => {
     const data = {
       order_id: parseInt(records.x_id_factura.split("-")[1]),
       response_code: parseInt(records.x_cod_response),
-      payment_info: records
+      payment_info: records,
     };
 
     const paymentConfirmation = {
@@ -65,13 +65,23 @@ module.exports = (options = {}) => {
       city: records.x_customer_city,
       address: records.x_customer_address,
       ind_country: records.x_customer_ind_pais,
-      deletedAt: null
+      deletedAt: null,
     };
 
-    await Promise.all([
+    const [paymentConfirmationCreate, x] = await Promise.all([
       context.app.service("payment-confirmations").create(paymentConfirmation),
-      context.app.service("process-payment-response").create({ ...data })
+      context.app.service("process-payment-response").create({ ...data }),
     ]);
+
+    await context.app
+      .service("orders")
+      .getModel()
+      .query()
+      .patch({
+        payment_id: paymentConfirmationCreate.id,
+        payment_meta_data: JSON.stringify(paymentConfirmation),
+      })
+      .where({ id: data.order_id });
 
     replaceItems(context, records);
 
