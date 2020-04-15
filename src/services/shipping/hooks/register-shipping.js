@@ -2,6 +2,8 @@
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 const { NotAcceptable, NotFound } = require("@feathersjs/errors");
 const { getItems, replaceItems } = require("feathers-hooks-common");
+const registerOrderHistory = require("../../../hooks/register-order-history");
+const registerExpressProductsOrdersHistory = require("../../../hooks/register-products-orders-history");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
@@ -41,6 +43,11 @@ module.exports = (options = {}) => {
         deletedAt: null,
       });
 
+    await registerExpressProductsOrdersHistory({
+      express_product_order_id: records.sub_order_id,
+      order_status_id: 6,
+    })(context);
+
     if (!subOrder) throw new NotFound("No se encontró la orden.");
 
     const order = await context.app
@@ -58,6 +65,13 @@ module.exports = (options = {}) => {
         .patch({ order_status_id: 9 })
         .where({ id: records.order_id, deletedAt: null })
         .then((it) => it[0]);
+
+      registerOrderHistory({
+        order_id: records.order_id,
+        order_status_id: 9,
+      })(context);
+    } else {
+      throw new NotFound("No se encontró la orden.");
     }
 
     records.delivery_guy_user_id = user.id;

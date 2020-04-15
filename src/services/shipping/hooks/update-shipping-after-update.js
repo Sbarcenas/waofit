@@ -95,12 +95,11 @@ module.exports = (options = {}) => {
           .patch({ order_status_id: order_status_id })
           .where({ id: records.order_id });
       }
+      registerOrderHistory({
+        order_id: records.order_id,
+        order_status_id: order_status_id,
+      })(context);
     }
-
-    registerOrderHistory({
-      order_id: records.order_id,
-      order_status_id: order_status_id,
-    })(context);
 
     replaceItems(context, records);
 

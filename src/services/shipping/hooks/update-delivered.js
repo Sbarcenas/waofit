@@ -13,16 +13,16 @@ module.exports = (options = {}) => {
 
     if (!context.id) throw new NotAcceptable("Debes enviar el id.");
 
-    const shipping = await context.app
-      .service("shipping")
-      .getModel()
-      .query()
-      .where({ id: context.id })
-      .then((it) => it[0]);
-
-    if (!shipping) throw new NotFound("No se encontró el envío.");
-
     if (records.shipping_status_id == 3) {
+      const shipping = await context.app
+        .service("shipping")
+        .getModel()
+        .query()
+        .where({ id: context.id, shipping_status_id: 2 })
+        .then((it) => it[0]);
+
+      if (!shipping) throw new NotFound("No se encontró el envío.");
+
       const [shippings, shippingsSent] = await Promise.all([
         context.app
           .service("shipping")

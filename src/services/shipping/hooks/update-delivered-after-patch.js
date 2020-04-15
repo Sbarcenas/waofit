@@ -21,7 +21,7 @@ module.exports = (options = {}) => {
           .getModel()
           .query()
           .where({ order_id: records.order_id })
-          .whereIn("order_status_id", [14, 16])
+          .whereIn("order_status_id", [14, 16, 10])
           .then((it) => it[0]),
       ]);
 
