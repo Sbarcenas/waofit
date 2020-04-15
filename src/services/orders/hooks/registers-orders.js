@@ -36,6 +36,9 @@ module.exports = function (options = {}) {
       .where({ user_id: user.id, deletedAt: null, status: "active" })
       .then((it) => it[0]);
 
+    if (!shoppingCart)
+      throw new NotFound("No se encontró el carro de compras.");
+
     let userAddress = null;
 
     if (records.user_address_id) {
@@ -110,9 +113,6 @@ module.exports = function (options = {}) {
         "Fecha no aceptada ya que no esta en el rango de envio."
       );
 
-    if (!shoppingCart)
-      throw new NotFound("No se encontró el carro de compras.");
-
     if (!userAddress) throw new NotFound("No se encontró la dirección.");
     //aqui faltan hacer las consultas de los productos de restaurantes y la de cafeteria.
     const [shoppingCartDetailsExpressProduct] = await Promise.all([
@@ -127,6 +127,7 @@ module.exports = function (options = {}) {
           "shopping_cart_details.id AS shopping_cart_details_id",
           "shopping_cart_details.quantity AS shopping_cart_details_quantity",
           "tax_rule.value AS tax_value",
+          "tax_rule.id AS tax_id",
           "tax_rule.name AS tax_name",
           "express_products_media.source_path AS main_image"
         )
@@ -189,6 +190,10 @@ module.exports = function (options = {}) {
     records.total_tax = totalTaxExpressProduct;
     records.order_status_id = 1;
     records.user_id = user.id;
+    records.shopping_cart_meta_data = JSON.stringify({
+      shopping_cart: shoppingCart,
+      shopping_cart_details: shoppingCartDetailsExpressProduct,
+    });
 
     context.dataOrders = {
       data: records,
