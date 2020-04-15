@@ -3,12 +3,15 @@ const { Users } = require("./users.class");
 const createModel = require("../../models/users.model");
 const hooks = require("./users.hooks");
 
-module.exports = function(app) {
+module.exports = function (app) {
   const options = {
     Model: createModel(app),
-    paginate: app.get("paginate"),
+    paginate: {
+      max: 5000,
+      default: 100,
+    },
     whitelist: ["$eager", "$joinRelation"],
-    allowedEager: "[user-device-tokens]"
+    allowedEager: "[user-device-tokens]",
     // allowedUpsert: ['user_device_tokens']
   };
 

@@ -3,10 +3,13 @@ const { Brands } = require("./brands.class");
 const createModel = require("../../models/brands.model");
 const hooks = require("./brands.hooks");
 
-module.exports = function(app) {
+module.exports = function (app) {
   const options = {
     Model: createModel(app),
-    paginate: app.get("paginate")
+    paginate: {
+      max: 5000,
+      default: 100,
+    },
   };
 
   // Initialize our service with any options it requires
