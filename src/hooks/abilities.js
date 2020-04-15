@@ -67,6 +67,7 @@ function defineAbilitiesFor(user) {
       "brands",
       "reviews",
       "express-products-nutritional-table",
+      "recipes",
     ]);
 
     can("update", ["users"], { id: user.id });
