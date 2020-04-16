@@ -14,12 +14,14 @@ const resolves = {
           .service("locations-states")
           .getModel()
           .query()
-          .where({ id: records.state_id, deletedAt: null }),
+          .where({ id: records.state_id, deletedAt: null })
+          .then((it) => it[0]),
         context.app
           .service("locations-cities")
           .getModel()
           .query()
-          .where({ id: records.city_id, deletedAt: null }),
+          .where({ id: records.city_id, deletedAt: null })
+          .then((it) => it[0]),
       ]);
     },
   },

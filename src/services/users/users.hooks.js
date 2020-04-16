@@ -21,19 +21,18 @@ const removeSoftDelete = require("../../hooks/remove-softdelete");
 const resolves = {
   joins: {
     join: () => async (records, context) => {
-      if (context.params.user)
-        [records.credit_cards, records.user_addresses] = await Promise.all([
-          context.app
-            .service("users-credit-cards")
-            .getModel()
-            .query()
-            .where({ user_id: records.id, deletedAt: null }),
-          context.app
-            .service("users-addresses")
-            .getModel()
-            .query()
-            .where({ user_id: records.id, deletedAt: null }),
-        ]);
+      [records.credit_cards, records.user_addresses] = await Promise.all([
+        context.app
+          .service("users-credit-cards")
+          .getModel()
+          .query()
+          .where({ user_id: records.id, deletedAt: null }),
+        context.app
+          .service("users-addresses")
+          .getModel()
+          .query()
+          .where({ user_id: records.id, deletedAt: null }),
+      ]);
     },
   },
 };
