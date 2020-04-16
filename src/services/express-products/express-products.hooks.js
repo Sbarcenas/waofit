@@ -78,8 +78,8 @@ module.exports = {
 
   after: {
     all: [],
-    find: [iff(isProvider("external"), fastJoin(resolves))],
-    get: [iff(isProvider("external"), fastJoin(resolves))],
+    find: [fastJoin(resolves)],
+    get: [fastJoin(resolves)],
     create: [pushAlgolia()],
     update: [],
     patch: [fastJoin(resolves), updateAlgolia()],

@@ -9,11 +9,11 @@ const resolves = {
           .find({
             query: {
               id: records.express_product_id,
-              $eager: "[category, brand, tax, hubs, media]",
             },
+            paginate: false,
             disableSoftDelete: true,
           })
-          .then((it) => it.data),
+          .then((it) => it[0]),
       ]);
     },
   },

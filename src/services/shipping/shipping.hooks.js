@@ -4,7 +4,56 @@ const UpdateShipingAfterUpdate = require("./hooks/update-shipping-after-update")
 const UpdateDelivered = require("./hooks/update-delivered");
 const UpdateDeliveredAfterPatch = require("./hooks/update-delivered-after-patch");
 
-const { disallow } = require("feathers-hooks-common");
+const { disallow, fastJoin } = require("feathers-hooks-common");
+
+const resolves = {
+  joins: {
+    join: () => async (records, context) => {
+      let service = null;
+      switch (records.type_sub_order) {
+        case "express products":
+          service = "express-products-orders";
+          break;
+        default:
+          break;
+      }
+      [
+        records.sub_order,
+        records.shipping_status,
+        records.delivery_guy_user,
+        records.order,
+        records.shipping_details,
+      ] = await Promise.all([
+        context.app
+          .service(service)
+          .find({ query: { id: records.sub_order_id } })
+          .then((it) => it.data[0]),
+        context.app
+          .service("shipping-status")
+          .getModel()
+          .query()
+          .where({ id: records.shipping_status_id })
+          .then((it) => it[0]),
+        context.app
+          .service("users")
+          .getModel()
+          .query()
+          .where({ id: records.delivery_guy_user_id })
+          .then((it) => it[0]),
+        context.app
+          .service("orders")
+          .getModel()
+          .query()
+          .where({ id: records.order_id })
+          .then((it) => it[0]),
+        context.app
+          .service("shipping-details")
+          .find({ query: { shipping_id: records.id }, paginate: false })
+          .then((it) => it),
+      ]);
+    },
+  },
+};
 
 module.exports = {
   before: {
@@ -19,8 +68,8 @@ module.exports = {
 
   after: {
     all: [],
-    find: [],
-    get: [],
+    find: [fastJoin(resolves)],
+    get: [fastJoin(resolves)],
     create: [],
     update: [],
     patch: [UpdateShipingAfterUpdate(), UpdateDeliveredAfterPatch()],
