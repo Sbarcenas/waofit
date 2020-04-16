@@ -31,10 +31,8 @@ const resolves = {
           .then((it) => it[0]),
         context.app
           .service("express-products-orders-details")
-          .getModel()
-          .query()
-          .where({ express_product_order_id: records.id })
-          .then((it) => it),
+          .find({ query: { express_product_order_id: records.id } })
+          .then((it) => it.data),
       ]);
     },
   },

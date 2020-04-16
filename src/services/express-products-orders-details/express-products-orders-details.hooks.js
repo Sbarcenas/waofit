@@ -1,4 +1,23 @@
+const { fastJoin } = require("feathers-hooks-common");
 
+const resolves = {
+  joins: {
+    join: () => async (records, context) => {
+      [records.express_product] = await Promise.all([
+        context.app
+          .service("express-products")
+          .find({
+            query: {
+              id: records.express_product_id,
+              $eager: "[category, brand, tax, hubs, media]",
+            },
+            disableSoftDelete: true,
+          })
+          .then((it) => it.data),
+      ]);
+    },
+  },
+};
 
 module.exports = {
   before: {
@@ -8,17 +27,17 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   after: {
     all: [],
-    find: [],
-    get: [],
+    find: [fastJoin(resolves)],
+    get: [fastJoin(resolves)],
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -28,6 +47,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };
