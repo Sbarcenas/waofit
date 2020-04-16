@@ -70,6 +70,7 @@ function defineAbilitiesFor(user) {
       "reviews",
       "express-products-nutritional-table",
       "recipes",
+      "calculate-next-delivery",
     ]);
 
     can("update", ["users"], { id: user.id });
