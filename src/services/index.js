@@ -43,6 +43,7 @@ const blogsAndGuides = require('./blogs-and-guides/blogs-and-guides.service.js')
 const recipes = require('./recipes/recipes.service.js');
 const expressProductsRecipes = require('./express-products-recipes/express-products-recipes.service.js');
 const calculateNextDelivery = require('./calculate-next-delivery/calculate-next-delivery.service.js');
+const shippingCost = require('./shipping-cost/shipping-cost.service.js');
 // eslint-disable-next-line no-unused-vars
 module.exports = function(app) {
   app.configure(users);
@@ -90,4 +91,5 @@ module.exports = function(app) {
   app.configure(recipes);
   app.configure(expressProductsRecipes);
   app.configure(calculateNextDelivery);
+  app.configure(shippingCost);
 };

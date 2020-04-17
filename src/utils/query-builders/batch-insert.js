@@ -5,12 +5,14 @@ module.exports = {
       const values = data
         .map((item) => {
           return `(${Object.values(item).map((it) => {
+            console.log(typeof it);
             if (typeof it == "string") {
               it = '"' + it + '"';
             }
             if (typeof it == "object") {
               it = "'" + JSON.stringify(it) + "'";
             }
+
             return it;
           })})`;
         })

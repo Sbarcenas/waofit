@@ -71,6 +71,7 @@ function defineAbilitiesFor(user) {
       "express-products-nutritional-table",
       "recipes",
       "calculate-next-delivery",
+      "shipping-cost",
     ]);
 
     can("update", ["users"], { id: user.id });

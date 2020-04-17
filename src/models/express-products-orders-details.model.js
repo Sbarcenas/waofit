@@ -41,6 +41,7 @@ class expressProductsOrdersDetails extends Model {
         express_product_name: { type: "string" },
         express_product_image: { type: "string" },
         express_product_details_meta_data: { type: "string" },
+        scheduled_delivery_date: { type: "string", format: "date" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -88,6 +89,7 @@ module.exports = function (app) {
             table.string("express_product_name");
             table.string("express_product_main_image");
             table.string("express_product_details_meta_data");
+            table.date("scheduled_delivery_date");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");

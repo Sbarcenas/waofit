@@ -3,13 +3,18 @@
 const { NotAcceptable } = require("@feathersjs/errors");
 const { getItems, replaceItems } = require("feathers-hooks-common");
 const { query } = require("../../../utils/query-builders/batch-insert");
-
+const moment = require("moment");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
   return async (context) => {
     let records = getItems(context);
 
     const { user } = context.params;
+
+    const dateDelivery = await context.app
+      .service("calculate-next-delivery")
+      .find()
+      .then((it) => moment(it.dateDelivery).format("YYYY-MM-DD"));
 
     if (context.expressProduct) {
       const products = context.dataOrders.shoppingCartDetailsExpressProduct;
@@ -18,8 +23,6 @@ module.exports = (options = {}) => {
 
       for (let index = 0; index < products.length; index++) {
         const product = products[index];
-
-        // console.log(JSON.stringify(product), "----------");
         data.push({
           express_product_order_id: context.dataOrders.expressProductOrderId,
           express_product_id: product.product_id,
@@ -38,8 +41,13 @@ module.exports = (options = {}) => {
           express_product_name: product.product_name,
           express_product_main_image: product.main_image,
           express_product_details_meta_data: product,
+          scheduled_delivery_date:
+            product.product_type == "scheduled" ? dateDelivery : null,
         });
       }
+
+      // console.log(data);
+
       /*  for (const product of products) {
         console.log("-----------------");
 

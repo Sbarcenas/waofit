@@ -44,6 +44,9 @@ const switchRegisterShoppingCartAfter = [
 const productsJoins = {
   joins: {
     role: () => async (records, context) => {
+      records.shipment_of_scheduled_products = await context.app
+        .service("calculate-next-delivery")
+        .find();
       if (context.params.products) {
         const shopping_cart_details = records.shopping_cart_details;
         for (let index = 0; index < shopping_cart_details.length; index++) {
