@@ -114,6 +114,15 @@ module.exports = function (options = {}) {
       );
 
     if (!userAddress) throw new NotFound("No se encontró la dirección.");
+
+    //activar cuando se configuren los poligonos
+
+    // const shippingCost = await context.app
+    //   .service("search-shipping-cost")
+    //   .find({ query: { user_address_id: userAddress.id } })
+    //   .then((it) => it.shippingCost);
+
+    const shippingCost = undefined;
     //aqui faltan hacer las consultas de los productos de restaurantes y la de cafeteria.
     const [shoppingCartDetailsExpressProduct] = await Promise.all([
       context.app
@@ -201,6 +210,7 @@ module.exports = function (options = {}) {
       date_dispatch: records.date_dispatch,
       type_dispatch: records.type_dispatch,
       shoppingCartDetailsExpressProduct,
+      shippingCost: shippingCost,
       totalsShoppingCartDetailsExpressProducts: {
         total_price_tax_excl: totalPriceExpressProductTaxExcl,
         total_tax: totalTaxExpressProduct,

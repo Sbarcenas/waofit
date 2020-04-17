@@ -24,6 +24,7 @@ module.exports = {
       let query = `INSERT INTO ${tableName}(${keys}) VALUES ${values}`;
 
       console.log(query, "QUEYYYYYYYYYY");
+
       return await Model.raw(query);
     },
   },

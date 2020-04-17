@@ -16,13 +16,13 @@ class orders extends Model {
         modelClass: orderStatusModel,
         join: {
           from: "orders.order_status_id",
-          to: "orders_status.id"
+          to: "orders_status.id",
         },
-        filter: buildQuery => {
+        filter: (buildQuery) => {
           buildQuery.where({ deletedAt: null, type: "general" });
           return buildQuery;
-        }
-      }
+        },
+      },
     };
   }
 
@@ -40,8 +40,8 @@ class orders extends Model {
         total_tax: { type: "number" },
         shopping_cart_meta_data: { type: "string" },
         payment_meta_data: { type: "string" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -54,15 +54,15 @@ class orders extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("orders")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("orders", table => {
+          .createTable("orders", (table) => {
             table.increments("id");
             table
               .integer("order_status_id")
@@ -93,10 +93,10 @@ module.exports = function(app) {
             table.timestamp("updatedAt");
           })
           .then(() => console.log("Created orders table")) // eslint-disable-line no-console
-          .catch(e => console.error("Error creating orders table", e)); // eslint-disable-line no-console
+          .catch((e) => console.error("Error creating orders table", e)); // eslint-disable-line no-console
       }
     })
-    .catch(e => console.error("Error creating orders table", e)); // eslint-disable-line no-console
+    .catch((e) => console.error("Error creating orders table", e)); // eslint-disable-line no-console
 
   return orders;
 };

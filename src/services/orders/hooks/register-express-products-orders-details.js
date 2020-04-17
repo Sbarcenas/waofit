@@ -10,7 +10,6 @@ module.exports = (options = {}) => {
     let records = getItems(context);
 
     const { user } = context.params;
-
     const dateDelivery = await context.app
       .service("calculate-next-delivery")
       .find()
@@ -45,22 +44,6 @@ module.exports = (options = {}) => {
             product.product_type == "scheduled" ? dateDelivery : null,
         });
       }
-
-      // console.log(data);
-
-      /*  for (const product of products) {
-        console.log("-----------------");
-
-        console.log(product, "------------");
-
-        console.log(
-          JSON.stringify(JSON.parse(JSON.stringify(product))),
-          "------------"
-        );
-      }
- */
-
-      // console.log(data, "----------------");
 
       await query.insert(
         context.app.service("express-products-orders-details").getModel(),

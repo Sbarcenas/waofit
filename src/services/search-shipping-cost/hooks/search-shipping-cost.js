@@ -9,12 +9,11 @@ module.exports = (options = {}) => {
     let records = getItems(context);
 
     const { user } = context.params;
-
     const userAddress = await context.app
       .service("users-addresses")
       .getModel()
       .query()
-      .where({ id: context.params.query.shipping_cost_id })
+      .where({ id: context.params.query.user_address_id })
       .then((it) => it[0]);
 
     if (!userAddress) throw new NotFound("No se encontró la dirección.");

@@ -20,7 +20,7 @@ class expressProductsOrders extends Model {
         "total_price_tax_excl",
         "total_price_tax_incl",
         "total_tax",
-        "order_id"
+        "order_id",
       ],
 
       properties: {
@@ -34,8 +34,10 @@ class expressProductsOrders extends Model {
         total_price_tax_excl: { type: "number" },
         total_price_tax_incl: { type: "number" },
         total_tax: { type: "number" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        shipping_cost_meta_data: { type: "string" },
+        shipping_cost: { type: "number" },
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -48,15 +50,15 @@ class expressProductsOrders extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("express_products_orders")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("express_products_orders", table => {
+          .createTable("express_products_orders", (table) => {
             table.increments("id");
             table
               .integer("user_id")
@@ -85,17 +87,19 @@ module.exports = function(app) {
             table.decimal("total_price_tax_excl");
             table.decimal("total_price_tax_incl");
             table.decimal("total_tax");
+            table.text("shipping_cost_meta_data");
+            table.decimal("shipping_cost");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
           })
           .then(() => console.log("Created express_products_orders table")) // eslint-disable-line no-console
-          .catch(e =>
+          .catch((e) =>
             console.error("Error creating express_products_orders table", e)
           ); // eslint-disable-line no-console
       }
     })
-    .catch(e =>
+    .catch((e) =>
       console.error("Error creating express_products_orders table", e)
     ); // eslint-disable-line no-console
 

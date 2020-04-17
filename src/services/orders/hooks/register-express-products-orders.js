@@ -9,6 +9,9 @@ module.exports = (options = {}) => {
     let records = getItems(context);
 
     const { user } = context.params;
+    const { shippingCost } = context.dataOrders;
+
+    console.log(shippingCost, "-----------");
 
     if (context.expressProduct) {
       const data = {
@@ -28,6 +31,10 @@ module.exports = (options = {}) => {
             .total_price_tax_incl,
         total_tax:
           context.dataOrders.totalsShoppingCartDetailsExpressProducts.total_tax,
+        shipping_cost_meta_data: shippingCost
+          ? JSON.stringify(shippingCost)
+          : "",
+        shipping_cost: shippingCost ? parseFloat(shippingCost.price) : 0.0,
       };
 
       context.dataOrders.expressProductOrderId = await context.app
