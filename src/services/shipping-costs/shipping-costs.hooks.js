@@ -1,14 +1,15 @@
-const searhShippingCost = require("./hooks/search-shipping-cost");
+const registerShippingCost = require("./hooks/register-shipping-costs");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 module.exports = {
   before: {
     all: [],
-    find: [searhShippingCost()],
-    get: [searhShippingCost()],
-    create: [],
+    find: [],
+    get: [],
+    create: [registerShippingCost()],
     update: [],
     patch: [],
-    remove: [],
+    remove: [removeSoftDelete()],
   },
 
   after: {

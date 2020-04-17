@@ -38,14 +38,15 @@ const shippingHistory = require("./shipping-history/shipping-history.service.js"
 const processOrderPayments = require("./process-order-payments/process-order-payments.service.js");
 const processPaymentResponse = require("./process-payment-response/process-payment-response.service.js");
 const paymentConfirmations = require("./payment-confirmations/payment-confirmations.service.js");
-const paymentConfirmationsEpayco = require('./payment-confirmations-epayco/payment-confirmations-epayco.service.js');
-const blogsAndGuides = require('./blogs-and-guides/blogs-and-guides.service.js');
-const recipes = require('./recipes/recipes.service.js');
-const expressProductsRecipes = require('./express-products-recipes/express-products-recipes.service.js');
-const calculateNextDelivery = require('./calculate-next-delivery/calculate-next-delivery.service.js');
-const shippingCost = require('./shipping-cost/shipping-cost.service.js');
+const paymentConfirmationsEpayco = require("./payment-confirmations-epayco/payment-confirmations-epayco.service.js");
+const blogsAndGuides = require("./blogs-and-guides/blogs-and-guides.service.js");
+const recipes = require("./recipes/recipes.service.js");
+const expressProductsRecipes = require("./express-products-recipes/express-products-recipes.service.js");
+const calculateNextDelivery = require("./calculate-next-delivery/calculate-next-delivery.service.js");
+const searchShippingCost = require("./search-shipping-cost/search-shipping-cost.service.js");
+const shippingCosts = require("./shipping-costs/shipping-costs.service.js");
 // eslint-disable-next-line no-unused-vars
-module.exports = function(app) {
+module.exports = function (app) {
   app.configure(users);
   app.configure(usersAddresses);
   app.configure(recoveryPassword);
@@ -91,5 +92,6 @@ module.exports = function(app) {
   app.configure(recipes);
   app.configure(expressProductsRecipes);
   app.configure(calculateNextDelivery);
-  app.configure(shippingCost);
+  app.configure(searchShippingCost);
+  app.configure(shippingCosts);
 };
