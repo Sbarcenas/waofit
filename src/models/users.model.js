@@ -33,6 +33,7 @@ class users extends Model {
         password: { type: "string" },
         first_name: { type: "string", minLength: 1, maxLength: 255 },
         last_name: { type: "string", minLength: 1, maxLength: 255 },
+        dni: { type: "string", maxLength: 255 },
         status: {
           type: "string",
           enum: ["active", "disabled"],
@@ -75,6 +76,7 @@ module.exports = function (app) {
               table.string("password");
               table.string("first_name");
               table.string("last_name");
+              table.string("dni");
               table.enum("status", ["active", "disabled"]).defaultTo("active");
               table.enum("role", ["user", "admin"]).defaultTo("user");
               table.string("facebookId");
