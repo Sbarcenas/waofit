@@ -13,6 +13,7 @@ class shippingCosts extends Model {
       required: ["city_id", "polygon", "price"],
 
       properties: {
+        name: { type: "string", maxLength: 255 },
         city_id: { type: "integer" },
         polygon: { type: "string" },
         price: { type: "number" },
@@ -39,6 +40,7 @@ module.exports = function (app) {
         db.schema
           .createTable("shipping_costs", (table) => {
             table.increments("id");
+            table.string("name");
             table
               .integer("city_id")
               .unsigned()
