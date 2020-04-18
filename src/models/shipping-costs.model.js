@@ -47,7 +47,7 @@ module.exports = function (app) {
               .references("id")
               .inTable("locations-cities")
               .index();
-            table.string("polygon");
+            table.text("polygon");
             table.decimal("price");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
