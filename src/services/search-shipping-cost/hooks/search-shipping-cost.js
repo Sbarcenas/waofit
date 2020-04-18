@@ -9,22 +9,34 @@ module.exports = (options = {}) => {
     let records = getItems(context);
 
     const { user } = context.params;
-    const userAddress = await context.app
-      .service("users-addresses")
-      .getModel()
-      .query()
-      .where({ id: context.params.query.user_address_id })
-      .then((it) => it[0]);
 
-    if (!userAddress) throw new NotFound("No se encontró la dirección.");
+    let coordinate = null;
+    let query = null;
+    const { lat, lng, city_id } = context.params.query;
+    if (context.params.query.user_address_id) {
+      const userAddress = await context.app
+        .service("users-addresses")
+        .getModel()
+        .query()
+        .where({ id: context.params.query.user_address_id })
+        .then((it) => it[0]);
 
-    const coordinate = [userAddress.lat, userAddress.lng];
+      if (!userAddress) throw new NotFound("No se encontró la dirección.");
+
+      coordinate = [userAddress.lat, userAddress.lng];
+      query = { city_id: userAddress.city_id, deletedAt: null };
+    } else if (lat && lng) {
+      query = { city_id: city_id };
+      coordinate = [lat, lng];
+    } else {
+      throw new NotAcceptable("Debes enviar parametros.");
+    }
 
     const shippingCosts = await context.app
       .service("shipping-costs")
       .getModel()
       .query()
-      .where({ city_id: userAddress.city_id, deletedAt: null })
+      .where({ ...query })
       .then((it) => it);
 
     let shippingCostSelect = null;
