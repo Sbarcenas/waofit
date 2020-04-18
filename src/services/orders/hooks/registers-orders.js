@@ -192,7 +192,7 @@ module.exports = function (options = {}) {
     //----------------------------------FIN CALCULOS PRODUCTOS EXPRESS---------------------------------------
 
     //se tienen que sumar las demas variables de las demas tiendas
-    records.total_price = totalPriceExpressProduct;
+    records.total_price_shipping_cost_excl = totalPriceExpressProduct;
     //se tienen que sumar las demas variables del precio total sin iva
     records.total_price_tax_excl = totalPriceExpressProductTaxExcl;
     //se tienen que sumar las demas variables del total del iva

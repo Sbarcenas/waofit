@@ -3,6 +3,7 @@ const changeStatusShoppingCart = require("./hooks/change-status-shopping-cart");
 const registerExpressProductsOrders = require("./hooks/register-express-products-orders");
 const registerExpressProductsOrdersDetails = require("./hooks/register-express-products-orders-details");
 const registerOrderHistory = require("./hooks/register-order-history");
+const calculateShipping = require("./hooks/calculate-shipping");
 
 const { fastJoin } = require("feathers-hooks-common");
 
@@ -16,9 +17,9 @@ const ordersJoin = {
           .query()
           .where({
             order_id: records.id,
-            deletedAt: null
+            deletedAt: null,
           })
-          .then(it => it[0])
+          .then((it) => it[0]),
       ]);
       if (expressProductsOrders) {
         records.express_product_order = expressProductsOrders;
@@ -30,9 +31,9 @@ const ordersJoin = {
           .where({
             id: expressProductsOrders.order_status_id,
             type: "express-products",
-            deletedAt: null
+            deletedAt: null,
           })
-          .then(it => it[0]);
+          .then((it) => it[0]);
 
         records.express_product_order.express_product_order_details = await context.app
           .service("express-products-orders-details")
@@ -73,16 +74,16 @@ const ordersJoin = {
               "express_products_media.main": "true",
               "express_products_media.media_type": "normal",
               /* "express_products_media.type": "image", */
-              "express_products_media.deletedAt": null
+              "express_products_media.deletedAt": null,
             })
-            .then(it => it[0]);
+            .then((it) => it[0]);
           records.express_product_order.express_product_order_details[
             index
           ].product = product;
         }
       }
-    }
-  }
+    },
+  },
 };
 
 module.exports = {
@@ -93,7 +94,7 @@ module.exports = {
     create: [registerOrders()],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   after: {
@@ -104,11 +105,12 @@ module.exports = {
       registerOrderHistory(),
       changeStatusShoppingCart(),
       registerExpressProductsOrders(),
-      registerExpressProductsOrdersDetails()
+      registerExpressProductsOrdersDetails(),
+      calculateShipping(), //correrlo de ultimo
     ],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -118,6 +120,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };

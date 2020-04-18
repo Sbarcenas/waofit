@@ -39,6 +39,8 @@ class orders extends Model {
         total_price_tax_excl: { type: "number" },
         total_tax: { type: "number" },
         shopping_cart_meta_data: { type: "string" },
+        total_price_shipping_cost_excl: { type: "number" },
+        total_shipping_cost: { type: "number" },
         payment_meta_data: { type: "string" },
         deletedAt: { type: "string", format: "date-time" },
       },
@@ -86,6 +88,7 @@ module.exports = function (app) {
             table.decimal("total_price");
             table.decimal("total_price_tax_excl");
             table.decimal("total_tax");
+            table.decimal("total_shipping_cost");
             table.text("payment_meta_data");
             table.text("shopping_cart_meta_data");
             table.timestamp("deletedAt").nullable();

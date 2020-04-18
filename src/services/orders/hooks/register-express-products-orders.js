@@ -11,8 +11,6 @@ module.exports = (options = {}) => {
     const { user } = context.params;
     const { shippingCost } = context.dataOrders;
 
-    console.log(shippingCost, "-----------");
-
     if (context.expressProduct) {
       const data = {
         user_id: user.id,
