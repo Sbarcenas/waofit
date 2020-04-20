@@ -14,7 +14,6 @@ class shipping extends Model {
         "type_sub_order",
         "sub_order_id",
         "order_id",
-        "private_notes",
         "delivery_guy_user_id",
         "shipping_status_id",
       ],
