@@ -47,6 +47,19 @@ const productsJoins = {
       records.shipment_of_scheduled_products = await context.app
         .service("calculate-next-delivery")
         .find();
+      const userAdress = await context.app
+        .service("users-addresses")
+        .getModel()
+        .query()
+        .where({ user_id: context.params.user.id, main: "true" })
+        .then((it) => it[0]);
+
+      if (userAdress) {
+        records.shipping_cost = await context.app
+          .service("search-shipping-cost")
+          .find({ query: { user_address_id: userAdress.id } })
+          .then((it) => it.shippingCost);
+      }
       if (context.params.products) {
         const shopping_cart_details = records.shopping_cart_details;
         for (let index = 0; index < shopping_cart_details.length; index++) {
