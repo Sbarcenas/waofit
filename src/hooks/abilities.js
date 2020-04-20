@@ -36,6 +36,8 @@ function defineAbilitiesFor(user) {
       "shopping-cart-custom",
       "orders",
       "process-order-payments",
+      "recurring-shopping-cart",
+      "recurring-shopping-cart-details",
     ]);
 
     can("read", ["users"], { id: user.id });
@@ -52,6 +54,8 @@ function defineAbilitiesFor(user) {
         "users-product-brand-favorites",
         "users-credit-cards",
         "users-addresses",
+        "recurring-shopping-cart",
+        "recurring-shopping-cart-details",
       ],
       { user_id: user.id }
     );
@@ -72,6 +76,7 @@ function defineAbilitiesFor(user) {
       "recipes",
       "calculate-next-delivery",
       "shipping-cost",
+      "express-products-recipes",
     ]);
 
     can("update", ["users"], { id: user.id });
