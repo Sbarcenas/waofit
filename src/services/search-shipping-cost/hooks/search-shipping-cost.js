@@ -42,14 +42,14 @@ module.exports = (options = {}) => {
     let shippingCostSelect = null;
     for (let index = 0; index < shippingCosts.length; index++) {
       const shippingCost = shippingCosts[index];
-      const polygon = JSON.parse(shippingCost.polygon).map((it) => [
-        it.lat,
-        it.lng,
-      ]);
+      const ranges = JSON.parse(shippingCost.polygon);
+      if (ranges.length >= 1) {
+        const polygon = ranges.map((it) => [it.lat, it.lng]);
 
-      if (inside(coordinate, polygon)) {
-        shippingCostSelect = shippingCost;
-        break;
+        if (inside(coordinate, polygon)) {
+          shippingCostSelect = shippingCost;
+          break;
+        }
       }
     }
 

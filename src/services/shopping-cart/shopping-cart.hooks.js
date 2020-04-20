@@ -53,13 +53,14 @@ const productsJoins = {
         .query()
         .where({ user_id: context.params.user.id, main: "true" })
         .then((it) => it[0]);
-
+      let msj = null;
       if (userAdress) {
-        records.shipping_cost = await context.app
+        msj = await context.app
           .service("search-shipping-cost")
           .find({ query: { user_address_id: userAdress.id } })
           .then((it) => it.shippingCost);
       }
+      records.shipping_cost = msj ? msj : false;
       if (context.params.products) {
         const shopping_cart_details = records.shopping_cart_details;
         for (let index = 0; index < shopping_cart_details.length; index++) {
