@@ -45,7 +45,7 @@ function defineAbilitiesFor(user) {
       user_id: user.id,
     });
 
-    can("update", ["shopping-cart-details"]);
+    can("update", ["shopping-cart-details", "recurring-shopping-cart-details"]);
 
     can(
       "manage",
@@ -55,7 +55,6 @@ function defineAbilitiesFor(user) {
         "users-credit-cards",
         "users-addresses",
         "recurring-shopping-cart",
-        "recurring-shopping-cart-details",
       ],
       { user_id: user.id }
     );

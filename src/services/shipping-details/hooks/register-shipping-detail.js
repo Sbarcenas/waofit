@@ -79,7 +79,9 @@ module.exports = (options = {}) => {
         "No se puede ingresar cantidad por que supera la cantidad comprada."
       );
 
-    if (sumDetailsInPreparation + records.quantity > subOrderDetail.quantity)
+    const sum = sumDetailsInPreparation + records.quantity;
+
+    if (sum > subOrderDetail.quantity)
       throw new NotAcceptable(
         "Cantidad enviada con error ya que en prepacion se encuentra una cantidad y mas esta cantidad superan la cantidad por enviar."
       );
