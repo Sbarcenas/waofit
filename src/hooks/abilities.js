@@ -59,7 +59,7 @@ function defineAbilitiesFor(user) {
       { user_id: user.id }
     );
 
-    can("manage", ["shopping-cart-details"]);
+    can("manage", ["shopping-cart-details", "recurring-shopping-cart-details"]);
 
     can("read", [
       "current-user",

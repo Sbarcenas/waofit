@@ -15,12 +15,28 @@ module.exports = (options = {}) => {
       .service("recurring-shopping-cart-details")
       .getModel()
       .query()
-      .where({ id: context.id })
+      .where({ id: context.id, deletedAt: null })
       .then((it) => it[0]);
 
     if (!recurringShoppingCartDetails)
       throw new NotAcceptable(
         "No se encontró el detalle del carro de compras recurrente."
+      );
+
+    const recurringShoppingCart = await context.app
+      .service("recurring-shopping-cart")
+      .getModel()
+      .query()
+      .where({
+        id: recurringShoppingCartDetails.recurring_shopping_cart,
+        user_id: user.id,
+        deletedAt: null,
+      })
+      .then((it) => it[0]);
+
+    if (recurringShoppingCart)
+      throw new NotAcceptable(
+        "No puedes elmininar este carro de compras recurrente."
       );
 
     replaceItems(context, records);

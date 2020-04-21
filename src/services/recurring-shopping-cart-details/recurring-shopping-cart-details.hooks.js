@@ -1,6 +1,7 @@
 const registerExpressProduct = require("./hooks/register-express-product");
 const createRecurringShoppingCardDetails = require("./hooks/create-recurrung-shopping-cart-details");
 const updateRecurringShoppingCartDetails = require("./hooks/update-recurring-shopping-cart-details");
+const removeSoftDelete = require("../../hooks/remove-softdelete");
 
 const { discard, iff, isProvider } = require("feathers-hooks-common");
 
@@ -23,7 +24,7 @@ module.exports = {
       ),
       updateRecurringShoppingCartDetails(),
     ],
-    remove: [],
+    remove: [removeSoftDelete()],
   },
 
   after: {
