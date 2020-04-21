@@ -13,6 +13,7 @@ const deleted = softDelete({
     if (context.path == "recovery-password") return context;
     if (context.path == "calculate-next-delivery") return context;
     if (context.path == "search-shipping-cost") return context;
+    if (context.path == "cron-generate-recurring-orders") return context;
     const field = `${context.service.getModel().tableName}.deletedAt`;
     return { [field]: null };
   },

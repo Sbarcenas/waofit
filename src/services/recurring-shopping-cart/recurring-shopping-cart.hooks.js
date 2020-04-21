@@ -1,5 +1,6 @@
 const createRecurringShoppingCart = require("./hooks/create-recurring-shopping-cart");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
+const activateRecurrindShoppingCart = require("./hooks/activate-recurring-shopping-cart");
 
 module.exports = {
   before: {
@@ -8,7 +9,7 @@ module.exports = {
     get: [],
     create: [createRecurringShoppingCart()],
     update: [],
-    patch: [],
+    patch: [activateRecurrindShoppingCart()],
     remove: [removeSoftDelete()],
   },
 

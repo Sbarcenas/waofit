@@ -47,6 +47,7 @@ const searchShippingCost = require("./search-shipping-cost/search-shipping-cost.
 const shippingCosts = require("./shipping-costs/shipping-costs.service.js");
 const recurringShoppingCart = require('./recurring-shopping-cart/recurring-shopping-cart.service.js');
 const recurringShoppingCartDetails = require('./recurring-shopping-cart-details/recurring-shopping-cart-details.service.js');
+const cronGenerateRecurringOrders = require('./cron-generate-recurring-orders/cron-generate-recurring-orders.service.js');
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {
   app.configure(users);
@@ -98,4 +99,5 @@ module.exports = function (app) {
   app.configure(shippingCosts);
   app.configure(recurringShoppingCart);
   app.configure(recurringShoppingCartDetails);
+  app.configure(cronGenerateRecurringOrders);
 };

@@ -42,6 +42,7 @@ class orders extends Model {
         total_price_shipping_cost_excl: { type: "number" },
         total_shipping_cost: { type: "number" },
         payment_meta_data: { type: "string" },
+        recurrent: { type: "string", enum: ["true", "false"] },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -72,12 +73,7 @@ module.exports = function (app) {
               .references("id")
               .inTable("orders_status")
               .index();
-            table
-              .integer("shopping_cart_id")
-              .unsigned()
-              .references("id")
-              .inTable("shopping_cart")
-              .index();
+            table.integer("shopping_cart_id");
             table
               .integer("user_id")
               .unsigned()
@@ -91,6 +87,7 @@ module.exports = function (app) {
             table.decimal("total_shipping_cost");
             table.text("payment_meta_data");
             table.text("shopping_cart_meta_data");
+            table.enum("recurrent", ["true", "false"]).defaultTo("false");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");

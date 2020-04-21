@@ -29,7 +29,7 @@ module.exports = (options = {}) => {
 
     records.user_address_id = userAddress.id;
     records.user_address_meta_data = JSON.stringify(userAddress);
-    records.status = "active";
+    records.status = "preparing";
     records.user_id = user.id;
 
     replaceItems(context, records);

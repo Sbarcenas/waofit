@@ -199,6 +199,7 @@ module.exports = function (options = {}) {
     records.total_tax = totalTaxExpressProduct;
     records.order_status_id = 1;
     records.user_id = user.id;
+    records.recurrent = "false";
     records.shopping_cart_meta_data = JSON.stringify({
       shopping_cart: shoppingCart,
       shopping_cart_details: shoppingCartDetailsExpressProduct,

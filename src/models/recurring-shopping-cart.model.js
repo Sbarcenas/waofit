@@ -17,11 +17,12 @@ class recurringShoppingCart extends Model {
         user_id: { type: "integer" },
         status: {
           type: "string",
-          enum: ["active", "inactive", "paused"],
+          enum: ["active", "inactive", "paused", "preparing"],
         },
         frequency: { type: "string", enum: ["7 days", "15 days", "1 month"] },
         user_address_id: { type: "integer" },
         user_address_meta_data: { type: "string" },
+        next_delivery: { type: "string", format: "date" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -54,7 +55,7 @@ module.exports = function (app) {
               .inTable("users")
               .index();
             table
-              .enum("status", ["active", "inactive", "paused"])
+              .enum("status", ["active", "inactive", "paused", "preparing"])
               .defaultTo("active");
             table.enum("frequency", ["7 days", "15 days", "1 month"]);
             table
@@ -64,6 +65,7 @@ module.exports = function (app) {
               .inTable("users_addresses")
               .index();
             table.text("user_address_meta_data");
+            table.date("next_delivery");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
