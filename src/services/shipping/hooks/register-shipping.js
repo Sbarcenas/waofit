@@ -54,7 +54,8 @@ module.exports = (options = {}) => {
       .service("orders")
       .getModel()
       .query()
-      .where({ id: records.order_id, order_status_id: 5, deletedAt: null })
+      .whereIn("order_status_id", [5, 9, 11, 13])
+      .where({ id: records.order_id, deletedAt: null })
       .then((it) => it[0]);
 
     if (order) {
