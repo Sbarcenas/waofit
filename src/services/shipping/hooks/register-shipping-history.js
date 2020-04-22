@@ -13,7 +13,7 @@ module.exports = (options = {}) => {
 
     await registerShippingHistory({
       shipping_id: records.id,
-      shipping_status_id: records.status_id,
+      shipping_status_id: records.shipping_status_id,
       user_id: user.id,
     })(context);
 
