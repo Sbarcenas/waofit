@@ -42,6 +42,8 @@ module.exports = (options = {}) => {
           express_product_details_meta_data: product,
           scheduled_delivery_date:
             product.product_type == "scheduled" ? dateDelivery : null,
+          createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
+          updatedAt: moment().format("YYYY-MM-DD hh:mm:ss"),
         });
       }
 
