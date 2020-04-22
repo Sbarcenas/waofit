@@ -3,7 +3,7 @@ const UpdateShiping = require("./hooks/update-shipping");
 const UpdateShipingAfterUpdate = require("./hooks/update-shipping-after-update");
 const UpdateDelivered = require("./hooks/update-delivered");
 const UpdateDeliveredAfterPatch = require("./hooks/update-delivered-after-patch");
-
+const registerShippingHistory = require("./hooks/register-shipping-history");
 const { disallow, fastJoin } = require("feathers-hooks-common");
 
 const resolves = {
@@ -70,9 +70,13 @@ module.exports = {
     all: [],
     find: [fastJoin(resolves)],
     get: [fastJoin(resolves)],
-    create: [],
+    create: [registerShippingHistory()],
     update: [],
-    patch: [UpdateShipingAfterUpdate(), UpdateDeliveredAfterPatch()],
+    patch: [
+      UpdateShipingAfterUpdate(),
+      UpdateDeliveredAfterPatch(),
+      registerShippingHistory(),
+    ],
     remove: [],
   },
 
