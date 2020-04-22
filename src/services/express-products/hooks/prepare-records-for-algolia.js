@@ -46,27 +46,27 @@ module.exports = function (options = {}) {
             deletedAt: null,
           })
           .then((it) => it[0]),
-        /*  context.app
+        context.app
           .service("express-products-media")
           .getModel()
           .query()
           .where({
             product_id: context.id,
             main: "false",
-            deletedAt: null
+            deletedAt: null,
           })
-          .then(it => it[0]) */
+          .then((it) => it[0]),
       ]);
 
-      /*  if (!imageMain)
+      if (!imageMain)
         throw new NotAcceptable(
           "No se puede activar el producto por que no tiene una imagen principal."
-        ); */
+        );
 
-      /* if (!multimedia)
+      if (!multimedia)
         throw new NotAcceptable(
           "No se puede activar el producto por que no tiene galeria."
-        ); */
+        );
 
       context.params.query = {
         $eager: "[brand,category,hubs]",

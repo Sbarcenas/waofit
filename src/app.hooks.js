@@ -22,6 +22,8 @@ const deleted = softDelete({
   },
 });
 
+const validEmailUserCreate = require("./hooks/valid-email-user-create");
+
 module.exports = {
   before: {
     all: [
@@ -40,6 +42,7 @@ module.exports = {
       (context) => {
         delete context.data.deletedAt;
       },
+      validEmailUserCreate(),
     ],
     update: [deleted],
     patch: [deleted],

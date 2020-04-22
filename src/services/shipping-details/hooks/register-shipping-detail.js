@@ -41,13 +41,14 @@ module.exports = (options = {}) => {
 
         if (!subOrder) throw new NotFound("No se encontró la orden.");
 
+        console.log(subOrder);
         shipping = await context.app
           .service("shipping")
           .getModel()
           .query()
           .where({
             id: records.shipping_id,
-            type_sub_order: "express products",
+            type_sub_order: records.type_sub_order,
             order_id: subOrder.order_id,
             shipping_status_id: 1,
           })
@@ -61,7 +62,24 @@ module.exports = (options = {}) => {
 
     if (!subOrderDetail)
       throw new NotFound("No se encontró el detalle de la orden.");
-    if (!shipping) throw new NotFound("No se encontró el shipping.");
+    if (!shipping) throw new NotFound("No se encontró el envio.");
+
+    const shippingDetails = await context.app
+      .service("shipping-details")
+      .getModel()
+      .query()
+      .where({
+        shipping_id: records.shipping_id,
+        sub_order_detail_id: records.sub_order_detail_id,
+        type_sub_order: records.type_sub_order,
+        deletedAt: null,
+      })
+      .then((it) => it[0]);
+
+    if (shippingDetails)
+      throw new NotAcceptable(
+        "Este producto ya se encuenta agregado al envio."
+      );
 
     const sumDetailsInPreparation = await context.app
       .service("shipping-details")
