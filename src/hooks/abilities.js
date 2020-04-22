@@ -38,6 +38,7 @@ function defineAbilitiesFor(user) {
       "process-order-payments",
       "recurring-shopping-cart",
       "recurring-shopping-cart-details",
+      "favorites",
     ]);
 
     can("read", ["users"], { id: user.id });
@@ -55,6 +56,7 @@ function defineAbilitiesFor(user) {
         "users-credit-cards",
         "users-addresses",
         "recurring-shopping-cart",
+        "favorites",
       ],
       { user_id: user.id }
     );
