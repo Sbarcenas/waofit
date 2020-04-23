@@ -3,12 +3,15 @@ const { ExpressProducts } = require("./express-products.class");
 const createModel = require("../../models/express-products.model");
 const hooks = require("./express-products.hooks");
 
-module.exports = function(app) {
+module.exports = function (app) {
   const options = {
     Model: createModel(app),
     whitelist: ["$eager", "$joinRelation"],
     allowedEager: "[category, brand, tax, hubs, media]",
-    paginate: app.get("paginate")
+    paginate: {
+      max: 1000,
+      default: 50,
+    },
   };
 
   // Initialize our service with any options it requires
