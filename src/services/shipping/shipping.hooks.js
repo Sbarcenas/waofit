@@ -23,7 +23,7 @@ const resolves = {
         records.delivery_guy_user,
         records.order,
         records.shipping_details,
-        records.shipping_hitory,
+        records.shipping_history,
       ] = await Promise.all([
         context.app
           .service(service)
@@ -54,7 +54,7 @@ const resolves = {
         context.app
           .service("shipping-history")
           .find({ query: { shipping_id: records.id }, paginate: false })
-          .then((it) => it[0]),
+          .then((it) => it),
       ]);
     },
   },
