@@ -34,7 +34,7 @@ module.exports = function (options = {}) {
       context.id = records.id;
       // delete records.deletedAt;
 
-      const [imageMain /* multimedia */] = await Promise.all([
+      const [imageMain, multimedia] = await Promise.all([
         context.app
           .service("express-products-media")
           .getModel()
