@@ -52,7 +52,7 @@ module.exports = function (options = {}) {
           .query()
           .where({
             product_id: context.id,
-            main: "false",
+            main: "true",
             deletedAt: null,
           })
           .then((it) => it[0]),
