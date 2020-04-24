@@ -4,6 +4,9 @@ const verifyIdentity = authenticate("jwt");
 
 function hasToken(hook) {
   if (hook.params.headers == undefined) return false;
+
+  if (hook.path == "cron-generate-recurring-orders") return false;
+
   if (hook.data.accessToken == undefined) return false;
   return hook.params.headers.authorization || hook.data.accessToken;
 }

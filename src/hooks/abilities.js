@@ -19,7 +19,6 @@ function defineAbilitiesFor(user) {
   const { rules, can } = AbilityBuilder.extract();
 
   can("create", ["users", "recovery-password", "payment-confirmations-epayco"]);
-  can("read", ["cron-generate-recurring-orders"]);
   can("update", ["recovery-password"]);
 
   if (user) {

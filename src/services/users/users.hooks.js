@@ -72,7 +72,7 @@ module.exports = {
         )
       ),
       hashPassword("password"),
-      authenticate("jwt") /* proccessUsersBC(), proccessUsersFacebookBP() */,
+      /* proccessUsersBC(), proccessUsersFacebookBP() */
     ],
     remove: [authenticate("jwt"), removeSoftDelete()],
   },
