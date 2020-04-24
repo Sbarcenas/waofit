@@ -23,6 +23,12 @@ class recurringShoppingCart extends Model {
         user_address_id: { type: "integer" },
         user_address_meta_data: { type: "string" },
         next_delivery: { type: "string", format: "date" },
+        last_payment_meta_data: {},
+        last_payment_status: {
+          type: "string",
+          enum: ["acepted", "rejected", "failed"],
+        },
+        last_payment_attempts: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -66,6 +72,16 @@ module.exports = function (app) {
               .index();
             table.text("user_address_meta_data");
             table.date("next_delivery");
+            table.text("last_payment_meta_data");
+            table
+              .enum("last_payment_status", [
+                "unrealized",
+                "acepted",
+                "rejected",
+                "failed",
+              ])
+              .defaultTo("unrealized");
+            table.integer("last_payment_attempts").defaultTo(0);
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");

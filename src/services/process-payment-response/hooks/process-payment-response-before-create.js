@@ -7,164 +7,103 @@ const discountStockProductuExpress = require("../../../hooks/discount-stock-expr
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
     const { user } = context.params;
 
-    const [expressProductOrder] = await Promise.all([
+    const [expressProductOrder, order] = await Promise.all([
       context.app
         .service("express-products-orders")
         .getModel()
         .query()
         .where({ order_id: records.order_id, deletedAt: null })
-        .then(it => it[0])
+        .then((it) => it[0]),
+      context.app
+        .service("orders")
+        .getModel()
+        .query()
+        .where({ id: records.order_id })
+        .then((it) => it[0]),
     ]);
 
+    let [order_status_id, express_product_status_id] = [null];
     switch (records.response_code) {
       //PAGO EXITOSO
       case 1:
         console.log("Pago  realizado con exito");
+        order_status_id = 5;
+        express_product_status_id = 6;
 
-        await Promise.all([
-          context.app
-            .service("orders")
-            .getModel()
-            .query()
-            .patch({ order_status_id: 5 })
-            .where({ id: expressProductOrder.order_id }),
-          registerOrderHistory({
-            order_id: records.order_id,
-            order_status_id: 5
-          })(context)
-        ]);
+        await discountStockProductuExpress({
+          express_product_order_id: expressProductOrder.id,
+        })(context);
 
-        if (expressProductOrder) {
-          //actualizamos el estado de la orden como canceladay guardamos su historial
-          await Promise.all([
-            context.app
-              .service("express-products-orders")
-              .getModel()
-              .query()
-              .patch({ order_status_id: 6 })
-              .where({ id: expressProductOrder.id }),
-            registerExpressProductsOrdersHistory({
-              express_product_order_id: expressProductOrder.id,
-              order_status_id: 6
-            })(context)
-          ]);
-
-          await discountStockProductuExpress({
-            express_product_order_id: expressProductOrder.id
-          })(context);
-        }
+        //actualizando los pagos recurrentes
 
         break;
 
       case 2:
         //PAGO RECHAZADO
         console.log("Pago rechazado");
+        order_status_id = 3;
+        express_product_status_id = 4;
         //se tiene que guardar en el historial el pago rechazado
-        await Promise.all([
-          context.app
-            .service("orders")
-            .getModel()
-            .query()
-            .patch({ order_status_id: 3 })
-            .where({ id: expressProductOrder.order_id }),
-          registerOrderHistory({
-            order_id: records.order_id,
-            order_status_id: 3
-          })(context)
-        ]);
 
-        if (expressProductOrder) {
-          //actualizamos el estado de la orden como canceladay guardamos su historial
-          await Promise.all([
-            context.app
-              .service("express-products-orders")
-              .getModel()
-              .query()
-              .patch({ order_status_id: 4 })
-              .where({ id: expressProductOrder.id }),
-            registerExpressProductsOrdersHistory({
-              express_product_order_id: expressProductOrder.id,
-              order_status_id: 4
-            })(context)
-          ]);
-        }
         break;
 
       case 3:
         //PAGO PENDIENTE
         console.log("Pago pendiente");
+        order_status_id = 7;
+        express_product_status_id = 8;
         //se tiene que guardar en el historial el pago rechazado
-
-        //
-        await Promise.all([
-          context.app
-            .service("orders")
-            .getModel()
-            .query()
-            .patch({ order_status_id: 7 })
-            .where({ id: expressProductOrder.order_id }),
-          registerOrderHistory({
-            order_id: records.order_id,
-            order_status_id: 7
-          })(context)
-        ]);
-
-        if (expressProductOrder) {
-          //actualizamos el estado de la orden como canceladay guardamos su historial
-          await Promise.all([
-            context.app
-              .service("express-products-orders")
-              .getModel()
-              .query()
-              .patch({ order_status_id: 8 })
-              .where({ id: expressProductOrder.id }),
-            registerExpressProductsOrdersHistory({
-              express_product_order_id: expressProductOrder.id,
-              order_status_id: 8
-            })(context)
-          ]);
-        }
         break;
 
       default:
         //PAGO RECHAZADO
         console.log("Pago rechazado respuesta mayor a 3");
-        //se tiene que guardar en el historial el pago rechazado
-        await Promise.all([
-          context.app
-            .service("orders")
-            .getModel()
-            .query()
-            .patch({ order_status_id: 3 })
-            .where({ id: expressProductOrder.order_id }),
-          registerOrderHistory({
-            order_id: records.order_id,
-            order_status_id: 3
-          })(context)
-        ]);
+        order_status_id = 3;
+        express_product_status_id = 4;
 
-        if (expressProductOrder) {
-          //actualizamos el estado de la orden como canceladay guardamos su historial
-          await Promise.all([
-            context.app
-              .service("express-products-orders")
-              .getModel()
-              .query()
-              .patch({ order_status_id: 4 })
-              .where({ id: expressProductOrder.id }),
-            registerExpressProductsOrdersHistory({
-              express_product_order_id: expressProductOrder.id,
-              order_status_id: 4
-            })(context)
-          ]);
-        }
         break;
     }
+
+    await Promise.all([
+      context.app
+        .service("orders")
+        .getModel()
+        .query()
+        .patch({ order_status_id: order_status_id })
+        .where({ id: expressProductOrder.order_id }),
+      registerOrderHistory({
+        order_id: records.order_id,
+        order_status_id: order_status_id,
+      })(context),
+    ]);
+
+    if (expressProductOrder) {
+      //actualizamos el estado de la orden como canceladay guardamos su historial
+      await Promise.all([
+        context.app
+          .service("express-products-orders")
+          .getModel()
+          .query()
+          .patch({ order_status_id: express_product_status_id })
+          .where({ id: expressProductOrder.id })
+          .then((it) => it),
+        registerExpressProductsOrdersHistory({
+          express_product_order_id: expressProductOrder.id,
+          order_status_id: express_product_status_id,
+        })(context),
+      ]);
+    }
+
+    context.data = {
+      order: order,
+      responseCode: records.response_code,
+      paymentInfo: records.payment_info,
+    };
 
     replaceItems(context, records);
 

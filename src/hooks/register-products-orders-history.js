@@ -17,7 +17,7 @@ module.exports = (options = {}) => {
       .insert({
         express_product_order_id: options.express_product_order_id,
         order_status_id: options.order_status_id,
-        user_id: user.id,
+        user_id: user ? user.id : 1,
       });
 
     replaceItems(context, records);

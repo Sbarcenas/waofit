@@ -2,16 +2,31 @@
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 const { getItems, replaceItems } = require("feathers-hooks-common");
 const registerOrderHistory = require("../../../hooks/register-order-history");
+const { query } = require("../../../utils/query-builders/batch-insert");
+const moment = require("moment");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
   return async (context) => {
     let records = getItems(context);
 
+    const rangesDate = [
+      moment().format("YYYY-MM-DD"),
+      moment() /* .add(1, "days") */
+        .format("YYYY-MM-DD"),
+    ];
+
+    //aqui filtrar el la consulta donde last_payment_attempts sea mejor igual a 10
+    //y el estado del ultimo pago no sea failed
     const recurringShoppingCarts = await context.app
       .service("recurring-shopping-cart")
       .getModel()
       .query()
-      .where({ status: "active", deletedAt: null });
+      .where({
+        status: "active",
+        deletedAt: null,
+      })
+      .whereBetween("next_delivery", rangesDate)
+      .whereBetween("last_payment_attempts", [0, 10]);
 
     for (const recurringShoppingCart of recurringShoppingCarts) {
       const dataOrder = {
@@ -22,7 +37,7 @@ module.exports = (options = {}) => {
         recurrent: "true",
       };
 
-      //creamos las ordenes
+      //creamos la orden
       const order = await context.app
         .service("orders")
         .getModel()
@@ -36,7 +51,10 @@ module.exports = (options = {}) => {
       })(context);
 
       //aqui hacer el promise con los demas joins para sumar los totales y crear la orden
-      const [recurringShoppingCartsExpressProduct] = await Promise.all([
+      const [
+        recurringShoppingCartsExpressProduct,
+        userCreditCard,
+      ] = await Promise.all([
         context.app
           .service("recurring-shopping-cart")
           .getModel()
@@ -87,6 +105,16 @@ module.exports = (options = {}) => {
             "recurring_shopping_cart_details.shop_type": "express_product",
           })
           .then((it) => it),
+        context.app
+          .service("users-credit-cards")
+          .getModel()
+          .query()
+          .where({
+            user_id: recurringShoppingCart.user_id,
+            deletedAt: null,
+            default: "true",
+          })
+          .then((it) => it[0]),
       ]);
 
       //express products
@@ -104,6 +132,7 @@ module.exports = (options = {}) => {
         })
         .then((it) => it.shippingCost);
 
+      //products details
       if (recurringShoppingCartsExpressProduct.length >= 1) {
         let [
           totalPriceExpressProduct,
@@ -143,6 +172,7 @@ module.exports = (options = {}) => {
           shipping_cost: parseFloat(shippingCost.price),
           shipping_address_meta_data: JSON.stringify(userAddress),
           date_dispatch: "0000-00-00",
+          recurrent: "true",
         };
         const expressProductOrder = await context.app
           .service("express-products-orders")
@@ -156,10 +186,11 @@ module.exports = (options = {}) => {
 
         // console.log(expressProductOrder);
 
+        const dataExpressProductDetails = [];
         //creamos los detalles de las sub ordenes
         for (const recurringShoppingCartExpressProduct of recurringShoppingCartsExpressProduct) {
           // console.log(recurringShoppingCartExpressProduct, "99999999999999");
-          const dataExpressProductDetails = {
+          dataExpressProductDetails.push({
             express_product_order_id: expressProductOrder.id,
             express_product_id: recurringShoppingCartExpressProduct.product_id,
             type_product: recurringShoppingCartExpressProduct.product_type,
@@ -185,11 +216,76 @@ module.exports = (options = {}) => {
               recurringShoppingCartExpressProduct.main_image,
             express_product_details_meta_data: recurringShoppingCartExpressProduct,
             scheduled_delivery_date: recurringShoppingCart.next_delivery,
-          };
-
+            createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
+            updatedAt: moment().format("YYYY-MM-DD hh:mm:ss"),
+          });
           //insertar los detalles mirar si se pueden guardar todos de una vez o si tiene que ser uno por uno
         }
+
+        await query.insert(
+          context.app.service("express-products-orders-details").getModel(),
+          dataExpressProductDetails
+        );
       }
+
+      //aqui las demas sumatorias de las demas tiendas
+      const [sumExpressProductsOrders] = await Promise.all([
+        context.app
+          .service("express-products-orders")
+          .getModel()
+          .query()
+          .select(
+            "total_price_tax_excl AS total_price_tax_excl",
+            "total_price_tax_incl AS total_price",
+            "total_tax AS total_tax",
+            "shipping_cost AS shipping_cost"
+          )
+          .where({ order_id: order.id })
+          .then((it) => it[0]),
+      ]);
+
+      const totalSumExpressProductOrder = {
+        total_price: sumExpressProductsOrders
+          ? parseFloat(sumExpressProductsOrders.total_price)
+          : 0,
+        total_price_tax_excl: sumExpressProductsOrders
+          ? parseFloat(sumExpressProductsOrders.total_price_tax_excl)
+          : 0,
+        total_tax: sumExpressProductsOrders
+          ? parseFloat(sumExpressProductsOrders.total_tax)
+          : 0,
+        total_shipping_cost: sumExpressProductsOrders
+          ? parseFloat(sumExpressProductsOrders.shipping_cost)
+          : 0,
+        total_price_shipping_cost_excl: sumExpressProductsOrders
+          ? parseFloat(sumExpressProductsOrders.total_price)
+          : 0,
+      };
+
+      //aqui hacer todas las sumatorias de de los totates de las demas tiendas
+      const totalOrder = {
+        total_price:
+          totalSumExpressProductOrder.total_price +
+          totalSumExpressProductOrder.total_shipping_cost,
+        total_price_tax_excl: totalSumExpressProductOrder.total_price_tax_excl,
+        total_tax: totalSumExpressProductOrder.total_tax,
+        total_shipping_cost: totalSumExpressProductOrder.total_shipping_cost,
+        total_price_shipping_cost_excl: totalSumExpressProductOrder.total_price,
+      };
+
+      recurrentOrder = await context.app
+        .service("orders")
+        .getModel()
+        .query()
+        .patch(totalOrder)
+        .where({ id: order.id });
+
+      await context.app.service("process-order-payments").create({
+        dues: userCreditCard.default_payment_fees,
+        user_credit_card_id: userCreditCard.id,
+        order_id: order.id,
+        user_id: order.user_id,
+      });
     }
 
     replaceItems(context, records);

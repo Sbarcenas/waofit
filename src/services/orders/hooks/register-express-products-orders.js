@@ -33,6 +33,7 @@ module.exports = (options = {}) => {
           ? JSON.stringify(shippingCost)
           : "",
         shipping_cost: shippingCost ? parseFloat(shippingCost.price) : 0.0,
+        recurrent: "false",
       };
 
       context.dataOrders.expressProductOrderId = await context.app

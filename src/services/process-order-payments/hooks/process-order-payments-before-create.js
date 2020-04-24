@@ -4,14 +4,14 @@
 const {
   checkContext,
   getItems,
-  replaceItems
+  replaceItems,
 } = require("feathers-hooks-common");
 const { NotAcceptable, NotFound } = require("@feathersjs/errors");
 const moment = require("moment");
 // eslint-disable-next-line no-unused-vars
-module.exports = function(options = {}) {
+module.exports = function (options = {}) {
   // Return the actual hook.
-  return async context => {
+  return async (context) => {
     // Throw if the hook is being called from an unexpected location.
     checkContext(context, null, [
       "find",
@@ -19,7 +19,7 @@ module.exports = function(options = {}) {
       "create",
       "update",
       "patch",
-      "remove"
+      "remove",
     ]);
 
     // Get the authenticated user.
@@ -40,22 +40,22 @@ module.exports = function(options = {}) {
         .getModel()
         .query()
         .where({
-          user_id: user.id,
+          user_id: user ? user.id : records.user_id,
           order_status_id: 1,
           deletedAt: null,
-          id: records.order_id
+          id: records.order_id,
         })
-        .then(it => it[0]),
+        .then((it) => it[0]),
       context.app
         .service("users-credit-cards")
         .getModel()
         .query()
         .where({
-          user_id: user.id,
+          user_id: user ? user.id : records.user_id,
           id: records.user_credit_card_id,
-          deletedAt: null
+          deletedAt: null,
         })
-        .then(it => it[0])
+        .then((it) => it[0]),
     ]);
 
     if (!order) throw new NotFound("No se encontró la orden.");
@@ -65,9 +65,10 @@ module.exports = function(options = {}) {
     context.dataPayment = {
       creditCard: creditCard,
       order: order,
-      dues: records.dues
+      dues: records.dues,
     };
 
+    console.log("debe funcionar");
     // Place the modified records back in the context.
     replaceItems(context, records);
     // Best practice: hooks should always return the context.

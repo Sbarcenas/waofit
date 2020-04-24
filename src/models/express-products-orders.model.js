@@ -36,6 +36,7 @@ class expressProductsOrders extends Model {
         total_tax: { type: "number" },
         shipping_cost_meta_data: { type: "string" },
         shipping_cost: { type: "number" },
+        recurrent: { type: "string", enum: ["true", "false"] },
         deletedAt: { type: "string", format: "date-time" },
       },
     };

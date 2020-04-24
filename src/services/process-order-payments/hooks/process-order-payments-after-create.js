@@ -81,9 +81,10 @@ module.exports = function (options = {}) {
         };
         //respuesta de pago con exito *se actualiza pdocut history payment a pagado*
 
-        /* await context.app
+        console.log(payment_info.data);
+        await context.app
           .service("process-payment-response")
-          .create({ ...data }); */
+          .create({ ...data });
 
         response_epayco = payment_info.data;
 

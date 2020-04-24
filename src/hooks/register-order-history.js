@@ -10,11 +10,15 @@ module.exports = (options = {}) => {
 
     const { user } = context.params;
 
-    await context.app.service("order-history").getModel().query().insert({
-      order_id: options.order_id,
-      order_status_id: options.order_status_id,
-      user_id: user.id,
-    });
+    await context.app
+      .service("order-history")
+      .getModel()
+      .query()
+      .insert({
+        order_id: options.order_id,
+        order_status_id: options.order_status_id,
+        user_id: user ? user.id : 1,
+      });
 
     replaceItems(context, records);
 
