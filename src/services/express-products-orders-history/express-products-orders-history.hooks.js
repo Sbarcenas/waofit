@@ -19,7 +19,8 @@ const resolves = {
           .service("orders-status")
           .getModel()
           .query()
-          .where({ id: records.order_status_id }),
+          .where({ id: records.order_status_id })
+          .then((it) => it[0]),
         context.app
           .service("express-products-orders")
           .getModel()
