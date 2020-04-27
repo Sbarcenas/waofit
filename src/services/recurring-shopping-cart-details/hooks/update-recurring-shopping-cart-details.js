@@ -19,14 +19,19 @@ module.exports = (options = {}) => {
       .where({ id: context.id })
       .then((it) => it[0]);
 
+    const query =
+      user.role == "user"
+        ? {
+            id: recurringShoppingCartDetailt.recurring_shopping_cart_id,
+            user_id: user.id,
+          }
+        : { id: recurringShoppingCartDetailt.recurring_shopping_cart_id };
+
     const recurringShoppingCart = await context.app
       .service("recurring-shopping-cart")
       .getModel()
       .query()
-      .where({
-        id: recurringShoppingCartDetailt.recurring_shopping_cart_id,
-        user_id: user.id,
-      })
+      .where(query)
       .then((it) => it[0]);
 
     if (!recurringShoppingCart)
