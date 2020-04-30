@@ -42,8 +42,6 @@ module.exports = (options = {}) => {
             .total_price,
       };
 
-      console.log(data, "-----------");
-
       context.dataOrders.expressProductOrderId = await context.app
         .service("express-products-orders")
         .getModel()
