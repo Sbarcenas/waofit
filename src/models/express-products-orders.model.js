@@ -37,6 +37,8 @@ class expressProductsOrders extends Model {
         shipping_cost_meta_data: { type: "string" },
         shipping_cost: { type: "number" },
         recurrent: { type: "string", enum: ["true", "false"] },
+        total_price_shipping_cost_excl: { type: "number" },
+        total_price: { type: "number" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -90,6 +92,9 @@ module.exports = function (app) {
             table.decimal("total_tax");
             table.text("shipping_cost_meta_data");
             table.decimal("shipping_cost");
+            table.enum("recurrent", ["true", "false"]);
+            table.decimal("total_price_shipping_cost_excl");
+            table.decimal("total_price");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");

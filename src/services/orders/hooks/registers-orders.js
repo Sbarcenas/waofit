@@ -216,6 +216,9 @@ module.exports = function (options = {}) {
         total_price_tax_excl: totalPriceExpressProductTaxExcl,
         total_tax: totalTaxExpressProduct,
         total_price_tax_incl: totalPriceExpressProduct,
+        total_price_shipping_cost_excl: totalPriceExpressProduct,
+        total_price:
+          totalPriceExpressProduct + shippingCost + totalTaxExpressProduct,
       },
     };
 

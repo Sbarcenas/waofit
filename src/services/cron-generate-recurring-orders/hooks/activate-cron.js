@@ -173,6 +173,11 @@ module.exports = (options = {}) => {
           shipping_address_meta_data: JSON.stringify(userAddress),
           date_dispatch: "0000-00-00",
           recurrent: "true",
+          total_price_shipping_cost_excl: totalPriceExpressProduct,
+          total_price:
+            parseFloat(shippingCost.price) +
+            totalPriceExpressProduct +
+            totalTaxExpressProduct,
         };
         const expressProductOrder = await context.app
           .service("express-products-orders")

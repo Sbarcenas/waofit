@@ -34,6 +34,12 @@ module.exports = (options = {}) => {
           : "",
         shipping_cost: shippingCost ? parseFloat(shippingCost.price) : 0.0,
         recurrent: "false",
+        total_price_shipping_cost_excl:
+          context.dataOrders.totalsShoppingCartDetailsExpressProducts
+            .total_price_shipping_cost_excl,
+        total_price:
+          context.dataOrders.totalsShoppingCartDetailsExpressProducts
+            .total_price,
       };
 
       context.dataOrders.expressProductOrderId = await context.app
