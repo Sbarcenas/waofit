@@ -16,7 +16,7 @@ const resolves = {
           service = "brands";
           query = { id: records.type_id, deletedAt: null };
           break;
-        case "blogs":
+        case "blog":
           service = "blogs-and-guides";
           query = { id: records.type_id, deletedAt: null, type: "blog" };
           break;
