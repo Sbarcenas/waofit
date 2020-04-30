@@ -117,12 +117,11 @@ module.exports = function (options = {}) {
 
     //activar cuando se configuren los poligonos
 
-    // const shippingCost = await context.app
-    //   .service("search-shipping-cost")
-    //   .find({ query: { user_address_id: userAddress.id } })
-    //   .then((it) => it.shippingCost);
+    const shippingCost = await context.app
+      .service("search-shipping-cost")
+      .find({ query: { user_address_id: userAddress.id } })
+      .then((it) => it.shippingCost);
 
-    const shippingCost = undefined;
     //aqui faltan hacer las consultas de los productos de restaurantes y la de cafeteria.
     const [shoppingCartDetailsExpressProduct] = await Promise.all([
       context.app
@@ -218,7 +217,9 @@ module.exports = function (options = {}) {
         total_price_tax_incl: totalPriceExpressProduct,
         total_price_shipping_cost_excl: totalPriceExpressProduct,
         total_price:
-          totalPriceExpressProduct + shippingCost + totalTaxExpressProduct,
+          totalPriceExpressProduct +
+          parseFloat(shippingCost.price) +
+          totalTaxExpressProduct,
       },
     };
 
