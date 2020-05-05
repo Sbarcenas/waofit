@@ -3,6 +3,7 @@ const usersAddressesAC = require("./hooks/users-addreeses-a-c");
 const usersAddressesAP = require("./hooks/users-addresses-a-p");
 const validationOfFields = require("../../hooks/validations-of-fields");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
+const searchAdmin = require("./hooks/search-admin");
 
 const { fastJoin } = require("feathers-hooks-common");
 
@@ -30,8 +31,8 @@ const resolves = {
 module.exports = {
   before: {
     all: [],
-    find: [],
-    get: [],
+    find: [searchAdmin()],
+    get: [searchAdmin()],
     create: [validationOfFields(), usersAddressesBC()],
     update: [],
     patch: [],
