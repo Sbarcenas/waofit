@@ -7,6 +7,8 @@ const proccessUsersFaceboookBC = require("./hooks/proccess-users-faceboook-b-c")
 const proccessUsersFacebookBP = require("./hooks/proccess-users-facebook-b-p");
 const proccessUsersBC = require("./hooks/proccess-users-b-c");
 const proccessFindFacebookBC = require("./hooks/proccess-find-facebook-b-c");
+const searchAdmin = require("./hooks/search-admin");
+
 const {
   discard,
   iff,
@@ -41,13 +43,10 @@ module.exports = {
   before: {
     all: [],
     find: [
-      authenticate("jwt"),
+      searchAdmin(),
       iff(isProvider("external"), proccessFindFacebookBC()),
     ],
-    get: [
-      authenticate("jwt"),
-      iff(isProvider("external"), proccessFindFacebookBC()),
-    ],
+    get: [searchAdmin(), iff(isProvider("external"), proccessFindFacebookBC())],
     create: [
       iff(
         isProvider("external"),
