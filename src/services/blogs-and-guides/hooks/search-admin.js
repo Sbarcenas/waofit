@@ -33,27 +33,14 @@ module.exports = function (options = {}) {
       delete context.params.query.data_value;
 
       const ordersIds = await context.app
-        .service("express-products")
+        .service("blogs-and-guides")
         .getModel()
         .query()
-        .select("express_products.id")
-        .innerJoin(
-          "express_categories",
-          "express_products.express_category_id",
-          "=",
-          "express_categories.id"
-        )
-        .innerJoin("brands", "express_products.brand_id", "=", "brands.id")
-        .orWhere("brands.name", "LIKE", `%${value}%`)
-        .orWhere("express_categories.name", "LIKE", `%${value}%`)
-        .orWhere("express_products.name", "LIKE", `%${value}%`)
-        .orWhere("users.phone", "LIKE", `%${value}%`)
-        .orWhere("recurring_shopping_cart.name", "LIKE", `%${value}%`)
-        .orWhere("recurring_shopping_cart.frequency", "LIKE", `%${value}%`)
-        .orWhere("recurring_shopping_cart.next_delivery", "LIKE", `%${value}%`)
-        .orWhere("users_addresses.address", "LIKE", `%${value}%`)
-        .orWhere("users_addresses.name", "LIKE", `%${value}%`)
-        .where({ "express_products.deletedAt": null })
+        .select("blogs_and_guides.id")
+        .innerJoin("authors", "blogs_and_guides.author_id", "=", "authors.id")
+        .orWhere("blogs_and_guides.title", "LIKE", `%${value}%`)
+        .orWhere("authors.name", "LIKE", `%${value}%`)
+        .where({ "blogs_and_guides.deletedAt": null })
 
         .then((it) => it.map((it) => it.id));
 

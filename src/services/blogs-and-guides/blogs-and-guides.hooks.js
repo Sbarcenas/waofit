@@ -3,7 +3,7 @@ const removeAlgolia = require("./hooks/remove-algolia");
 const updateAlgolia = require("./hooks/update-algolia");
 const restricActiveBeforePatch = require("./hooks/restric-active-before-patch");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
-
+const searchAdmin = require("./hooks/search-admin");
 const { fastJoin } = require("feathers-hooks-common");
 
 const resolves = {
@@ -55,8 +55,8 @@ const resolves = {
 module.exports = {
   before: {
     all: [],
-    find: [],
-    get: [],
+    find: [searchAdmin()],
+    get: [searchAdmin()],
     create: [registerBlogGuide()],
     update: [],
     patch: [restricActiveBeforePatch()],
