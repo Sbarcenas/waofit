@@ -1,6 +1,6 @@
 const { authenticate } = require("@feathersjs/authentication").hooks;
 const { fastJoin } = require("feathers-hooks-common");
-
+const searchAdmin = require("./hooks/search-admin");
 const resolves = {
   joins: {
     join: () => async (records, context) => {
@@ -41,8 +41,8 @@ const resolves = {
 module.exports = {
   before: {
     all: [authenticate("jwt")],
-    find: [],
-    get: [],
+    find: [searchAdmin()],
+    get: [searchAdmin()],
     create: [],
     update: [],
     patch: [],
