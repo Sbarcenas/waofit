@@ -2,7 +2,7 @@ const activateRecipe = require("./hooks/activate-recipe");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
 const removeAlgolia = require("./hooks/remove-algolia");
 const updateAlgolia = require("./hooks/update-algolia");
-
+const searchAdmin = require("./hooks/search-admin");
 const { fastJoin } = require("feathers-hooks-common");
 
 const resolves = {
@@ -54,8 +54,8 @@ const resolves = {
 module.exports = {
   before: {
     all: [],
-    find: [],
-    get: [],
+    find: [searchAdmin()],
+    get: [searchAdmin()],
     create: [],
     update: [],
     patch: [activateRecipe()],
