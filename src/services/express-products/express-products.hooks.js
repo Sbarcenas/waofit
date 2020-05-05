@@ -5,7 +5,7 @@ const updateAlgolia = require("./hooks/update-algolia");
 const removeAlgolia = require("./hooks/remove-algolia");
 const registerProduct = require("./hooks/register-product");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
-
+const searhAdmin = require("./hooks/search-admin");
 const { fastJoin, iff, isProvider } = require("feathers-hooks-common");
 
 const resolves = {
@@ -64,8 +64,8 @@ const resolves = {
 module.exports = {
   before: {
     all: [],
-    find: [],
-    get: [],
+    find: [searhAdmin()],
+    get: [searhAdmin()],
     create: [
       registerProduct(),
       assingPathCategory(),
