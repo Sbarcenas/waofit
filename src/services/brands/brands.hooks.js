@@ -1,16 +1,17 @@
 const restictRemove = require("./hooks/restrict-remove");
 const updateProductInAlgolia = require("./hooks/update-product-in-algolia");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
+const searchAdmin = require("./hooks/search-admin");
 
 module.exports = {
   before: {
     all: [],
-    find: [],
-    get: [],
+    find: [searchAdmin()],
+    get: [searchAdmin()],
     create: [],
     update: [],
     patch: [],
-    remove: [restictRemove(), removeSoftDelete()]
+    remove: [restictRemove(), removeSoftDelete()],
   },
 
   after: {
@@ -20,7 +21,7 @@ module.exports = {
     create: [],
     update: [],
     patch: [updateProductInAlgolia()],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -30,6 +31,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };
