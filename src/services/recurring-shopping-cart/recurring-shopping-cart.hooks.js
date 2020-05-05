@@ -1,6 +1,7 @@
 const createRecurringShoppingCart = require("./hooks/create-recurring-shopping-cart");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
 const activateRecurrindShoppingCart = require("./hooks/activate-recurring-shopping-cart");
+const searchAdmin = require("./hooks/search-admin");
 
 const { fastJoin } = require("feathers-hooks-common");
 const resolves = {
@@ -21,8 +22,8 @@ const resolves = {
 module.exports = {
   before: {
     all: [],
-    find: [],
-    get: [],
+    find: [searchAdmin()],
+    get: [searchAdmin()],
     create: [createRecurringShoppingCart()],
     update: [],
     patch: [activateRecurrindShoppingCart()],

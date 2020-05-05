@@ -33,26 +33,28 @@ module.exports = function (options = {}) {
       delete context.params.query.data_value;
 
       const ordersIds = await context.app
-        .service("express-products-orders")
+        .service("recurring-shopping-cart")
         .getModel()
         .query()
-        .select("express_products_orders.id")
-        .innerJoin("users", "users.id", "=", "express_products_orders.user_id")
+        .select("recurring_shopping_cart.id")
+        .innerJoin("users", "users.id", "=", "recurring_shopping_cart.user_id")
         .innerJoin(
-          "orders_status",
-          "orders_status.id",
+          "users_addresses",
+          "users_addresses.id",
           "=",
-          "express_products_orders.order_status_id"
+          "recurring_shopping_cart.user_address_id"
         )
         .orWhere("users.last_name", "LIKE", `%${value}%`)
         .orWhere("users.first_name", "LIKE", `%${value}%`)
         .orWhere("users.email", "LIKE", `%${value}%`)
         .orWhere("users.phone", "LIKE", `%${value}%`)
-        .orWhere("express_products_orders.total_price", "LIKE", `%${value}%`)
-        .orWhere("express_products_orders.shipping_cost", "LIKE", `%${value}%`)
-        .orWhere("express_products_orders.date_dispatch", "LIKE", `%${value}%`)
-        .orWhere("express_products_orders.order_id", "LIKE", `%${value}%`)
-        .where({ "express_products_orders.deletedAt": null })
+        .orWhere("users.phone", "LIKE", `%${value}%`)
+        .orWhere("recurring_shopping_cart.name", "LIKE", `%${value}%`)
+        .orWhere("recurring_shopping_cart.frequency", "LIKE", `%${value}%`)
+        .orWhere("recurring_shopping_cart.next_delivery", "LIKE", `%${value}%`)
+        .orWhere("users_addresses.address", "LIKE", `%${value}%`)
+        .orWhere("users_addresses.name", "LIKE", `%${value}%`)
+        .where({ "recurring_shopping_cart.deletedAt": null })
 
         .then((it) => it.map((it) => it.id));
 
