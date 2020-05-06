@@ -9,6 +9,13 @@ const { fastJoin } = require("feathers-hooks-common");
 const resolves = {
   joins: {
     join: () => async (records, context) => {
+      //aqui hacer lo mismo con los tipos blogs y guide y listo el pollo
+
+      let query = null;
+      if (records.type == "blog")
+        query = { type: "blog", type_id: records.id, deletedAt: null };
+      else query = { type: "guide", type_id: records.id, deletedAt: null };
+
       const [countCalifications, sumCalifications] = await Promise.all([
         context.app
           .service("reviews")
@@ -16,9 +23,7 @@ const resolves = {
           .query()
           .count("*", { as: "quantity" })
           .where({
-            type: "recipe",
-            type_id: records.id,
-            deletedAt: null,
+            ...query,
           }),
         context.app
           .service("reviews")
@@ -26,9 +31,7 @@ const resolves = {
           .query()
           .sum("stars", { as: "totalCalifications" })
           .where({
-            type: "recipe",
-            type_id: records.id,
-            deletedAt: null,
+            ...query,
           }),
       ]);
       records.rating_average =
