@@ -1,6 +1,6 @@
 const { Service } = require('feathers-objection');
 
-exports.CoffeeHubs = class CoffeeHubs extends Service {
+exports.Cms = class Cms extends Service {
   constructor(options) {
     const { Model, ...otherOptions } = options;
 
