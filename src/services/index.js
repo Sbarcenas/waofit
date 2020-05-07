@@ -49,12 +49,13 @@ const recurringShoppingCart = require("./recurring-shopping-cart/recurring-shopp
 const recurringShoppingCartDetails = require("./recurring-shopping-cart-details/recurring-shopping-cart-details.service.js");
 const cronGenerateRecurringOrders = require("./cron-generate-recurring-orders/cron-generate-recurring-orders.service.js");
 const favorites = require("./favorites/favorites.service.js");
-const coffeeShopCategories = require('./coffee_shop_categories/coffee_shop_categories.service.js');
-const coffeeShopProductsAttributesSection = require('./coffee-shop-products-attributes-section/coffee-shop-products-attributes-section.service.js');
-const coffeeShopProductsAttributesOfSection = require('./coffee-shop-products-attributes-of-section/coffee-shop-products-attributes-of-section.service.js');
-const coffeeShopAttributes = require('./coffee_shop_attributes/coffee_shop_attributes.service.js');
-const coffeeShopProducts = require('./coffee-shop-products/coffee-shop-products.service.js');
-const cms = require('./cms/cms.service.js');
+const coffeeShopCategories = require("./coffee_shop_categories/coffee_shop_categories.service.js");
+const coffeeShopProductsAttributesOfSection = require("./coffee-shop-products-attributes-of-section/coffee-shop-products-attributes-of-section.service.js");
+const coffeeShopAttributes = require("./coffee_shop_attributes/coffee_shop_attributes.service.js");
+const coffeeShopProducts = require("./coffee-shop-products/coffee-shop-products.service.js");
+const cms = require("./cms/cms.service.js");
+const coffeeShopProductsAttributes = require("./coffee-shop-products-attributes/coffee-shop-products-attributes.service.js");
+const coffeeOptionsTemplates = require('./coffee-options-templates/coffee-options-templates.service.js');
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {
   app.configure(users);
@@ -109,9 +110,10 @@ module.exports = function (app) {
   app.configure(cronGenerateRecurringOrders);
   app.configure(favorites);
   app.configure(coffeeShopCategories);
-  app.configure(coffeeShopProductsAttributesSection);
   app.configure(coffeeShopProductsAttributesOfSection);
   app.configure(coffeeShopAttributes);
   app.configure(coffeeShopProducts);
   app.configure(cms);
+  app.configure(coffeeShopProductsAttributes);
+  app.configure(coffeeOptionsTemplates);
 };

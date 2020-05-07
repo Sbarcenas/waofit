@@ -15,7 +15,6 @@ class coffeeShopProducts extends Model {
         "coffee_shop_category_id",
         "tax_rule_id",
         "status",
-        "quantity",
         "price",
       ],
 
@@ -24,7 +23,7 @@ class coffeeShopProducts extends Model {
         description: { type: "string" },
         regular_price: { type: "double" },
         price: { type: "double" },
-        coffee_shop_products_attributes_id: { type: "integer" },
+        coffee_options_template_id: { type: "integer" },
         position: { type: "integer" },
         coffee_shop_category_id: { type: "integer" },
         tax_rule_id: { type: "integer" },
@@ -56,7 +55,13 @@ module.exports = function (app) {
             table.string("name");
             table.text("description");
             table.double("price");
-            table.integer("coffee_shop_products_attributes_id");
+            table.integer("coffee_options_template_id");
+            table
+              .integer("coffee_options_template_id")
+              .unsigned()
+              .references("id")
+              .inTable("coffee-options-templates")
+              .index();
             table.integer("position");
             table.integer("coffee_shop_category_id");
             table.integer("tax_rule_id");

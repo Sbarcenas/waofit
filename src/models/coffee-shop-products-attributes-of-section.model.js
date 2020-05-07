@@ -11,13 +11,13 @@ class coffeeShopProductsAttributesOfSection extends Model {
     return {
       type: "object",
       required: [
-        "coffe_shop_attributes_id",
-        "coffee_shop_products_attributes_section_id",
+        "coffee_shop_attributes_id",
+        "coffee_shop_products_attributes_id",
       ],
 
       properties: {
-        coffe_shop_attributes_id: { type: "inetger" },
-        coffee_shop_products_attributes_section_id: { type: "integer" },
+        coffee_shop_attributes_id: { type: "inetger" },
+        coffee_shop_products_attributes_id: { type: "integer" },
         price: { type: "number" },
         deletedAt: { type: "string", format: "date-time" },
       },
@@ -45,8 +45,8 @@ module.exports = function (app) {
             "coffee_shop_products_attributes_of_section",
             (table) => {
               table.increments("id");
-              table.integer("coffe_shop_attributes_id");
-              table.integer("coffee_shop_products_attributes_section_id");
+              table.integer("coffee_shop_attributes_id");
+              table.integer("coffee_shop_products_attributes_id");
               table.double("price");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");

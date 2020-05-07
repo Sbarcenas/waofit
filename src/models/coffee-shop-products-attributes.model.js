@@ -4,13 +4,19 @@ const { Model } = require("objection");
 
 class coffeeShopProductsAttributesSection extends Model {
   static get tableName() {
-    return "coffee_shop_products_attributes_section";
+    return "coffee_shop_products_attributes";
   }
 
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["name", "field_type"],
+      required: [
+        "name",
+        "field_type",
+        "max_selects",
+        "min_selects",
+        "coffee_options_template_id",
+      ],
 
       properties: {
         name: { type: "string", maxLength: 255 },
@@ -21,6 +27,7 @@ class coffeeShopProductsAttributesSection extends Model {
         position: { type: "integer" },
         max_selects: { type: "integer" },
         min_selects: { type: "integer" },
+        coffee_options_template_id: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -39,39 +46,43 @@ module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
-    .hasTable("coffee_shop_products_attributes_section")
+    .hasTable("coffee_shop_products_attributes")
     .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("coffee_shop_products_attributes_section", (table) => {
+          .createTable("coffee_shop_products_attributes", (table) => {
             table.increments("id");
             table.string("name");
             table.enum("field_type", [
               "unique_selection",
               "multiple_selection",
             ]);
+            table.integer("position");
             table.integer("max_selects");
-            table.integer("mim_selects");
+            table.integer("min_selects");
+            table
+              .integer("coffee_options_template_id")
+              .unsigned()
+              .references("id")
+              .inTable("coffee_options_templates")
+              .index();
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
           })
           .then(() =>
-            console.log("Created coffee_shop_products_attributes_section table")
+            console.log("Created coffee_shop_products_attributes table")
           ) // eslint-disable-line no-console
           .catch((e) =>
             console.error(
-              "Error creating coffee_shop_products_attributes_section table",
+              "Error creating coffee_shop_products_attributes table",
               e
             )
           ); // eslint-disable-line no-console
       }
     })
     .catch((e) =>
-      console.error(
-        "Error creating coffee_shop_products_attributes_section table",
-        e
-      )
+      console.error("Error creating coffee_shop_products_attributes table", e)
     ); // eslint-disable-line no-console
 
   return coffeeShopProductsAttributesSection;

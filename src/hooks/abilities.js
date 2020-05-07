@@ -78,6 +78,7 @@ function defineAbilitiesFor(user) {
       "shipping-cost",
       "express-products-recipes",
       "cms",
+      "coffee-shop-products",
     ]);
 
     can("update", ["users"], { id: user.id });
