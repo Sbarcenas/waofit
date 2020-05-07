@@ -1,4 +1,5 @@
 const registerAttribute = require("./hooks/register-attribute");
+const removeSoftdelete = require("../../hooks/remove-softdelete");
 const { fastJoin } = require("feathers-hooks-common");
 
 const fastJoinResponse = {
@@ -25,7 +26,7 @@ module.exports = {
     create: [registerAttribute()],
     update: [],
     patch: [],
-    remove: [],
+    remove: [removeSoftdelete()],
   },
 
   after: {

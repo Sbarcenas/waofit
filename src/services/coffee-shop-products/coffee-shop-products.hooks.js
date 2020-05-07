@@ -1,5 +1,7 @@
 const registerCoffeeProduct = require("./hooks/register-coffee-product");
-const { fastJoin } = require("feathers-hooks-common");
+const removeSoftdelete = require("../../hooks/remove-softdelete");
+
+const { fastJoin, disallow } = require("feathers-hooks-common");
 
 const fastJoinResponse = {
   joins: {
@@ -23,9 +25,9 @@ module.exports = {
     find: [],
     get: [],
     create: [registerCoffeeProduct()],
-    update: [],
+    update: [disallow()],
     patch: [],
-    remove: [],
+    remove: [removeSoftdelete()],
   },
 
   after: {
