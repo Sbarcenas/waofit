@@ -19,6 +19,7 @@ class coffeeShopProductsAttributesOfSection extends Model {
         coffee_shop_attributes_id: { type: "inetger" },
         coffee_shop_products_attributes_id: { type: "integer" },
         price: { type: "number" },
+        position: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -48,6 +49,7 @@ module.exports = function (app) {
               table.integer("coffee_shop_attributes_id");
               table.integer("coffee_shop_products_attributes_id");
               table.double("price");
+              table.integer("position");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");

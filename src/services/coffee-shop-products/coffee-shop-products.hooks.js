@@ -1,19 +1,17 @@
 const registerCoffeeProduct = require("./hooks/register-coffee-product");
 const { fastJoin } = require("feathers-hooks-common");
 
-const resolves = {
+const fastJoinResponse = {
   joins: {
     join: () => async (records, context) => {
-      [
-        records.coffee_options_template,
-        records.user_addresses,
-      ] = await Promise.all([
+      [records.coffee_options_template] = await Promise.all([
         context.app
           .service("coffee-options-templates")
           .find({
-            query: { id: coffee_options_template_id, deletedAt: null },
+            query: { id: records.coffee_options_template_id, deletedAt: null },
             paginate: false,
-          }),
+          })
+          .then((it) => it[0]),
       ]);
     },
   },
@@ -32,7 +30,7 @@ module.exports = {
 
   after: {
     all: [],
-    find: [],
+    find: [fastJoin(fastJoinResponse)],
     get: [],
     create: [],
     update: [],

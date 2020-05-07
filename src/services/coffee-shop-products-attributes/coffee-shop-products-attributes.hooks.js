@@ -2,6 +2,26 @@ const registerCoffeeShopProductsAttributes = require("./hooks/register-coffee-sh
 const updateCoffeeProductsAttributes = require("./hooks/update-coffee-shop-products-attributes");
 const removeSoftdelete = require("../../hooks/remove-softdelete");
 const { disallow } = require("feathers-hooks-common");
+const { fastJoin } = require("feathers-hooks-common");
+
+const fastJoinResponse = {
+  joins: {
+    join: () => async (records, context) => {
+      [records.coffee_shop_products_attributes] = await Promise.all([
+        context.app.service("coffee-shop-products-attributes-of-section").find({
+          query: {
+            coffee_shop_products_attributes_id: records.id,
+            deletedAt: null,
+            $sort: {
+              position: -1,
+            },
+          },
+          paginate: false,
+        }),
+      ]);
+    },
+  },
+};
 
 module.exports = {
   before: {
@@ -16,8 +36,8 @@ module.exports = {
 
   after: {
     all: [],
-    find: [],
-    get: [],
+    find: [fastJoin(fastJoinResponse)],
+    get: [fastJoin(fastJoinResponse)],
     create: [],
     update: [],
     patch: [],

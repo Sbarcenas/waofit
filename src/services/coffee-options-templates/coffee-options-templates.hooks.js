@@ -1,6 +1,26 @@
 const registerTemplate = require("./hooks/resgister-template");
 // const updateTempate = require("./hooks/update-template");
 const removeSoftdelete = require("../../hooks/remove-softdelete");
+const { fastJoin } = require("feathers-hooks-common");
+
+const fastJoinResponse = {
+  joins: {
+    join: () => async (records, context) => {
+      [records.coffee_shop_products_attributes] = await Promise.all([
+        context.app.service("coffee-shop-products-attributes").find({
+          query: {
+            id: records.coffee_options_template_id,
+            deletedAt: null,
+            $sort: {
+              position: -1,
+            },
+          },
+          paginate: false,
+        }),
+      ]);
+    },
+  },
+};
 
 const { disallow } = require("feathers-hooks-common");
 module.exports = {
@@ -16,8 +36,8 @@ module.exports = {
 
   after: {
     all: [],
-    find: [],
-    get: [],
+    find: [fastJoin(fastJoinResponse)],
+    get: [fastJoin(fastJoinResponse)],
     create: [],
     update: [],
     patch: [],
