@@ -12,6 +12,7 @@ module.exports = (options = {}) => {
       coffeShopAttributes,
       coffeeShopProductsAttributes,
       coffeeShopProductsAttributesOfSection,
+      taxRule,
     ] = await Promise.all([
       context.app
         .service("coffee-shop-attributes")
@@ -39,6 +40,12 @@ module.exports = (options = {}) => {
           deletedAt: null,
         })
         .then((it) => it[0]),
+      context.app
+        .service("tax-rule")
+        .getModel()
+        .query()
+        .where({ id: records.tax_rule_id, deletedAt: null })
+        .then((id) => id[0]),
     ]);
 
     if (!coffeShopAttributes)
@@ -47,6 +54,8 @@ module.exports = (options = {}) => {
       throw new NotFound("No se encontró el atributo");
     if (coffeeShopProductsAttributesOfSection)
       throw new NotAcceptable("Ya existe este atributo en la plantilla.");
+
+    if (!taxRule) throw new NotAcceptable("No se encontró el iva.");
 
     if (records.price < 0)
       throw new NotAcceptable("El precio no puede ser menor a 0.");
