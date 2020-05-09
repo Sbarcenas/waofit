@@ -4,32 +4,40 @@ const patchExpressProduct = require("./hooks/patch-express-product");
 const { discard, iff, isProvider } = require("feathers-hooks-common");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
 const restricRemove = require("./hooks/restrict-remove");
+const registerCoffeeShopProduct = require("./hooks/register-coffee-shop-product");
+const registerCoffeeOptionsInShoppingCardDetails = require("./hooks/register-coffee-options-in-shopping-card-details");
+const registerCoffeeShopProductAfterCreate = require("./hooks/register-coffee-products-after-create");
 
 module.exports = {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [registerShoppingCartDetails(), registerExpressProduct()],
+    create: [
+      registerShoppingCartDetails(),
+      registerExpressProduct(),
+      registerCoffeeShopProduct(),
+      registerCoffeeOptionsInShoppingCardDetails(),
+    ],
     update: [],
     patch: [
       iff(
         isProvider("external"),
         discard("shopping_cart_id", "shop_type", "product_id", "deletedAt")
       ),
-      patchExpressProduct()
+      patchExpressProduct(),
     ],
-    remove: [restricRemove(), removeSoftDelete()]
+    remove: [restricRemove(), removeSoftDelete()],
   },
 
   after: {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [registerCoffeeShopProductAfterCreate()],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -39,6 +47,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };

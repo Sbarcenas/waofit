@@ -7,7 +7,7 @@ const { fastJoin } = require("feathers-hooks-common");
 const fastJoinResponse = {
   joins: {
     join: () => async (records, context) => {
-      [records.coffee_shop_products_attributes] = await Promise.all([
+      [records.coffee_shop_products_attributes_of_section] = await Promise.all([
         context.app.service("coffee-shop-products-attributes-of-section").find({
           query: {
             coffee_shop_products_attributes_id: records.id,
