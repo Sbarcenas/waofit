@@ -2,7 +2,7 @@ const registerShoppingCart = require("./hooks/register-shopping-cart");
 const registerExpressProduct = require("./hooks/register-express-product");
 const registerExpressProductAfterCreate = require("./hooks/register-express-products-after-create");
 const registerShoppingCartEmpty = require("./hooks/register-shopping-cart-empty");
-
+// const productsJoins = require("./hooks/express-products-join");
 const {
   disallow,
   paramsFromClient,
@@ -97,6 +97,43 @@ const productsJoins = {
                 "express_products_media.media_type": "normal",
                 /* "express_products_media.type": "image", */
                 "express_products_media.deletedAt": null,
+              })
+              .then((it) => it[0]);
+          } else if (shopping_cart_details[index].shop_type == "coffee") {
+            records.shopping_cart_details[index].product = await context.app
+              .service("coffee-shop-products")
+              .getModel()
+              .query()
+              .select(
+                "coffee_shop_products.id",
+                "coffee_shop_products.name",
+                "coffee_shop_products.price",
+                "coffee_shop_products.description",
+                // "coffee_shop_products.shop_type",
+                "coffee_shop_products.status",
+                "coffee_shop_products.coffee_shop_category_id",
+                // "coffee_shop_products.type AS type",
+                // "coffee_shop_products.regular_price",
+                "coffee_shop_products.image_path",
+                "coffee_shop_products.tax_rule_id",
+                "tax_rule.id AS tax_rule_id",
+                "tax_rule.value"
+              )
+              .innerJoin(
+                "coffee_shop_categories",
+                "coffee_shop_categories.id",
+                "=",
+                "coffee_shop_products.coffee_shop_category_id"
+              )
+              .innerJoin(
+                "tax_rule",
+                "tax_rule.id",
+                "=",
+                "coffee_shop_products.tax_rule_id"
+              )
+              .where({
+                "coffee_shop_products.id":
+                  records.shopping_cart_details[index].product_id,
               })
               .then((it) => it[0]);
           }

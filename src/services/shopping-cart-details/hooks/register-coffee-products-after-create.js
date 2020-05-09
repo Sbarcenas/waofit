@@ -11,47 +11,41 @@ module.exports = (options = {}) => {
 
     if (records.shop_type != "coffee") return context;
 
-    const coffeeShopProductAttributesOfSection =
+    const coffeeShopProductAttributesOfSections =
       context.coffeeShopProductAttributesOfSection;
 
     for (
       let index = 0;
-      index < coffeeShopProductAttributesOfSection.length;
+      index < coffeeShopProductAttributesOfSections.length;
       index++
     ) {
-      const coffeeShopProductAttributeOfSection =
-        coffeeShopProductAttributesOfSection[index];
+      const coffeeShopProductAttributesOfSection =
+        coffeeShopProductAttributesOfSections[index];
+      for (const coffeeShopProductAttributeOfSection of coffeeShopProductAttributesOfSection) {
+        const coffeeOptionData = {
+          tax_rule_id: coffeeShopProductAttributeOfSection.tax_rule_id,
+          coffee_shop_products_attributes_of_section_id:
+            coffeeShopProductAttributeOfSection.id,
+          price: coffeeShopProductAttributeOfSection.price,
+        };
 
-      const coffeeOptionData = {
-        tax_rule_id: coffeeShopProductAttributeOfSection[0].tax_rule_id,
-        coffee_shop_products_attributes_of_section_id:
-          coffeeShopProductAttributeOfSection[0].id,
-        price: coffeeShopProductAttributeOfSection[0].price,
-      };
+        const coffeeOption = await context.app
+          .service("coffee-options")
+          .getModel()
+          .query()
+          .insert(coffeeOptionData);
 
-      const coffeeOption = await context.app
-        .service("coffee-options")
-        .getModel()
-        .query()
-        .insert(coffeeOptionData);
-
-      //   const attibute = await context.app
-      //     .service("coffee-shop-products-attributes-of-section")
-      //     .getModel()
-      //     .query()
-      //     .where({ id: coffeeShopProductAttributeOfSection[0].id })
-      //     .then((id) => id[0]);
-
-      //seguimos aqui armando el json de los detalles
-      const coffeeOptionsInShoppingCartDetails = {
-        shopping_cart_details_id: records.id,
-        coffee_options_id: coffeeOption.id,
-      };
-      await context.app
-        .service("coffee-options-in-shopping-cart-details")
-        .getModel()
-        .query()
-        .insert(coffeeOptionsInShoppingCartDetails);
+        // seguimos aqui armando el json de los detalles
+        const coffeeOptionsInShoppingCartDetails = {
+          shopping_cart_details_id: records.id,
+          coffee_options_id: coffeeOption.id,
+        };
+        await context.app
+          .service("coffee-options-in-shopping-cart-details")
+          .getModel()
+          .query()
+          .insert(coffeeOptionsInShoppingCartDetails);
+      }
     }
 
     replaceItems(context, records);

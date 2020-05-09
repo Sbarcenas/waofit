@@ -40,13 +40,33 @@ module.exports = (options = {}) => {
           `La sesion con id ${coffeeShopProductsAttribute.id} es de unica selection.`
         );
 
+      if (coffeeShopProductsAttribute.field_type == "multiple_selection") {
+        if (
+          coffeeShopProductsAttribute.max_select <
+          coffeeShopProductsAttributes
+            .coffee_shop_products_attributes_of_section.length
+        )
+          throw new NotAcceptable(
+            `Los atributos del ${coffeeShopProductsAttribute.id} excede el maximo de atributos que se pueden escoger.`
+          );
+
+        if (
+          coffeeShopProductsAttribute.min_select >
+          coffeeShopProductsAttributes
+            .coffee_shop_products_attributes_of_section.length
+        )
+          throw new NotAcceptable(
+            `Los atributos del ${coffeeShopProductsAttribute.id} no son suficientes.`
+          );
+      }
+
       const coffeeShopProductAttributesOfSection = await context.app
         .service("coffee-shop-products-attributes-of-section")
         .getModel()
         .query()
         .select("id", "price", "tax_rule_id")
         .whereIn(
-          "coffee_shop_attributes_id",
+          "id",
           coffeeShopProductsAttributes.coffee_shop_products_attributes_of_section
         )
         .where({
@@ -61,15 +81,15 @@ module.exports = (options = {}) => {
         coffeeShopProductsAttributes.coffee_shop_products_attributes_of_section
           .length
       )
-        throw new NotFound("No se el atributo en la section");
+        throw new NotFound("No se encontró el atributo en la section");
+
       coffeeShopProductsAttributesOfSectionArray.push(
         coffeeShopProductAttributesOfSection
       );
-      //   console.log(coffeeShopProductAttributes);
     }
+
     context.coffeeShopProductAttributesOfSection = coffeeShopProductsAttributesOfSectionArray;
-    // console.log(context.coffee_shop_products_attributes);
-    // console.log(coffeeShopProductsAttributesOfSectionArray);
+
     replaceItems(context, records);
 
     return context;
