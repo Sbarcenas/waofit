@@ -1,6 +1,7 @@
 const { disallow } = require("feathers-hooks-common");
 const removeSoftDelete = require("../../hooks/remove-softdelete");
 const { fastJoin } = require("feathers-hooks-common");
+const deleteOptionsInScd = require("./hooks/delete-options-in-scd");
 
 const resolves = {
   joins: {
@@ -28,7 +29,7 @@ module.exports = {
     create: [disallow("external")],
     update: [disallow("external")],
     patch: [disallow("external")],
-    remove: [removeSoftDelete()],
+    remove: [deleteOptionsInScd(), removeSoftDelete()],
   },
 
   after: {
