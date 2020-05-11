@@ -1,5 +1,5 @@
-const registerCoffeeShopProductsAttributes = require("./hooks/register-coffee-shop-products-attributes");
-const updateCoffeeProductsAttributes = require("./hooks/update-coffee-shop-products-attributes");
+const registerCoffeeShopProductsAttributes = require("./hooks/register-coffee-products-attrib");
+const updateCoffeeProductsAttributes = require("./hooks/update-coffee-products-attrib");
 const removeSoftdelete = require("../../hooks/remove-softdelete");
 const { disallow } = require("feathers-hooks-common");
 const { fastJoin } = require("feathers-hooks-common");
@@ -7,10 +7,10 @@ const { fastJoin } = require("feathers-hooks-common");
 const fastJoinResponse = {
   joins: {
     join: () => async (records, context) => {
-      [records.coffee_shop_products_attributes_of_section] = await Promise.all([
-        context.app.service("coffee-shop-products-attributes-of-section").find({
+      [records.coffee_attributes_of_section] = await Promise.all([
+        context.app.service("coffee-attributes-of-section").find({
           query: {
-            coffee_shop_products_attributes_id: records.id,
+            coffee_products_attrib_id: records.id,
             deletedAt: null,
             $sort: {
               position: -1,

@@ -104,33 +104,6 @@ const productsJoins = {
               .service("coffee-shop-products")
               .getModel()
               .query()
-              .select(
-                "coffee_shop_products.id",
-                "coffee_shop_products.name",
-                "coffee_shop_products.price",
-                "coffee_shop_products.description",
-                // "coffee_shop_products.shop_type",
-                "coffee_shop_products.status",
-                "coffee_shop_products.coffee_shop_category_id",
-                // "coffee_shop_products.type AS type",
-                // "coffee_shop_products.regular_price",
-                "coffee_shop_products.image_path",
-                "coffee_shop_products.tax_rule_id",
-                "tax_rule.id AS tax_rule_id",
-                "tax_rule.value"
-              )
-              .innerJoin(
-                "coffee_shop_categories",
-                "coffee_shop_categories.id",
-                "=",
-                "coffee_shop_products.coffee_shop_category_id"
-              )
-              .innerJoin(
-                "tax_rule",
-                "tax_rule.id",
-                "=",
-                "coffee_shop_products.tax_rule_id"
-              )
               .where({
                 "coffee_shop_products.id":
                   records.shopping_cart_details[index].product_id,

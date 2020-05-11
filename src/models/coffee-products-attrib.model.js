@@ -4,7 +4,7 @@ const { Model } = require("objection");
 
 class coffeeShopProductsAttributesSection extends Model {
   static get tableName() {
-    return "coffee_shop_products_attributes";
+    return "coffee_products_attrib";
   }
 
   static get jsonSchema() {
@@ -46,11 +46,11 @@ module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
-    .hasTable("coffee_shop_products_attributes")
+    .hasTable("coffee_products_attrib")
     .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("coffee_shop_products_attributes", (table) => {
+          .createTable("coffee_products_attrib", (table) => {
             table.increments("id");
             table.string("name");
             table.enum("field_type", [
@@ -70,19 +70,14 @@ module.exports = function (app) {
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
           })
-          .then(() =>
-            console.log("Created coffee_shop_products_attributes table")
-          ) // eslint-disable-line no-console
+          .then(() => console.log("Created coffee_products_attrib table")) // eslint-disable-line no-console
           .catch((e) =>
-            console.error(
-              "Error creating coffee_shop_products_attributes table",
-              e
-            )
+            console.error("Error creating coffee_products_attrib table", e)
           ); // eslint-disable-line no-console
       }
     })
     .catch((e) =>
-      console.error("Error creating coffee_shop_products_attributes table", e)
+      console.error("Error creating coffee_products_attrib table", e)
     ); // eslint-disable-line no-console
 
   return coffeeShopProductsAttributesSection;

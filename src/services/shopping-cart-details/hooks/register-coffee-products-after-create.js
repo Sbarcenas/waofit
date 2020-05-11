@@ -24,9 +24,10 @@ module.exports = (options = {}) => {
       for (const coffeeShopProductAttributeOfSection of coffeeShopProductAttributesOfSection) {
         const coffeeOptionData = {
           tax_rule_id: coffeeShopProductAttributeOfSection.tax_rule_id,
-          coffee_shop_products_attributes_of_section_id:
+          coffee_attributes_of_section_id:
             coffeeShopProductAttributeOfSection.id,
           price: coffeeShopProductAttributeOfSection.price,
+          coffee_shop_product_id: records.product_id,
         };
 
         const coffeeOption = await context.app
@@ -41,7 +42,7 @@ module.exports = (options = {}) => {
           coffee_options_id: coffeeOption.id,
         };
         await context.app
-          .service("coffee-options-in-shopping-cart-details")
+          .service("coffee-options-in-scd")
           .getModel()
           .query()
           .insert(coffeeOptionsInShoppingCartDetails);

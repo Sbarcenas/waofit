@@ -2,22 +2,22 @@
 // for more of what you can do here.
 const { Model } = require("objection");
 
-class coffeeOptions extends Model {
+class coffeeShopProductsAttributesOfSection extends Model {
   static get tableName() {
-    return "coffee_options";
+    return "coffee_attributes_of_section";
   }
 
   static get jsonSchema() {
     return {
       type: "object",
-      required: [],
+      required: ["coffee_shop_attributes_id", "coffee_products_attrib_id"],
 
       properties: {
+        coffee_shop_attributes_id: { type: "inetger" },
+        coffee_products_attrib_id: { type: "integer" },
         price: { type: "number" },
         tax_rule_id: { type: "integer" },
-        coffee_attributes_of_section_id: { type: "integer" },
-        coffee_shop_product_id: { type: "integer" },
-
+        position: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -36,42 +36,48 @@ module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
-    .hasTable("coffee_options")
+    .hasTable("coffee_attributes_of_section")
     .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("coffee_options", (table) => {
+          .createTable("coffee_attributes_of_section", (table) => {
             table.increments("id");
+            table
+              .integer("coffee_shop_attributes_id")
+              .unsigned()
+              .references("id")
+              .inTable("coffee_shop_attributes")
+              .index();
+            table
+              .integer("coffee_products_attrib_id")
+              .unsigned()
+              .references("id")
+              .inTable("coffee_products_attrib")
+              .index();
+            table.double("price");
             table
               .integer("tax_rule_id")
               .unsigned()
               .references("id")
               .inTable("tax_rule")
               .index();
-            table
-              .integer("coffee_attributes_of_section_id")
-              .unsigned()
-              .references("id")
-              .inTable("coffee_attributes_of_section")
-              .index();
-            table.double("price");
-            table
-              .integer("coffee_shop_product_id")
-              .unsigned()
-              .references()
-              .inTable("coffee_shop_products")
-              .index();
+            table.integer("position");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
           })
-          .then(() => console.log("Created coffee_options table")) // eslint-disable-line no-console
+          .then(() => console.log("Created coffee_attributes_of_section table")) // eslint-disable-line no-console
           .catch((e) =>
-            console.error("Error creating coffee_options table", e)
+            console.error(
+              "Error creating coffee_attributes_of_section table",
+              e
+            )
           ); // eslint-disable-line no-console
       }
     })
-    .catch((e) => console.error("Error creating coffee_options table", e)); // eslint-disable-line no-console
+    .catch((e) =>
+      console.error("Error creating coffee_attributes_of_section table", e)
+    ); // eslint-disable-line no-console
 
-  return coffeeOptions;
+  return coffeeShopProductsAttributesOfSection;
 };

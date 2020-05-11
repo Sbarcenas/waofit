@@ -21,21 +21,20 @@ module.exports = (options = {}) => {
         .where({ id: records.coffee_shop_attributes_id, deletedAt: null })
         .then((id) => id[0]),
       context.app
-        .service("coffee-shop-products-attributes")
+        .service("coffee-products-attrib")
         .getModel()
         .query()
         .where({
-          id: records.coffee_shop_products_attributes_id,
+          id: records.coffee_products_attrib_id,
           deletedAt: null,
         })
         .then((id) => id[0]),
       context.app
-        .service("coffee-shop-products-attributes-of-section")
+        .service("coffee-attributes-of-section")
         .getModel()
         .query()
         .where({
-          coffee_shop_products_attributes_id:
-            records.coffee_shop_products_attributes_id,
+          coffee_products_attrib_id: records.coffee_products_attrib_id,
           coffee_shop_attributes_id: records.coffee_shop_attributes_id,
           deletedAt: null,
         })

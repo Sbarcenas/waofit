@@ -50,14 +50,14 @@ const recurringShoppingCartDetails = require("./recurring-shopping-cart-details/
 const cronGenerateRecurringOrders = require("./cron-generate-recurring-orders/cron-generate-recurring-orders.service.js");
 const favorites = require("./favorites/favorites.service.js");
 const coffeeShopCategories = require("./coffee_shop_categories/coffee_shop_categories.service.js");
-const coffeeShopProductsAttributesOfSection = require("./coffee-shop-products-attributes-of-section/coffee-shop-products-attributes-of-section.service.js");
+const coffeeShopProductsAttributesOfSection = require("./coffee-attributes-of-section/coffee-attributes-of-section.service.js");
 const coffeeShopAttributes = require("./coffee_shop_attributes/coffee_shop_attributes.service.js");
 const coffeeShopProducts = require("./coffee-shop-products/coffee-shop-products.service.js");
 const cms = require("./cms/cms.service.js");
-const coffeeShopProductsAttributes = require("./coffee-shop-products-attributes/coffee-shop-products-attributes.service.js");
-const coffeeOptionsTemplates = require('./coffee-options-templates/coffee-options-templates.service.js');
-const coffeeOptions = require('./coffee-options/coffee-options.service.js');
-const coffeeOptionsInShoppingCartDetails = require('./coffee-options-in-shopping-cart-details/coffee-options-in-shopping-cart-details.service.js');
+const coffeeShopProductsAttributes = require("./coffee-products-attrib/coffee-products-attrib.service.js");
+const coffeeOptionsTemplates = require("./coffee-options-templates/coffee-options-templates.service.js");
+const coffeeOptions = require("./coffee-options/coffee-options.service.js");
+const coffeeOptionsInShoppingCartDetails = require("./coffee-options-in-scd/coffee-options-in-scd.service.js");
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {
   app.configure(users);

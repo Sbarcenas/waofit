@@ -4,7 +4,7 @@ const { Model } = require("objection");
 
 class coffeeOptionsInShoppingCartDetails extends Model {
   static get tableName() {
-    return "coffee_options_in_shopping_cart_details";
+    return "coffee_options_in_scd";
   }
 
   static get jsonSchema() {
@@ -38,23 +38,23 @@ module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
-    .hasTable("coffee_options_in_shopping_cart_details")
+    .hasTable("coffee_options_in_scd")
     .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("coffee_options_in_shopping_cart_details", (table) => {
+          .createTable("coffee_options_in_scd", (table) => {
             table.increments("id");
             table
               .integer("shopping_cart_details_id")
               .unsigned()
               .references("id")
-              .inTable("shopping-cart-details")
+              .inTable("shopping_cart_details")
               .index();
             table
               .integer("coffee_options_id")
               .unsigned()
               .references("id")
-              .inTable("coffee-options")
+              .inTable("coffee_options")
               .index();
             table.string("meta_name");
             table.string("meta_section_name");
@@ -65,22 +65,14 @@ module.exports = function (app) {
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
           })
-          .then(() =>
-            console.log("Created coffee_options_in_shopping_cart_details table")
-          ) // eslint-disable-line no-console
+          .then(() => console.log("Created coffee_options_in_scd table")) // eslint-disable-line no-console
           .catch((e) =>
-            console.error(
-              "Error creating coffee_options_in_shopping_cart_details table",
-              e
-            )
+            console.error("Error creating coffee_options_in_scd table", e)
           ); // eslint-disable-line no-console
       }
     })
     .catch((e) =>
-      console.error(
-        "Error creating coffee_options_in_shopping_cart_details table",
-        e
-      )
+      console.error("Error creating coffee_options_in_scd table", e)
     ); // eslint-disable-line no-console
 
   return coffeeOptionsInShoppingCartDetails;

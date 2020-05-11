@@ -20,16 +20,15 @@ module.exports = (options = {}) => {
         .then((it) => it[0]),
     ]);
 
-    if (records.coffee_shop_products_attributes.length < 1)
+    if (records.coffee_products_attrib.length < 1)
       throw new NotAcceptable("Debes enviar los atributos del producto.");
 
     if (!product) throw new NotFound("No se encontró el producto.");
 
-    context.coffee_shop_products_attributes =
-      records.coffee_shop_products_attributes;
+    context.coffee_products_attrib = records.coffee_products_attrib;
     context.coffee_shop_product = product;
 
-    delete records.coffee_shop_products_attributes;
+    delete records.coffee_products_attrib;
 
     replaceItems(context, records);
 

@@ -10,7 +10,7 @@ module.exports = (options = {}) => {
 
     if (records.status == "active") {
       const coffeeShopProductsAttributesSection = await context.app
-        .service("coffee-shop-products-attributes-of-section")
+        .service("coffee-attributes-of-section")
         .getModel()
         .query()
         .where({ coffee_option_template_id: context.id, deletedAt: null })

@@ -13,14 +13,14 @@ module.exports = (options = {}) => {
 
     const coffeeShopProduct = context.coffee_shop_product;
     const coffeeShopProductsAttributesOfSectionArray = [];
-    for (const coffeeShopProductsAttributes of context.coffee_shop_products_attributes) {
+    for (const coffeeShopProductsAttributes of context.coffee_products_attrib) {
       const [coffeeShopProductsAttribute] = await Promise.all([
         context.app
-          .service("coffee-shop-products-attributes")
+          .service("coffee-products-attrib")
           .getModel()
           .query()
           .where({
-            id: coffeeShopProductsAttributes.coffee_shop_products_attributes_id,
+            id: coffeeShopProductsAttributes.coffee_products_attrib_id,
           })
           .then((it) => it[0]),
       ]);
@@ -33,8 +33,7 @@ module.exports = (options = {}) => {
 
       if (
         coffeeShopProductsAttribute.field_type == "unique_selection" &&
-        coffeeShopProductsAttributes.coffee_shop_products_attributes_of_section
-          .length > 1
+        coffeeShopProductsAttributes.coffee_attributes_of_section_ids.length > 1
       )
         throw new NotAcceptable(
           `La sesion con id ${coffeeShopProductsAttribute.id} es de unica selection.`
@@ -43,8 +42,7 @@ module.exports = (options = {}) => {
       if (coffeeShopProductsAttribute.field_type == "multiple_selection") {
         if (
           coffeeShopProductsAttribute.max_select <
-          coffeeShopProductsAttributes
-            .coffee_shop_products_attributes_of_section.length
+          coffeeShopProductsAttributes.coffee_attributes_of_section_ids.length
         )
           throw new NotAcceptable(
             `Los atributos del ${coffeeShopProductsAttribute.id} excede el maximo de atributos que se pueden escoger.`
@@ -52,8 +50,7 @@ module.exports = (options = {}) => {
 
         if (
           coffeeShopProductsAttribute.min_select >
-          coffeeShopProductsAttributes
-            .coffee_shop_products_attributes_of_section.length
+          coffeeShopProductsAttributes.coffee_attributes_of_section_ids.length
         )
           throw new NotAcceptable(
             `Los atributos del ${coffeeShopProductsAttribute.id} no son suficientes.`
@@ -61,25 +58,24 @@ module.exports = (options = {}) => {
       }
 
       const coffeeShopProductAttributesOfSection = await context.app
-        .service("coffee-shop-products-attributes-of-section")
+        .service("coffee-attributes-of-section")
         .getModel()
         .query()
         .select("id", "price", "tax_rule_id")
         .whereIn(
           "id",
-          coffeeShopProductsAttributes.coffee_shop_products_attributes_of_section
+          coffeeShopProductsAttributes.coffee_attributes_of_section_ids
         )
         .where({
-          coffee_shop_products_attributes_id:
-            coffeeShopProductsAttributes.coffee_shop_products_attributes_id,
+          coffee_products_attrib_id:
+            coffeeShopProductsAttributes.coffee_products_attrib_id,
           deletedAt: null,
         })
         .then((it) => it);
 
       if (
         coffeeShopProductAttributesOfSection.length !=
-        coffeeShopProductsAttributes.coffee_shop_products_attributes_of_section
-          .length
+        coffeeShopProductsAttributes.coffee_attributes_of_section_ids.length
       )
         throw new NotFound("No se encontró el atributo en la section");
 

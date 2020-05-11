@@ -3,7 +3,12 @@ const removeSoftdelete = require("../../hooks/remove-softdelete");
 const restrictActivateCoffeeShopProduct = require("./hooks/retrict-activate-coffee-shop-product");
 const updateAlgolia = require("./hooks/update-algolia");
 
-const { fastJoin, disallow } = require("feathers-hooks-common");
+const {
+  fastJoin,
+  disallow,
+  iff,
+  isProvider,
+} = require("feathers-hooks-common");
 
 const fastJoinResponse = {
   joins: {
@@ -45,6 +50,21 @@ const fastJoinAlgolia = {
   },
 };
 
+const fastJoinInternal = {
+  joins: {
+    join: () => async (records, context) => {
+      [records.coffee_shop_category] = await Promise.all([
+        context.app
+          .service("coffee-shop-categories")
+          .getModel()
+          .query()
+          .where({ id: records.coffee_shop_category_id, deletedAt: null })
+          .then((it) => it[0]),
+      ]);
+    },
+  },
+};
+
 module.exports = {
   before: {
     all: [],
@@ -58,11 +78,19 @@ module.exports = {
 
   after: {
     all: [],
-    find: [fastJoin(fastJoinResponse)],
-    get: [],
+    find: [
+      iff(isProvider("external"), fastJoin(fastJoinResponse)),
+      fastJoin(fastJoinInternal),
+    ],
+    get: [
+      iff(isProvider("external"), fastJoin(fastJoinResponse)),
+      fastJoin(fastJoinInternal),
+    ],
     create: [],
     update: [],
-    patch: [fastJoin(fastJoinAlgolia), updateAlgolia()],
+    patch: [
+      iff(isProvider("external"), fastJoin(fastJoinAlgolia), updateAlgolia()),
+    ],
     remove: [],
   },
 

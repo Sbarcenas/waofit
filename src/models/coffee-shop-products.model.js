@@ -16,7 +16,6 @@ class coffeeShopProducts extends Model {
         "tax_rule_id",
         "status",
         "price",
-        "image_path",
       ],
 
       properties: {
@@ -57,16 +56,25 @@ module.exports = function (app) {
             table.string("name");
             table.text("description");
             table.double("price");
-            table.integer("coffee_options_template_id");
             table
               .integer("coffee_options_template_id")
               .unsigned()
               .references("id")
-              .inTable("coffee-options-templates")
+              .inTable("coffee_options_templates")
               .index();
             table.integer("position");
-            table.integer("coffee_shop_category_id");
-            table.integer("tax_rule_id");
+            table
+              .integer("coffee_shop_category_id")
+              .unsigned()
+              .references("id")
+              .inTable("coffee_shop_categories")
+              .index();
+            table
+              .integer("tax_rule_id")
+              .unsigned()
+              .references("id")
+              .inTable("tax_rule")
+              .index();
             table.enum("status", ["active", "inactive"]);
             table.text("image_path");
             table.timestamp("deletedAt").nullable();

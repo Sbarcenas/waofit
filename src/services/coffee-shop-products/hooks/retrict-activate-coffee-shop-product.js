@@ -53,7 +53,7 @@ module.exports = function (options = {}) {
         );
 
       const coffeeShopProductAttributesIds = await context.app
-        .service("coffee-shop-products-attributes")
+        .service("coffee-products-attrib")
         .getModel()
         .query()
         .select("id")
@@ -69,14 +69,11 @@ module.exports = function (options = {}) {
       }
 
       const coffeeShopProductAttributesOfSection = await context.app
-        .service("coffee-shop-products-attributes-of-section")
+        .service("coffee-attributes-of-section")
         .getModel()
         .query()
-        .select("coffee_shop_products_attributes_id")
-        .whereIn(
-          "coffee_shop_products_attributes_id",
-          coffeeShopProductAttributesIds
-        )
+        .select("coffee_products_attrib_id")
+        .whereIn("coffee_products_attrib_id", coffeeShopProductAttributesIds)
         .where({ deletedAt: null })
         .then((it) => it);
 
