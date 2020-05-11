@@ -7,6 +7,7 @@ const restricRemove = require("./hooks/restrict-remove");
 const registerCoffeeShopProduct = require("./hooks/register-coffee-shop-product");
 const registerCoffeeOptionsInShoppingCardDetails = require("./hooks/register-coffee-options-in-shopping-card-details");
 const registerCoffeeShopProductAfterCreate = require("./hooks/register-coffee-products-after-create");
+const restrigGet = require("./hooks/restrict-get");
 
 const resolves = {
   joins: {
@@ -29,8 +30,8 @@ const resolves = {
 module.exports = {
   before: {
     all: [],
-    find: [],
-    get: [],
+    find: [restrigGet()],
+    get: [restrigGet()],
     create: [
       registerShoppingCartDetails(),
       registerExpressProduct(),
