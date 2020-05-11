@@ -79,6 +79,8 @@ function defineAbilitiesFor(user) {
       "express-products-recipes",
       "cms",
       "coffee-shop-products",
+      "coffee-options",
+      "coffee-options-in-scd",
     ]);
 
     can("update", ["users"], { id: user.id });

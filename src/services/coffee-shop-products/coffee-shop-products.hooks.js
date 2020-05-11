@@ -80,11 +80,11 @@ module.exports = {
     all: [],
     find: [
       iff(isProvider("external"), fastJoin(fastJoinResponse)),
-      fastJoin(fastJoinInternal),
+      iff(isProvider("internal"), fastJoin(fastJoinInternal)),
     ],
     get: [
       iff(isProvider("external"), fastJoin(fastJoinResponse)),
-      fastJoin(fastJoinInternal),
+      iff(isProvider("internal"), fastJoin(fastJoinInternal)),
     ],
     create: [],
     update: [],
