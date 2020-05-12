@@ -38,6 +38,7 @@ function defineAbilitiesFor(user) {
       "recurring-shopping-cart",
       "recurring-shopping-cart-details",
       "favorites",
+      "coffee-options-in-scd",
     ]);
 
     can("read", ["users"], { id: user.id });
