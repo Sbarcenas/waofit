@@ -3,6 +3,7 @@ const updateCoffeeProductsAttributes = require("./hooks/update-coffee-products-a
 const removeSoftdelete = require("../../hooks/remove-softdelete");
 const { disallow } = require("feathers-hooks-common");
 const { fastJoin } = require("feathers-hooks-common");
+const searchAdmin = require("./hooks/search-admin");
 
 const fastJoinResponse = {
   joins: {
@@ -26,8 +27,8 @@ const fastJoinResponse = {
 module.exports = {
   before: {
     all: [],
-    find: [],
-    get: [],
+    find: [searchAdmin()],
+    get: [searchAdmin()],
     create: [registerCoffeeShopProductsAttributes()],
     update: [disallow("external")],
     patch: [updateCoffeeProductsAttributes()],
