@@ -160,6 +160,7 @@ module.exports = function (options = {}) {
         .where({
           shopping_cart_id: shoppingCart.id,
           "shopping_cart_details.deletedAt": null,
+          "shopping_cart_details.shop_type": "express_product",
           "express_products.deletedAt": null,
           "express_products.status": "active",
           "express_products_media.main": "true",
@@ -191,11 +192,15 @@ module.exports = function (options = {}) {
     //----------------------------------FIN CALCULOS PRODUCTOS EXPRESS---------------------------------------
 
     //se tienen que sumar las demas variables de las demas tiendas
-    records.total_price_shipping_cost_excl = totalPriceExpressProduct;
+    records.total_price_shipping_cost_excl = totalPriceExpressProduct
+      ? totalPriceExpressProduct
+      : 0;
     //se tienen que sumar las demas variables del precio total sin iva
-    records.total_price_tax_excl = totalPriceExpressProductTaxExcl;
+    records.total_price_tax_excl = totalPriceExpressProductTaxExcl
+      ? totalPriceExpressProductTaxExcl
+      : 0;
     //se tienen que sumar las demas variables del total del iva
-    records.total_tax = totalTaxExpressProduct;
+    records.total_tax = totalTaxExpressProduct ? totalTaxExpressProduct : 0;
     records.order_status_id = 1;
     records.user_id = user.id;
     records.recurrent = "false";
@@ -206,6 +211,7 @@ module.exports = function (options = {}) {
 
     context.dataOrders = {
       data: records,
+      shoppingCart: shoppingCart,
       user_address: userAddress,
       date_dispatch: records.date_dispatch,
       type_dispatch: records.type_dispatch,
@@ -223,17 +229,12 @@ module.exports = function (options = {}) {
       },
     };
 
-    //activadores de hooks en el after y validaciones de que si tienen algo dentro,
-    //si no tienen objetos dentro entonces hay que enviar un mensaje de error,
-    //ya que no tendria productos el carro de compras
-
-    //al menos un array debe estar lleno para no enviar el mensage de error
-    //EJEMPLO shoppingCartDetailsExpressProduct.length > 0 o los demas arrays del promise.all
     if (shoppingCartDetailsExpressProduct.length > 0) {
       context.expressProduct = true;
       context.changeStatusShoppingCart = true;
     } else {
-      throw new NotFound("No se encontrarón productos.");
+      context.expressProduct = false;
+      context.changeStatusShoppingCart = false;
     }
 
     delete records.user_address_id;

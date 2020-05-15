@@ -21,7 +21,7 @@ class ordersStatus extends Model {
         description: { type: "string" },
         type: {
           type: "string",
-          enum: ["general", "express-products", "coffe"],
+          enum: ["general", "express-products", "coffee"],
           status_code: { type: "string" },
         },
         color: { type: "string" },
@@ -53,7 +53,7 @@ module.exports = function (app) {
               table.string("name");
               table.text("description");
               table
-                .enum("type", ["general", "express-products", "coffe"])
+                .enum("type", ["general", "express-products", "coffee"])
                 .defaultTo("general");
               table.string("status_code");
               table.string("color");

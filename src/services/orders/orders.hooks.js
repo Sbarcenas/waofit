@@ -4,9 +4,10 @@ const registerExpressProductsOrders = require("./hooks/register-express-products
 const registerExpressProductsOrdersDetails = require("./hooks/register-express-products-orders-details");
 const registerOrderHistory = require("./hooks/register-order-history");
 const calculateShipping = require("./hooks/calculate-shipping");
+const registerOrderCoffeeShop = require("./hooks/register-order-coffee-shop");
 const searchAdmin = require("./hooks/search-admin");
-
 const { fastJoin } = require("feathers-hooks-common");
+const registerCoffeeOrder = require("./hooks/register-coffee-order");
 
 const ordersJoin = {
   joins: {
@@ -92,7 +93,7 @@ module.exports = {
     all: [],
     find: [searchAdmin()],
     get: [searchAdmin()],
-    create: [registerOrders()],
+    create: [registerOrders(), registerOrderCoffeeShop()],
     update: [],
     patch: [],
     remove: [],
@@ -107,6 +108,7 @@ module.exports = {
       changeStatusShoppingCart(),
       registerExpressProductsOrders(),
       registerExpressProductsOrdersDetails(),
+      registerCoffeeOrder(),
       calculateShipping(), //correrlo de ultimo
     ],
     update: [],
