@@ -6,7 +6,7 @@ const {
   getItems,
   replaceItems,
 } = require("feathers-hooks-common");
-
+const lodash = require("lodash");
 // eslint-disable-next-line no-unused-vars
 module.exports = function (options = {}) {
   // Return the actual hook.
@@ -75,7 +75,8 @@ module.exports = function (options = {}) {
       totalPriceCoffeeShopAttributesTaxInc,
       totalPriceCoffeeShopAttributesTaxExc,
       totalTaxCoffeeShopAttributes,
-    ] = [null, null, null];
+      shoppingCartDetailsCoffeeAttributes,
+    ] = [null, null, null, []];
     for (const coffeeShop of shoppingCartDetailsCoffeeShop) {
       const coffeeOptionsIds = await context.app
         .service("coffee-options-in-scd")
@@ -139,6 +140,7 @@ module.exports = function (options = {}) {
         (coffeeShop.price - coffeeShop.price / `1.${coffeeShop.tax_value}`) *
         coffeeShop.shopping_cart_details_quantity;
     }
+
     //----------------------------------FIN CALCULOS CAFETERIA---------------------------------------
 
     //SE SUMAN LOS TOTALES DE LA CAFETERIA
@@ -155,6 +157,7 @@ module.exports = function (options = {}) {
       context.changeStatusShoppingCart = true;
       context.dataOrders = {
         ...context.dataOrders,
+        shoppingCartDetailsCoffeeShop,
         totalsShoppingCartDetailsCoffee: {
           total_price_tax_excl: totalPriceCoffeeShopTaxExcl,
           total_tax: totalTaxCoffeeShop,
@@ -164,6 +167,11 @@ module.exports = function (options = {}) {
             totalPriceCoffeeShop +
             parseFloat(shippingCost.price) +
             totalTaxCoffeeShop,
+          totalCoffeeOptions: {
+            totalPriceCoffeeShopAttributesTaxExc,
+            totalPriceCoffeeShopAttributesTaxInc,
+            totalTaxCoffeeShopAttributes,
+          },
         },
       };
     } else {

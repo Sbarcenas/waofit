@@ -8,6 +8,7 @@ const registerOrderCoffeeShop = require("./hooks/register-order-coffee-shop");
 const searchAdmin = require("./hooks/search-admin");
 const { fastJoin } = require("feathers-hooks-common");
 const registerCoffeeOrder = require("./hooks/register-coffee-order");
+const registerCoffeeOrderDetails = require("./hooks/register-coffee-order-details");
 
 const ordersJoin = {
   joins: {
@@ -109,6 +110,7 @@ module.exports = {
       registerExpressProductsOrders(),
       registerExpressProductsOrdersDetails(),
       registerCoffeeOrder(),
+      registerCoffeeOrderDetails(),
       calculateShipping(), //correrlo de ultimo
     ],
     update: [],

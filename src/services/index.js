@@ -58,8 +58,10 @@ const coffeeShopProductsAttributes = require("./coffee-products-attrib/coffee-pr
 const coffeeOptionsTemplates = require("./coffee-options-templates/coffee-options-templates.service.js");
 const coffeeOptions = require("./coffee-options/coffee-options.service.js");
 const coffeeOptionsInShoppingCartDetails = require("./coffee-options-in-scd/coffee-options-in-scd.service.js");
-const coffeeOrders = require('./coffee-orders/coffee-orders.service.js');
-const coffeeOrdersHistory = require('./coffee-orders-history/coffee-orders-history.service.js');
+const coffeeOrders = require("./coffee-orders/coffee-orders.service.js");
+const coffeeOrdersHistory = require("./coffee-orders-history/coffee-orders-history.service.js");
+const coffeeOrderDetails = require("./coffee-order-details/coffee-order-details.service.js");
+const coffeeOptOrderDet = require("./coffee-opt-order-det/coffee-opt-order-det.service.js");
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {
   app.configure(users);
@@ -124,4 +126,6 @@ module.exports = function (app) {
   app.configure(coffeeOptionsInShoppingCartDetails);
   app.configure(coffeeOrders);
   app.configure(coffeeOrdersHistory);
+  app.configure(coffeeOrderDetails);
+  app.configure(coffeeOptOrderDet);
 };

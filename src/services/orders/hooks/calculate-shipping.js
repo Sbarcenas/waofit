@@ -10,22 +10,32 @@ module.exports = (options = {}) => {
     const { user } = context.params;
 
     //aqui buscar todos los costos de envios de las subordenes
-    let [shipCostExpProdDeta] = await Promise.all([
-      context.app
-        .service("express-products-orders")
-        .getModel()
-        .query()
-        .select("shipping_cost")
-        .where({ order_id: records.id })
-        .then((it) => parseFloat(it[0].shipping_cost)),
-    ]);
+    let [shipCostExpProdDeta, shipCostCofeeShop] = [null, null];
 
-    shipCostExpProdDeta = shipCostExpProdDeta ? shipCostExpProdDeta : 0;
+    if (context.expressProduct)
+      if (context.coffeeShop)
+        shipCostExpProdDeta = await context.app
+          .service("express-products-orders")
+          .getModel()
+          .query()
+          .select("shipping_cost")
+          .where({ order_id: records.id })
+          .then((it) => (it[0] ? parseFloat(it[0].shipping_cost) : 0));
+
+    shipCostCofeeShop = await context.app
+      .service("coffee-orders")
+      .getModel()
+      .query()
+      .select("shipping_cost")
+      .where({ order_id: records.id })
+      .then((it) => (it[0] ? parseFloat(it[0].shipping_cost) : 0));
 
     //aqui sumar todos los costos y actualizar la tabla de orders
 
     const total_price =
-      parseFloat(records.total_price_shipping_cost_excl) + shipCostExpProdDeta;
+      parseFloat(records.total_price_shipping_cost_excl) +
+      shipCostExpProdDeta +
+      shipCostCofeeShop;
 
     await context.app
       .service("orders")
