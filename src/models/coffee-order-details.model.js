@@ -20,6 +20,11 @@ class coffeeOrderDetails extends Model {
         "unit_price_tax",
         "total_price_tax_incl",
         "total_price_tax",
+        // "total_price_tax_incl_opt_order_det_tax_inc", //guarda el total de todo
+        // "total_price_opt_order_det",
+        // "total_price_opt_order_det_tax_excl",
+        // "total_price_opt_order_det_tax_inc",
+        // "total_tax_opt_order_det",
       ],
 
       properties: {
@@ -36,6 +41,11 @@ class coffeeOrderDetails extends Model {
         unit_price_tax: { type: "number" },
         total_price_tax: { type: "number" },
         total_price_tax_incl: { type: "number" },
+        total_price_opt_order_det: { type: "number" },
+        total_price_tax_incl_opt_order_det_tax_inc: { type: "number" },
+        total_price_opt_order_det_tax_excl: { type: "number" },
+        total_price_opt_order_det_tax_inc: { type: "number" },
+        total_tax_opt_order_det: { type: "number" },
         coffee_shop_product_name: { type: "string" },
         coffee_shop_product_image: { type: "string" },
         coffee_shop_product_details_meta_data: { type: "string" },
@@ -87,6 +97,11 @@ module.exports = function (app) {
               "delivered",
               "pending shipping",
             ]);
+            table.decimal("total_price_tax_incl_opt_order_det_tax_inc");
+            table.decimal("total_price_opt_order_det");
+            table.decimal("total_price_opt_order_det_tax_excl");
+            table.decimal("total_price_opt_order_det_tax_inc");
+            table.decimal("total_tax_opt_order_det");
             table.string("coffee_shop_product_name");
             table.string("coffee_shop_product_image");
             table.text("coffee_shop_product_details_meta_data");

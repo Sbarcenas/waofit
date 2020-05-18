@@ -112,44 +112,75 @@ module.exports = (options = {}) => {
             .whereIn("coffee_options.id", coffeeOptionsIds)
             .then((it) => it);
 
-          const coffeeOptCoffeeOrderDet = [];
+          let [
+            total_price_opt_order_det,
+            total_price_opt_order_det_tax_excl,
+            total_price_opt_order_det_tax_inc,
+            total_tax_opt_order_det,
+          ] = [null, null, null, null];
           for (const coffeeOption of coffeeOptionsJoinAttiOfSections) {
-            // console.log(`1.${coffeeShop.tax_value}`, "-------------------");
+            const tax_value = coffeeOption.tax_value
+              ? coffeeOption.tax_value
+              : 0;
 
-            coffeeOptCoffeeOrderDet.push({
+            const coffeeOptCoffeeOrderDet = {
               coffee_order_details_id: coffeeOrderDetails.id,
               coffee_attributes_of_section_id:
                 coffeeOption.coffee_attributes_of_section_id,
               total_price_tax_inc:
                 coffeeOption.price *
                 coffeeShop.shopping_cart_details_quantity *
-                `1.${coffeeOption.tax_value}`,
+                `1.${tax_value}`,
               total_price_tax_excl:
                 coffeeOption.price * coffeeShop.shopping_cart_details_quantity,
               total_price:
                 coffeeOption.price *
                 coffeeShop.shopping_cart_details_quantity *
-                `1.${coffeeOption.tax_value}`,
+                `1.${tax_value}`,
               unit_price_tax_excl: coffeeOption.price,
-              unit_price_tax_inc:
-                coffeeOption.price * `1.${coffeeOption.tax_value}`,
+              unit_price_tax_inc: coffeeOption.price * `1.${tax_value}`,
+              // parseFloat(
               total_tax:
                 coffeeOption.price *
-                  `1.${coffeeOption.tax_value}` *
-                  coffeeShop.shopping_cart_details_quantity -
-                coffeeOption.price,
+                  coffeeShop.shopping_cart_details_quantity *
+                  `1.${tax_value}` -
+                coffeeOption.price * coffeeShop.shopping_cart_details_quantity,
               createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
               updatedAt: moment().format("YYYY-MM-DD hh:mm:ss"),
-            });
+            };
+
+            total_price_opt_order_det += coffeeOptCoffeeOrderDet.total_price;
+            total_price_opt_order_det_tax_excl +=
+              coffeeOptCoffeeOrderDet.total_price_tax_excl;
+            total_price_opt_order_det_tax_inc +=
+              coffeeOptCoffeeOrderDet.total_price_tax_inc;
+            total_tax_opt_order_det += coffeeOptCoffeeOrderDet.total_tax;
+            // console.log(coffeeOptCoffeeOrderDet);
+
+            // throw "";
 
             //aqui insertar uno por uno para tomar el id de la suborden y sumarle el valor de los productos.
-          }
-          console.log(coffeeOptCoffeeOrderDet);
+            const coffeeOptOrdeDet = await context.app
+              .service("coffee-opt-order-det")
+              .getModel()
+              .query()
+              .insert(coffeeOptCoffeeOrderDet);
 
-          await query.insert(
-            context.app.service("coffee-opt-order-det").getModel(),
-            coffeeOptCoffeeOrderDet
-          );
+            await context.app
+              .service("coffee-order-details")
+              .getModel()
+              .query()
+              .patch({
+                total_price_opt_order_det,
+                total_price_opt_order_det_tax_excl,
+                total_price_opt_order_det_tax_inc,
+                total_tax_opt_order_det,
+                total_price_tax_incl_opt_order_det_tax_inc:
+                  coffeeOrderDetails.total_price_tax_incl +
+                  total_price_opt_order_det_tax_inc,
+              })
+              .where({ id: coffeeOrderDetails.id });
+          }
         }
         //calculos los atributos
       }

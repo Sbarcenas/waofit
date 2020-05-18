@@ -13,23 +13,34 @@ const registerCoffeeOrderDetails = require("./hooks/register-coffee-order-detail
 const ordersJoin = {
   joins: {
     join: () => async (records, context) => {
-      const [expressProductsOrders] = await Promise.all([
+      const orderStatusModel = context.app.service("orders-status").getModel();
+      const [expressProductsOrders, coffeeOrder] = await Promise.all([
         context.app
           .service("express-products-orders")
           .getModel()
           .query()
           .where({
             order_id: records.id,
+            user_id: context.params.user.id,
+            deletedAt: null,
+          })
+          .then((it) => it[0]),
+        context.app
+          .service("coffee-orders")
+          .getModel()
+          .query()
+          .where({
+            order_id: records.id,
+            user_id: context.params.user.id,
             deletedAt: null,
           })
           .then((it) => it[0]),
       ]);
+
       if (expressProductsOrders) {
         records.express_product_order = expressProductsOrders;
 
-        records.express_product_order.status = await context.app
-          .service("orders-status")
-          .getModel()
+        records.express_product_order.status = await orderStatusModel
           .query()
           .where({
             id: expressProductsOrders.order_status_id,
@@ -83,6 +94,35 @@ const ordersJoin = {
           records.express_product_order.express_product_order_details[
             index
           ].product = product;
+        }
+      }
+      if (coffeeOrder) {
+        records.coffee_order = coffeeOrder;
+        records.coffee_order.status = await orderStatusModel
+          .query()
+          .where({
+            id: coffeeOrder.order_status_id,
+            type: "coffee",
+            deletedAt: null,
+          })
+          .then((it) => it[0]);
+        const coffeeOrderDetails = await context.app
+          .service("coffee-order-details")
+          .getModel()
+          .query()
+          .where({ coffee_order_id: coffeeOrder.id });
+
+        records.coffee_order.coffee_order_details = coffeeOrderDetails;
+
+        for (let index = 0; index < coffeeOrderDetails.length; index++) {
+          const coffeeOrderDetail = coffeeOrderDetails[index];
+          const product = await context.app
+            .service("coffee-shop-products")
+            .getModel()
+            .query()
+            .where({ id: coffeeOrderDetail.coffee_shop_product_id })
+            .then((it) => it[0]);
+          records.coffee_order.coffee_order_details[index].product = product;
         }
       }
     },

@@ -144,13 +144,22 @@ module.exports = function (options = {}) {
     //----------------------------------FIN CALCULOS CAFETERIA---------------------------------------
 
     //SE SUMAN LOS TOTALES DE LA CAFETERIA
+
     records.total_price_shipping_cost_excl += totalPriceCoffeeShop
       ? totalPriceCoffeeShop
       : 0;
-    records.total_price_tax_excl += totalPriceCoffeeShopTaxExcl
-      ? totalPriceCoffeeShopTaxExcl
-      : 0;
-    records.total_tax += totalTaxCoffeeShop ? totalTaxCoffeeShop : 0;
+
+    let total_price_tax_excl = null;
+    total_price_tax_excl +=
+      (totalPriceCoffeeShopAttributesTaxExc
+        ? totalPriceCoffeeShopAttributesTaxExc
+        : 0) + (totalPriceCoffeeShopTaxExcl ? totalPriceCoffeeShopTaxExcl : 0);
+
+    records.total_price_tax_excl += total_price_tax_excl;
+
+    records.total_tax +=
+      (totalTaxCoffeeShop ? totalTaxCoffeeShop : 0) +
+      (totalTaxCoffeeShopAttributes ? totalTaxCoffeeShopAttributes : 0);
 
     if (shoppingCartDetailsCoffeeShop.length > 0) {
       context.coffeeShop = true;
@@ -160,13 +169,15 @@ module.exports = function (options = {}) {
         shoppingCartDetailsCoffeeShop,
         totalsShoppingCartDetailsCoffee: {
           total_price_tax_excl: totalPriceCoffeeShopTaxExcl,
-          total_tax: totalTaxCoffeeShop,
+          total_tax: records.total_tax,
           total_price_tax_incl: totalPriceCoffeeShop,
           total_price_shipping_cost_excl: totalPriceCoffeeShop,
           total_price:
             totalPriceCoffeeShop +
-            parseFloat(shippingCost.price) +
-            totalTaxCoffeeShop,
+            parseFloat(
+              shippingCost.price
+            ) /* +
+            totalTaxCoffeeShop, */,
           totalCoffeeOptions: {
             totalPriceCoffeeShopAttributesTaxExc,
             totalPriceCoffeeShopAttributesTaxInc,

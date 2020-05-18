@@ -222,10 +222,7 @@ module.exports = function (options = {}) {
         total_tax: totalTaxExpressProduct,
         total_price_tax_incl: totalPriceExpressProduct,
         total_price_shipping_cost_excl: totalPriceExpressProduct,
-        total_price:
-          totalPriceExpressProduct +
-          parseFloat(shippingCost.price) +
-          totalTaxExpressProduct,
+        total_price: parseFloat(shippingCost.price) + totalTaxExpressProduct,
       },
     };
 

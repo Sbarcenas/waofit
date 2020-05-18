@@ -13,29 +13,30 @@ module.exports = (options = {}) => {
     let [shipCostExpProdDeta, shipCostCofeeShop] = [null, null];
 
     if (context.expressProduct)
-      if (context.coffeeShop)
-        shipCostExpProdDeta = await context.app
-          .service("express-products-orders")
-          .getModel()
-          .query()
-          .select("shipping_cost")
-          .where({ order_id: records.id })
-          .then((it) => (it[0] ? parseFloat(it[0].shipping_cost) : 0));
+      shipCostExpProdDeta = await context.app
+        .service("express-products-orders")
+        .getModel()
+        .query()
+        .select("shipping_cost")
+        .where({ order_id: records.id })
+        .then((it) => (it[0] ? parseFloat(it[0].shipping_cost) : 0));
 
-    shipCostCofeeShop = await context.app
-      .service("coffee-orders")
-      .getModel()
-      .query()
-      .select("shipping_cost")
-      .where({ order_id: records.id })
-      .then((it) => (it[0] ? parseFloat(it[0].shipping_cost) : 0));
+    if (context.coffeeShop)
+      shipCostCofeeShop = await context.app
+        .service("coffee-orders")
+        .getModel()
+        .query()
+        .select("shipping_cost")
+        .where({ order_id: records.id })
+        .then((it) => (it[0] ? parseFloat(it[0].shipping_cost) : 0));
 
     //aqui sumar todos los costos y actualizar la tabla de orders
+    const total_shipping_cost =
+      (shipCostExpProdDeta ? shipCostExpProdDeta : 0) +
+      (shipCostCofeeShop ? shipCostCofeeShop : 0);
 
     const total_price =
-      parseFloat(records.total_price_shipping_cost_excl) +
-      shipCostExpProdDeta +
-      shipCostCofeeShop;
+      parseFloat(records.total_price_shipping_cost_excl) + total_shipping_cost;
 
     await context.app
       .service("orders")
@@ -43,7 +44,7 @@ module.exports = (options = {}) => {
       .query()
       .patch({
         total_price: total_price,
-        total_shipping_cost: shipCostExpProdDeta,
+        total_shipping_cost,
       })
       .where({ id: records.id });
 
