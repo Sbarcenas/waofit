@@ -16,6 +16,7 @@ class recipes extends Model {
         author_id: { type: "integer" },
         image_cover: { type: "string" },
         title: { type: "string", maxLength: 255 },
+        short_description: { type: "string" },
         ingredients: { type: "string" },
         status: { type: "string", enum: ["active", "inactive"] },
         preparation_description: { type: "string" },
@@ -46,7 +47,7 @@ class recipes extends Model {
   }
 
   $beforeInsert() {
-    this.createdAt = this.updatedAt = new Date().toISOString();
+    this.createdAt = this.updatsedAt = new Date().toISOString();
   }
 
   $beforeUpdate() {
@@ -72,6 +73,7 @@ module.exports = function (app) {
               .index();
             table.text("image_cover");
             table.string("title");
+            table.text("short_description");
             table.text("ingredients");
             table.enum("status", ["active", "inactive"]).defaultTo("inactive");
             table.text("preparation_description");
