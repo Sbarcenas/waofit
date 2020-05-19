@@ -10,7 +10,7 @@ class coffeeOrdersHistory extends Model {
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["coffee_order_id", "order_status_id", "user_id"],
+      required: ["coffee_order_id", "order_status_id"],
 
       properties: {
         coffee_order_id: { type: "integer" },

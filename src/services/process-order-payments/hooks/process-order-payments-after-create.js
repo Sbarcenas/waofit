@@ -73,6 +73,7 @@ module.exports = function (options = {}) {
           throw new PaymentError("payment error");
         }
 
+        response_epayco = payment_info.data;
         //obtenemos el id del product history payment
         const data = {
           order_id: parseInt(payment_info.data.factura.split("-")[1]),
@@ -81,12 +82,10 @@ module.exports = function (options = {}) {
         };
         //respuesta de pago con exito *se actualiza pdocut history payment a pagado*
 
-        console.log(payment_info.data);
+        console.log(context.params.user, "00000000000000000");
         await context.app
           .service("process-payment-response")
           .create({ ...data });
-
-        response_epayco = payment_info.data;
 
         const paymentConfirmation = {
           payment_reference: parseInt(payment_info.data.ref_payco),
