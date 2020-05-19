@@ -108,9 +108,10 @@ const ordersJoin = {
           .then((it) => it[0]);
         const coffeeOrderDetails = await context.app
           .service("coffee-order-details")
-          .getModel()
-          .query()
-          .where({ coffee_order_id: coffeeOrder.id });
+          .find({
+            query: { coffee_order_id: coffeeOrder.id },
+            paginate: false,
+          });
 
         records.coffee_order.coffee_order_details = coffeeOrderDetails;
 

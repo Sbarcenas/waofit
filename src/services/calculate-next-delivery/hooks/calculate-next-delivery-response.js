@@ -15,11 +15,11 @@ module.exports = (options = {}) => {
       next_delivery: moment()
         .add(1, "weeks")
         .isoWeekday(friday)
-        .format("DD-MM-YYYY"),
+        .format("MM-DD-YYYY"),
       next_delivery_description: `Los siguientes productos se entregaran el ${moment()
         .add(1, "weeks")
         .isoWeekday(friday)
-        .format("DD-MM-YYYY")} de 8:00 am a 12:00 pm`,
+        .format("MM-DD-YYYY")} de 8:00 am a 12:00 pm`,
     };
     replaceItems(context, records);
 

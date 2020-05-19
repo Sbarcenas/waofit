@@ -1,4 +1,20 @@
+const { fastJoin } = require("feathers-hooks-common");
 
+const resolves = {
+  joins: {
+    join: () => async (records, context) => {
+      [records.coffee_attributes_of_section] = await Promise.all([
+        context.app.service("coffee-attributes-of-section").find({
+          query: {
+            id: records.coffee_attributes_of_section_id,
+            deletedAt: null,
+          },
+          paginate: false,
+        }),
+      ]);
+    },
+  },
+};
 
 module.exports = {
   before: {
@@ -8,17 +24,17 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   after: {
     all: [],
-    find: [],
-    get: [],
+    find: [fastJoin(resolves)],
+    get: [fastJoin(resolves)],
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -28,6 +44,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };
