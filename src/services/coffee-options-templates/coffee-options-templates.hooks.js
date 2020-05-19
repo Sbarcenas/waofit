@@ -2,6 +2,7 @@ const registerTemplate = require("./hooks/resgister-template");
 // const updateTempate = require("./hooks/update-template");
 const removeSoftdelete = require("../../hooks/remove-softdelete");
 const { fastJoin } = require("feathers-hooks-common");
+const restrictRemove = require("./hooks/restrict-remove");
 
 const fastJoinResponse = {
   joins: {
@@ -31,7 +32,7 @@ module.exports = {
     create: [registerTemplate()],
     update: [disallow("external")],
     patch: [],
-    remove: [removeSoftdelete()],
+    remove: [restrictRemove(), removeSoftdelete()],
   },
 
   after: {

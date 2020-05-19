@@ -1,6 +1,7 @@
 const registerCoffeeShopProductsAttributes = require("./hooks/register-coffee-products-attrib");
 const updateCoffeeProductsAttributes = require("./hooks/update-coffee-products-attrib");
 const removeSoftdelete = require("../../hooks/remove-softdelete");
+const restrictRemove = require("./hooks/restrict-delete");
 const { disallow } = require("feathers-hooks-common");
 const { fastJoin } = require("feathers-hooks-common");
 const searchAdmin = require("./hooks/search-admin");
@@ -32,7 +33,7 @@ module.exports = {
     create: [registerCoffeeShopProductsAttributes()],
     update: [disallow("external")],
     patch: [updateCoffeeProductsAttributes()],
-    remove: [removeSoftdelete()],
+    remove: [restrictRemove(), removeSoftdelete()],
   },
 
   after: {

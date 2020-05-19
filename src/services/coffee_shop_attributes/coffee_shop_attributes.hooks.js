@@ -1,6 +1,8 @@
 const removeSoftDelete = require("../../hooks/remove-softdelete");
 const searchAdmin = require("./hooks/search-admin");
 const { disallow } = require("feathers-hooks-common");
+const restrictDelete = require("./hooks/restrict-delete");
+
 module.exports = {
   before: {
     all: [],
@@ -9,7 +11,7 @@ module.exports = {
     create: [],
     update: [disallow("external")],
     patch: [],
-    remove: [removeSoftDelete()],
+    remove: [restrictDelete(), removeSoftDelete()],
   },
 
   after: {
