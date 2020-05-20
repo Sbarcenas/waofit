@@ -8,13 +8,6 @@ const { discard, iff, isProvider } = require("feathers-hooks-common");
 const resolves = {
   joins: {
     role: () => async (records, context) => {
-      records.user_address = await context.app
-        .service("users-addresses")
-        .getModel()
-        .query()
-        .where({ user_id: context.params.user.id, main: "true" })
-        .then((it) => it[0]);
-
       if (records.shop_type == "express_product") {
         records.product = await context.app
           .service("express-products")
