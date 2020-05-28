@@ -103,7 +103,7 @@ module.exports = (options = {}) => {
               .service("coffee-order-details")
               .getModel()
               .query()
-              .sum("quantity as sum")
+              .sum("sent as sum")
               .where({ coffee_order_id: records.sub_order_id })
               .then((it) => it[0].sum),
           ]);

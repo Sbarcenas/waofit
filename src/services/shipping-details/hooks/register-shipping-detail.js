@@ -111,6 +111,7 @@ module.exports = (options = {}) => {
       .where({
         type_sub_order: records.type_sub_order,
         sub_order_detail_id: records.sub_order_detail_id,
+        deletedAt: null,
       })
       .then((it) => parseInt(it[0].sum));
 
