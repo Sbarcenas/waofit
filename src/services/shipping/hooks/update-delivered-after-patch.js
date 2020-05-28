@@ -15,64 +15,69 @@ module.exports = (options = {}) => {
     let delivered = true;
     if (records.shipping_status_id == 3) {
       // aqui las demas consultas
-      const [expressProduct] = await Promise.all([
-        context.app
-          .service("express-products-orders")
-          .getModel()
-          .query()
+      const coffeeOrdersModel = context.app
+        .service("coffee-orders")
+        .getModel()
+        .query();
+      const expressProductModel = context.app
+        .service("express-products-orders")
+        .getModel()
+        .query();
+
+      const [expressProduct, coffeeOrder] = await Promise.all([
+        expressProductModel
           .where({ order_id: records.order_id })
           .whereIn("order_status_id", [14, 16, 10])
           .then((it) => it[0]),
+        coffeeOrdersModel
+          .where({ order_id: records.order_id })
+          .whereIn("order_status_id", [27, 28, 25])
+          .then((it) => it[0]),
       ]);
 
-      if (!expressProduct) throw new NotFound("No se encontró la orden.");
+      if (!expressProduct && !coffeeOrder)
+        throw new NotFound("No se encontró la orden.");
 
       //aqui van las demas condiciones para cambiar el estado de la orden principal
       let Express_product_order_status_id = null;
       if (expressProduct && expressProduct.order_status_id == 16) {
         Express_product_order_status_id = 20;
-        //aqui actualizar la suborder como entregada pero tiendo en cuenta deben estar todos los envios que relacionen a ese detalle como shipping_status_id 3
-        await context.app
-          .service("express-products-orders")
-          .getModel()
-          .query()
-          .patch({ order_status_id: Express_product_order_status_id })
-          .where({ id: expressProduct.id });
-      } else {
+      } else if (expressProduct) {
         Express_product_order_status_id = 12;
-        await context.app
-          .service("express-products-orders")
-          .getModel()
-          .query()
-          .patch({ order_status_id: Express_product_order_status_id })
-          .where({ id: expressProduct.id });
         delivered = false;
       }
 
-      await registerExpressProductsOrdersHistory({
-        express_product_order_id: expressProduct.id,
-        order_status_id: Express_product_order_status_id,
-      })(context);
+      if (expressProduct) {
+        await Promise.all([
+          expressProductModel
+            .patch({ order_status_id: Express_product_order_status_id })
+            .where({ id: expressProduct.id }),
+          registerExpressProductsOrdersHistory({
+            express_product_order_id: expressProduct.id,
+            order_status_id: Express_product_order_status_id,
+          })(context),
+        ]);
+      }
+
+      let coffee_order_status_id = null;
+      if (coffeeOrder && coffeeOrder.order_status_id == 28) {
+        coffee_order_status_id = 29;
+      } else {
+        coffee_order_status_id = 26;
+        delivered = false;
+      }
+
+      if (coffeeOrder) {
+        await coffeeOrdersModel
+          .patch({ order_status_id: coffee_order_status_id })
+          .where({ id: coffeeOrder.id });
+      }
 
       let order_status_id = null;
-
-      if (delivered) {
-        order_status_id = 19;
-        await context.app
-          .service("orders")
-          .getModel()
-          .query()
-          .patch({ order_status_id: order_status_id })
-          .where({ id: records.order_id });
-      } else {
-        order_status_id = 11;
-        await context.app
-          .service("orders")
-          .getModel()
-          .query()
-          .patch({ order_status_id: order_status_id })
-          .where({ id: records.order_id });
-      }
+      const orderModel = context.app.service("orders").getModel().query();
+      await orderModel
+        .patch({ order_status_id: delivered ? 19 : 11 })
+        .where({ id: records.order_id });
 
       registerOrderHistory({
         order_id: records.order_id,

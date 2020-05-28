@@ -52,6 +52,30 @@ module.exports = (options = {}) => {
           })
           .then((it) => it[0]);
 
+        if (!subOrderDetail)
+          throw new NotFound("No se encontró el detalle de la orden.");
+
+        if (subOrderDetail.quantity < records.quantity + subOrderDetail.sent)
+          throw new NotAcceptable(
+            "No se puede ingresar cantidad por que supera la cantidad comprada."
+          );
+
+        break;
+
+      case "coffee":
+        subOrderDetail = await context.app
+          .service("coffee-order-details")
+          .getModel()
+          .query()
+          .where({
+            id: shipingDetail.sub_order_detail_id,
+            coffee_order_id: shipingDetail.sub_order_id,
+          })
+          .then((it) => it[0]);
+
+        if (!subOrderDetail)
+          throw new NotFound("No se encontró el detalle de la orden.");
+
         if (subOrderDetail.quantity < records.quantity + subOrderDetail.sent)
           throw new NotAcceptable(
             "No se puede ingresar cantidad por que supera la cantidad comprada."
@@ -62,9 +86,6 @@ module.exports = (options = {}) => {
       default:
         break;
     }
-
-    if (!subOrderDetail)
-      throw new NotFound("No se encontró el detalle de la orden.");
 
     replaceItems(context, records);
 

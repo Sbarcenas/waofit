@@ -15,6 +15,7 @@ const resolves = {
           service = "express-products-orders";
           break;
         default:
+          service = "coffee-orders";
           break;
       }
       [
@@ -67,7 +68,11 @@ module.exports = {
     get: [],
     create: [RegisterShippping()],
     update: [disallow("external")],
-    patch: [UpdateShiping(), UpdateDelivered()],
+    patch: [
+      () => console.log("00000000000000"),
+      UpdateShiping(),
+      UpdateDelivered(),
+    ],
     remove: [disallow("external")],
   },
 

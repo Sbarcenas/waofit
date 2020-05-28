@@ -10,6 +10,9 @@ const resolves = {
         case "express products":
           serviceDetails = "express-products-orders-details";
           break;
+        case "coffee":
+          serviceDetails = "coffee-order-details";
+          break;
         default:
           break;
       }

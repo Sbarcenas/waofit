@@ -39,26 +39,48 @@ module.exports = (options = {}) => {
           .whereIn("order_status_id", [10, 14, 12])
           .then((it) => it[0]);
 
-        if (!subOrder) throw new NotFound("No se encontró la orden.");
+        if (!subOrder) throw new NotFound("No se encontró la Sub orden.");
 
-        console.log(subOrder);
-        shipping = await context.app
-          .service("shipping")
+        break;
+
+      case "coffee":
+        subOrderDetail = await context.app
+          .service("coffee-order-details")
           .getModel()
           .query()
           .where({
-            id: records.shipping_id,
-            type_sub_order: records.type_sub_order,
-            order_id: subOrder.order_id,
-            shipping_status_id: 1,
+            id: records.sub_order_detail_id,
+            coffee_order_id: records.sub_order_id,
           })
           .then((it) => it[0]);
 
-        break;
+        subOrder = await context.app
+          .service("coffee-orders")
+          .getModel()
+          .query()
+          .where({
+            id: records.sub_order_id,
+          })
+          .whereIn("order_status_id", [25, 26, 27])
+          .then((it) => it[0]);
+
+        if (!subOrder) throw new NotFound("No se encontró la Sub orden.");
 
       default:
         break;
     }
+
+    shipping = await context.app
+      .service("shipping")
+      .getModel()
+      .query()
+      .where({
+        id: records.shipping_id,
+        type_sub_order: records.type_sub_order,
+        order_id: subOrder.order_id,
+        shipping_status_id: 1,
+      })
+      .then((it) => it[0]);
 
     if (!subOrderDetail)
       throw new NotFound("No se encontró el detalle de la orden.");
