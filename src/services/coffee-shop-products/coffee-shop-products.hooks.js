@@ -2,6 +2,7 @@ const registerCoffeeProduct = require("./hooks/register-coffee-product");
 const removeSoftdelete = require("../../hooks/remove-softdelete");
 const restrictActivateCoffeeShopProduct = require("./hooks/retrict-activate-coffee-shop-product");
 const updateAlgolia = require("./hooks/update-algolia");
+const searchAdmin = require("./hooks/search-admin");
 
 const {
   fastJoin,
@@ -68,8 +69,8 @@ const fastJoinInternal = {
 module.exports = {
   before: {
     all: [],
-    find: [],
-    get: [],
+    find: [searchAdmin()],
+    get: [searchAdmin()],
     create: [registerCoffeeProduct()],
     update: [disallow()],
     patch: [restrictActivateCoffeeShopProduct()],
