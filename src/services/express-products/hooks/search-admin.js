@@ -12,14 +12,7 @@ module.exports = function (options = {}) {
   // Return the actual hook.
   return async (context) => {
     // Throw if the hook is being called from an unexpected location.
-    checkContext(context, null, [
-      "find",
-      "get",
-      "create",
-      "update",
-      "patch",
-      "remove",
-    ]);
+    checkContext(context, null, ["find", "get"]);
 
     // Get the authenticated user.
     // eslint-disable-next-line no-unused-vars
@@ -47,12 +40,6 @@ module.exports = function (options = {}) {
         .orWhere("brands.name", "LIKE", `%${value}%`)
         .orWhere("express_categories.name", "LIKE", `%${value}%`)
         .orWhere("express_products.name", "LIKE", `%${value}%`)
-        .orWhere("users.phone", "LIKE", `%${value}%`)
-        .orWhere("recurring_shopping_cart.name", "LIKE", `%${value}%`)
-        .orWhere("recurring_shopping_cart.frequency", "LIKE", `%${value}%`)
-        .orWhere("recurring_shopping_cart.next_delivery", "LIKE", `%${value}%`)
-        .orWhere("users_addresses.address", "LIKE", `%${value}%`)
-        .orWhere("users_addresses.name", "LIKE", `%${value}%`)
         .where({ "express_products.deletedAt": null })
 
         .then((it) => it.map((it) => it.id));
