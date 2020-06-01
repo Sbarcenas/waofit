@@ -13,6 +13,7 @@ class paymentConfirmations extends Model {
       required: [],
 
       properties: {
+        order_id: { type: "integer" },
         payment_reference: { type: "integer" },
         invoice: { type: "string", maxLength: 255 },
         description: {},
@@ -40,8 +41,8 @@ class paymentConfirmations extends Model {
         city: { type: "string", maxLength: 255 },
         address: { type: "string", maxLength: 255 },
         ind_country: { type: "string", maxLength: 255 },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -54,16 +55,17 @@ class paymentConfirmations extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   const db = app.get("knex");
 
   db.schema
     .hasTable("payment_confirmations")
-    .then(exists => {
+    .then((exists) => {
       if (!exists) {
         db.schema
-          .createTable("payment_confirmations", table => {
+          .createTable("payment_confirmations", (table) => {
             table.increments("id");
+            table.integer("order_id");
             table.integer("payment_reference");
             table.string("invoice");
             table.text("description");
@@ -96,12 +98,14 @@ module.exports = function(app) {
             table.timestamp("updatedAt");
           })
           .then(() => console.log("Created payment_confirmations table")) // eslint-disable-line no-console
-          .catch(e =>
+          .catch((e) =>
             console.error("Error creating payment_confirmations table", e)
           ); // eslint-disable-line no-console
       }
     })
-    .catch(e => console.error("Error creating payment_confirmations table", e)); // eslint-disable-line no-console
+    .catch((e) =>
+      console.error("Error creating payment_confirmations table", e)
+    ); // eslint-disable-line no-console
 
   return paymentConfirmations;
 };

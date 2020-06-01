@@ -37,6 +37,21 @@ const ordersJoin = {
           .then((it) => it[0]),
       ]);
 
+      records.total_payment_received = await context.app
+        .service("payment-confirmations")
+        .getModel()
+        .query()
+        .sum("value as total")
+        .where({
+          status: "Aceptada",
+          response: "Aprobada",
+          deletedAt: null,
+          order_id: records.id,
+        })
+        .then((it) => (it[0].total ? it[0].total : 0));
+
+      console.log(records.total_payment_received);
+
       if (expressProductsOrders) {
         records.express_product_order = expressProductsOrders;
 

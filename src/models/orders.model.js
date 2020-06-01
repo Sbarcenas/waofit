@@ -43,6 +43,10 @@ class orders extends Model {
         total_shipping_cost: { type: "number" },
         payment_meta_data: { type: "string" },
         recurrent: { type: "string", enum: ["true", "false"] },
+        payment_method: {
+          type: "string",
+          enum: ["online", "cash_on_delivery"],
+        },
         deletedAt: { type: "string", format: "date-time" },
       },
     };

@@ -40,9 +40,13 @@ module.exports = (options = {}) => {
         order_status_id = 5;
         express_product_status_id = 6;
         coffee_status_id = 22;
-        await discountStockProductuExpress({
-          express_product_order_id: expressProductOrder.id,
-        })(context);
+        try {
+          await discountStockProductuExpress({
+            express_product_order_id: expressProductOrder.id,
+          })(context);
+        } catch (error) {
+          console.log(error);
+        }
 
         //actualizando los pagos recurrentes
 
