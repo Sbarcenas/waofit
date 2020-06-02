@@ -82,6 +82,7 @@ function defineAbilitiesFor(user) {
       "coffee-shop-products",
       "coffee-options",
       "coffee-options-in-scd",
+      "coffee-shop-categories",
     ]);
 
     can("update", ["users"], { id: user.id });
