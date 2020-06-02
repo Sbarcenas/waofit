@@ -15,7 +15,14 @@ class favorites extends Model {
       properties: {
         type: {
           type: "string",
-          enum: ["product", "brand", "blog", "guide", "recipe"],
+          enum: [
+            "product",
+            "brand",
+            "blog",
+            "guide",
+            "recipe",
+            "coffee-shop-product",
+          ],
           type_id: { type: "integer" },
           user_id: { type: "integer" },
           deletedAt: { type: "string", format: "date-time" },
@@ -43,7 +50,14 @@ module.exports = function (app) {
         db.schema
           .createTable("favorites", (table) => {
             table.increments("id");
-            table.enum("type", ["product", "brand", "blog", "guide", "recipe"]);
+            table.enum("type", [
+              "product",
+              "brand",
+              "blog",
+              "guide",
+              "recipe",
+              "coffee-shop-product",
+            ]);
             table.integer("type_id");
             table
               .integer("user_id")

@@ -29,6 +29,7 @@ class coffeeShopProducts extends Model {
         tax_rule_id: { type: "integer" },
         status: { type: "string", enum: ["active", "inactive"] },
         image_path: { type: "string" },
+        type: { type: "string", enum: ["coffee-shop-product"] },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -76,6 +77,7 @@ module.exports = function (app) {
               .inTable("tax_rule")
               .index();
             table.enum("status", ["active", "inactive"]);
+            table.enum("type", ["coffee-shop-product"]);
             table.text("image_path");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");

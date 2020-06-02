@@ -32,6 +32,14 @@ module.exports = (options = {}) => {
         service = "blogs-and-guides";
         query = { id: records.type_id, deletedAt: null, type: "guide" };
         break;
+      case "coffee-shop-product":
+        service = "coffee-shop-products";
+        query = {
+          id: records.type_id,
+          deletedAt: null,
+          type: "coffee-shop-product",
+        };
+        break;
       default:
         break;
     }

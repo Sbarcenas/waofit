@@ -28,11 +28,24 @@ const resolves = {
           service = "blogs-and-guides";
           query = { id: records.type_id, deletedAt: null, type: "guide" };
           break;
+        case "coffee-shop-product":
+          service = "coffee-shop-products";
+          query = {
+            id: records.type_id,
+            deletedAt: null,
+            type: "coffee-shop-product",
+          };
+          break;
         default:
           break;
       }
 
-      if (service != "express-products") {
+      if (
+        service == "brand" ||
+        service == "blog" ||
+        service == "recipe" ||
+        service == "recipe"
+      ) {
         records.favorite = await context.app
           .service(service)
           .getModel()
@@ -71,6 +84,24 @@ const resolves = {
             "express_products_media.media_type": "normal",
             /* "express_products_media.type": "image", */
             "express_products_media.deletedAt": null,
+          })
+          .then((it) => it[0]);
+      else if (service == "coffee-shop-products")
+        records.favorite = await context.app
+          .service(service)
+          .getModel()
+          .query()
+          .select(
+            "coffee_shop_products.id",
+            "coffee_shop_products.name",
+            "coffee_shop_products.price",
+            "coffee_shop_products.type",
+            "coffee_shop_products.status",
+            "coffee_shop_products.image_path"
+          )
+          .where({
+            "coffee_shop_products.id": records.type_id,
+            "coffee_shop_products.deletedAt": null,
           })
           .then((it) => it[0]);
     },
