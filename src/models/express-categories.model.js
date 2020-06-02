@@ -21,8 +21,8 @@ class expressCategories extends Model {
         name: { type: "string", maxLength: 255 },
         parent_id: { type: "integer" },
         path_image: { type: "string" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -35,17 +35,17 @@ class expressCategories extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   if (app) {
     expressCategories.setup(app);
     const db = app.get("knex");
 
     db.schema
       .hasTable("express_categories")
-      .then(exists => {
+      .then((exists) => {
         if (!exists) {
           db.schema
-            .createTable("express_categories", table => {
+            .createTable("express_categories", (table) => {
               table.increments("id");
               table.string("name");
               table.integer("parent_id");
@@ -55,12 +55,14 @@ module.exports = function(app) {
               table.timestamp("updatedAt");
             })
             .then(() => console.log("Created express_categories table")) // eslint-disable-line no-console
-            .catch(e =>
+            .catch((e) =>
               console.error("Error creating express_categories table", e)
             ); // eslint-disable-line no-console
         }
       })
-      .catch(e => console.error("Error creating express_categories table", e)); // eslint-disable-line no-console
+      .catch((e) =>
+        console.error("Error creating express_categories table", e)
+      ); // eslint-disable-line no-console
   }
   return expressCategories;
 };
