@@ -78,8 +78,8 @@ module.exports = (options = {}) => {
         id: records.shipping_id,
         type_sub_order: records.type_sub_order,
         order_id: subOrder.order_id,
-        shipping_status_id: 1,
       })
+      .whereIn("shipping_status_id", [1, 4])
       .then((it) => it[0]);
 
     if (!subOrderDetail)

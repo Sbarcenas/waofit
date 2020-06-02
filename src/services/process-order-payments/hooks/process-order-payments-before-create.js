@@ -52,6 +52,10 @@ module.exports = function (options = {}) {
     ]);
 
     if (!order) throw new NotFound("No se encontró la orden.");
+
+    if (order.payment_method != "online")
+      throw new NotAcceptable("La orden no es para pagar online.");
+
     if (!creditCard)
       throw new NotFound("No se encontró la tarjeta de credito.");
 

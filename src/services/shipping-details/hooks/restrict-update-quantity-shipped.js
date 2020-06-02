@@ -31,9 +31,9 @@ module.exports = (options = {}) => {
       .query()
       .where({
         id: shipingDetail.shipping_id,
-        shipping_status_id: 1,
         deletedAt: null,
       })
+      .whereIn("shipping_status_id", [1, 4])
       .then((it) => it[0]);
 
     if (!shipping) throw new NotFound("No se encontró el envío.");

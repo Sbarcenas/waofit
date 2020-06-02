@@ -18,7 +18,7 @@ module.exports = (options = {}) => {
     const orderModel = context.app.service("orders").getModel().query();
 
     const order = await orderModel
-      .whereIn("order_status_id", [5, 9, 11, 13])
+      .whereIn("order_status_id", [1, 5, 9, 11, 13])
       .where({ id: records.order_id, deletedAt: null })
       .then((it) => it[0]);
 
@@ -37,7 +37,7 @@ module.exports = (options = {}) => {
             order_id: records.order_id,
             deletedAt: null,
           })
-          .whereIn("order_status_id", [6, 10, 12, 14])
+          .whereIn("order_status_id", [2, 6, 10, 12, 14])
           .then((it) => it[0]);
 
         if (!subOrder) throw new NotFound("No se encontró la Sub orden.");
@@ -49,12 +49,14 @@ module.exports = (options = {}) => {
             );
         }
 
-        await expressProductsOrderModel.patch({ order_status_id: 10 }).where({
-          id: records.sub_order_id,
-          order_id: records.order_id,
-          order_status_id: 6,
-          deletedAt: null,
-        });
+        await expressProductsOrderModel
+          .patch({ order_status_id: 10 })
+          .where({
+            id: records.sub_order_id,
+            order_id: records.order_id,
+            deletedAt: null,
+          })
+          .whereIn("order_status_id", [2, 6]);
 
         await registerExpressProductsOrdersHistory({
           express_product_order_id: records.sub_order_id,
@@ -74,7 +76,7 @@ module.exports = (options = {}) => {
             order_id: records.order_id,
             deletedAt: null,
           })
-          .whereIn("order_status_id", [22, 25, 26, 27])
+          .whereIn("order_status_id", [21, 22, 25, 26, 27])
           .then((it) => it[0]);
 
         if (!subOrder) throw new NotFound("No se encontró la Sub orden.");
@@ -86,12 +88,14 @@ module.exports = (options = {}) => {
             );
         }
 
-        await coffeeOrderModel.patch({ order_status_id: 25 }).where({
-          id: records.sub_order_id,
-          order_id: records.order_id,
-          order_status_id: 22,
-          deletedAt: null,
-        });
+        await coffeeOrderModel
+          .patch({ order_status_id: 25 })
+          .where({
+            id: records.sub_order_id,
+            order_id: records.order_id,
+            deletedAt: null,
+          })
+          .whereIn("order_status_id", [21, 22]);
 
         await registerCoffeeOrderHistory({
           coffee_order_id: records.sub_order_id,
@@ -114,7 +118,11 @@ module.exports = (options = {}) => {
     })(context);
 
     records.delivery_guy_user_id = user.id;
-    records.shipping_status_id = 1;
+    records.shipping_status_id =
+      order.payment_method == "cash_on_delivery" ? 4 : 1;
+
+    records.pending_payment = 0;
+    records.payment_received = 0;
 
     replaceItems(context, records);
 

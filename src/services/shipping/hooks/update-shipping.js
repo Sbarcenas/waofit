@@ -19,7 +19,8 @@ module.exports = (options = {}) => {
         .service("shipping")
         .getModel()
         .query()
-        .where({ id: context.id, shipping_status_id: 1 })
+        .where({ id: context.id, deletedAt: null })
+        .whereIn("shipping_status_id", [1, 4])
         .then((it) => it[0]);
 
       if (!shipping) throw new NotFound("No se encontró el envio.");
@@ -37,6 +38,17 @@ module.exports = (options = {}) => {
         );
 
       context.shippingDetails = shippingDetails;
+
+      const order = await context.app
+        .service("orders")
+        .getModel()
+        .query()
+        .where({ id: shipping.order_id })
+        .then((it) => it[0]);
+
+      if (order.payment_method == "cash_on_delivery") {
+        records.shipping_status_id = 5;
+      }
     }
 
     replaceItems(context, records);

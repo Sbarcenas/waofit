@@ -15,19 +15,39 @@ module.exports = (options = {}) => {
 
     const { shippingDetails } = context;
 
-    if (records.shipping_status_id == 2) {
+    if (records.shipping_status_id == 2 || records.shipping_status_id == 5) {
       let [expressProductsComplete, coffeeComplete] = [true, true];
       let [buyItems, sentItems] = [null, null];
 
+      const expressProductOrderDetailsModel = context.app
+        .service("express-products-orders-details")
+        .getModel()
+        .query();
       switch (records.type_sub_order) {
         case "express products":
           for (const shippingDetail of shippingDetails) {
-            await context.app
-              .service("express-products-orders-details")
-              .getModel()
-              .query()
+            const expressProductOrderDetails = await expressProductOrderDetailsModel
               .where({ id: shippingDetail.sub_order_detail_id })
-              .increment("sent", shippingDetail.quantity);
+              .then((it) => it[0]);
+            await Promise.all([
+              expressProductOrderDetailsModel
+                .where({ id: shippingDetail.sub_order_detail_id })
+                .increment("sent", shippingDetail.quantity),
+              context.app
+                .service("shipping")
+                .getModel()
+                .query()
+                .where({
+                  id: shippingDetail.shipping_id,
+                  shipping_status_id: 5,
+                })
+                .increment(
+                  "pending_payment",
+                  shippingDetail.quantity *
+                    expressProductOrderDetails.unit_price_tax_incl
+                ),
+            ]);
+            //ahora buscar cuando sea una order tipo coffee y sumar hacer la misma consulta de arriba
           }
 
           [buyItems, sentItems] = await Promise.all([
@@ -83,12 +103,27 @@ module.exports = (options = {}) => {
 
           for (let index = 0; index < shippingDetails.length; index++) {
             const shippingDetail = shippingDetails[index];
-            // console.log("ppppppppppppppppppp");
-            await coffeeOrderDetailsModel
+            const coffeeOrderDetails = await coffeeOrderDetailsModel
               .where({ id: shippingDetail.sub_order_detail_id })
-              .increment("sent", shippingDetail.quantity);
-
-            // console.log("----------------");
+              .then((it) => it[0]);
+            await Promise.all([
+              coffeeOrderDetailsModel
+                .where({ id: shippingDetail.sub_order_detail_id })
+                .increment("sent", shippingDetail.quantity),
+              context.app
+                .service("shipping")
+                .getModel()
+                .query()
+                .where({
+                  id: shippingDetail.shipping_id,
+                  shipping_status_id: 5,
+                })
+                .increment(
+                  "pending_payment",
+                  shippingDetail.quantity *
+                    coffeeOrderDetails.total_price_tax_incl_opt_order_det_tax_inc
+                ),
+            ]);
           }
 
           [buyItems, sentItems] = await Promise.all([
@@ -139,23 +174,20 @@ module.exports = (options = {}) => {
 
       /* aqui todas deben ser completas para que pueda cambiarse el estado de la orden principal */
       let order_status_id = null;
+      const ordersModel = context.app.service("orders").getModel().query();
+
       if (expressProductsComplete && coffeeComplete) {
         order_status_id = 15;
-        await context.app
-          .service("orders")
-          .getModel()
-          .query()
+        await ordersModel
           .patch({ order_status_id: order_status_id })
           .where({ id: records.order_id });
       } else {
         order_status_id = 13;
-        await context.app
-          .service("orders")
-          .getModel()
-          .query()
+        await ordersModel
           .patch({ order_status_id: order_status_id })
           .where({ id: records.order_id });
       }
+
       registerOrderHistory({
         order_id: records.order_id,
         order_status_id: order_status_id,

@@ -41,6 +41,7 @@ class paymentConfirmations extends Model {
         city: { type: "string", maxLength: 255 },
         address: { type: "string", maxLength: 255 },
         ind_country: { type: "string", maxLength: 255 },
+        shipping_id: { type: "integer" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -93,6 +94,7 @@ module.exports = function (app) {
             table.string("city");
             table.string("address");
             table.string("ind_country");
+            table.integer("shipping_id");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");

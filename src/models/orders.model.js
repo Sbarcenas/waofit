@@ -91,6 +91,7 @@ module.exports = function (app) {
             table.decimal("total_shipping_cost");
             table.text("payment_meta_data");
             table.text("shopping_cart_meta_data");
+            table.enum("payment_method", ["online", "cash_on_delivery"]);
             table.enum("recurrent", ["true", "false"]).defaultTo("false");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
