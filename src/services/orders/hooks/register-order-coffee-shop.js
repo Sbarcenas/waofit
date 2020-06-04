@@ -150,6 +150,13 @@ module.exports = function (options = {}) {
       : 0;
 
     let total_price_tax_excl = null;
+
+    console.log(
+      (totalPriceCoffeeShopAttributesTaxExc
+        ? totalPriceCoffeeShopAttributesTaxExc
+        : 0) + (totalPriceCoffeeShopTaxExcl ? totalPriceCoffeeShopTaxExcl : 0)
+    );
+
     total_price_tax_excl +=
       (totalPriceCoffeeShopAttributesTaxExc
         ? totalPriceCoffeeShopAttributesTaxExc
@@ -168,7 +175,7 @@ module.exports = function (options = {}) {
         ...context.dataOrders,
         shoppingCartDetailsCoffeeShop,
         totalsShoppingCartDetailsCoffee: {
-          total_price_tax_excl: totalPriceCoffeeShopTaxExcl,
+          total_price_tax_excl: total_price_tax_excl,
           total_tax: records.total_tax,
           total_price_tax_incl: totalPriceCoffeeShop,
           total_price_shipping_cost_excl: totalPriceCoffeeShop,

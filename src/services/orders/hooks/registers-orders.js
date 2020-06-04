@@ -222,7 +222,10 @@ module.exports = function (options = {}) {
         total_tax: totalTaxExpressProduct,
         total_price_tax_incl: totalPriceExpressProduct,
         total_price_shipping_cost_excl: totalPriceExpressProduct,
-        total_price: parseFloat(shippingCost.price) + totalTaxExpressProduct,
+        total_price:
+          parseFloat(shippingCost.price) +
+          totalTaxExpressProduct +
+          totalPriceExpressProductTaxExcl,
       },
     };
 
@@ -234,6 +237,7 @@ module.exports = function (options = {}) {
       context.changeStatusShoppingCart = false;
     }
 
+    records.shipping_address_meta_data = JSON.stringify(userAddress);
     delete records.user_address_id;
     delete records.date_dispatch;
     delete records.type_dispatch;

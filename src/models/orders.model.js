@@ -47,6 +47,7 @@ class orders extends Model {
           type: "string",
           enum: ["online", "cash_on_delivery"],
         },
+        shipping_address_meta_data: { type: "string" },
         deletedAt: { type: "string", format: "date-time" },
       },
     };
@@ -93,6 +94,7 @@ module.exports = function (app) {
             table.text("shopping_cart_meta_data");
             table.enum("payment_method", ["online", "cash_on_delivery"]);
             table.enum("recurrent", ["true", "false"]).defaultTo("false");
+            table.text("shipping_address_meta_data");
             table.timestamp("deletedAt").nullable();
             table.timestamp("createdAt");
             table.timestamp("updatedAt");
