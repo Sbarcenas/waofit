@@ -50,7 +50,8 @@ const ordersJoin = {
         })
         .then((it) => (it[0].total ? it[0].total : 0));
 
-      console.log(records.total_payment_received);
+      records.total_payment_pending =
+        records.total_price - records.total_payment_received;
 
       if (expressProductsOrders) {
         records.express_product_order = expressProductsOrders;
