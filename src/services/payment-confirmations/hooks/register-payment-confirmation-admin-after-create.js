@@ -10,12 +10,21 @@ module.exports = (options = {}) => {
     const { user } = context.params;
 
     if (records.bank == "dataphone" || records.bank == "cash") {
-      await context.app
-        .service("shipping")
-        .getModel()
-        .query()
-        .patch({ payment_received: records.value })
-        .where({ id: records.shipping_id });
+      console.log("---------");
+      await Promise.all([
+        context.app
+          .service("shipping")
+          .getModel()
+          .query()
+          .where({ id: records.shipping_id })
+          .increment("payment_received", records.value),
+        context.app
+          .service("shipping")
+          .getModel()
+          .query()
+          .where({ id: records.shipping_id })
+          .decrement("pending_payment", records.value),
+      ]);
     }
 
     replaceItems(context, records);
