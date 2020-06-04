@@ -14,7 +14,7 @@ class paymentConfirmations extends Model {
 
       properties: {
         order_id: { type: "integer" },
-        payment_reference: { type: "integer" },
+        payment_reference: { type: "string" },
         invoice: { type: "string", maxLength: 255 },
         description: {},
         value: { type: "number" },
@@ -67,7 +67,7 @@ module.exports = function (app) {
           .createTable("payment_confirmations", (table) => {
             table.increments("id");
             table.integer("order_id");
-            table.integer("payment_reference");
+            table.string("payment_reference");
             table.string("invoice");
             table.text("description");
             table.float("value");

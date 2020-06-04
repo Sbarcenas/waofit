@@ -22,6 +22,14 @@ module.exports = (options = {}) => {
       .where({ id: records.order_id, deletedAt: null })
       .then((it) => it[0]);
 
+    if (
+      order.order_status_id == 1 &&
+      order.payment_method != "cash_on_delivery"
+    )
+      throw new NotAcceptable(
+        "No se puede enviar la orden por que no esta para pagar en efectivo."
+      );
+
     if (!order) throw new NotFound("No se encontró la orden.");
 
     switch (records.type_sub_order) {
