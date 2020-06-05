@@ -4,12 +4,18 @@ const searhAdmin = require("./hooks/search-admin");
 const resolves = {
   joins: {
     join: () => async (records, context) => {
-      [records.order_status] = await Promise.all([
+      [records.order_status, records.order] = await Promise.all([
         context.app
           .service("orders-status")
           .getModel()
           .query()
           .where({ id: records.order_status_id, deletedAt: null })
+          .then((it) => it[0]),
+        context.app
+          .service("orders")
+          .getModel()
+          .query()
+          .where({ id: records.order_id })
           .then((it) => it[0]),
       ]);
     },
