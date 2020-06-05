@@ -4,7 +4,7 @@ const { getItems, replaceItems } = require("feathers-hooks-common");
 const { NotFound, NotAcceptable } = require("@feathersjs/errors");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     const { user } = context.params;
 
     const records = getItems(context);
@@ -14,9 +14,16 @@ module.exports = (options = {}) => {
       .getModel()
       .query()
       .where({ id: context.id, deletedAt: null })
-      .then(it => it[0]);
+      .then((it) => it[0]);
 
     if (!shoppingCartDetails) throw new NotFound("No se encontró el registro.");
+
+    let service = null;
+    if (shoppingCartDetails.shop_type == "express_product") {
+      service = "express-products";
+    } else {
+      service = "coffee-shop-products";
+    }
 
     const [shoppingCart, product] = await Promise.all([
       context.app
@@ -27,19 +34,19 @@ module.exports = (options = {}) => {
           id: shoppingCartDetails.shopping_cart_id,
           deletedAt: null,
           user_id: user.id,
-          status: "active"
+          status: "active",
         })
-        .then(it => it[0]),
+        .then((it) => it[0]),
       context.app
-        .service("express-products")
+        .service(service)
         .getModel()
         .query()
         .where({
           id: shoppingCartDetails.product_id,
           status: "active",
-          deletedAt: null
+          deletedAt: null,
         })
-        .then(it => it[0])
+        .then((it) => it[0]),
     ]);
 
     if (!shoppingCart)
@@ -47,13 +54,15 @@ module.exports = (options = {}) => {
 
     if (!product) throw new NotFound("No se encontró el producto.");
 
-    if (product.quantity <= 0)
-      throw new NotAcceptable("El producto no tiene stock.");
+    if (shoppingCartDetails.shop_type == "express_product") {
+      if (product.quantity <= 0)
+        throw new NotAcceptable("El producto no tiene stock.");
 
-    if (records.quantity > product.quantity)
-      throw new NotAcceptable(
-        "Este producto no tiene el sufiente stock para la cantidad solicitada."
-      );
+      if (records.quantity > product.quantity)
+        throw new NotAcceptable(
+          "Este producto no tiene el sufiente stock para la cantidad solicitada."
+        );
+    }
 
     replaceItems(context, records);
 
