@@ -4,7 +4,7 @@ const { getItems, replaceItems } = require("feathers-hooks-common");
 const { NotFound, NotAcceptable } = require("@feathersjs/errors");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     const { user } = context.params;
 
     const records = getItems(context);
@@ -14,7 +14,12 @@ module.exports = (options = {}) => {
       .getModel()
       .query()
       .where({ id: context.id, deletedAt: null })
-      .then(it => it[0]);
+      .then((it) => it[0]);
+
+    const service =
+      shoppingCartDetails.shop_type == "express_product"
+        ? "express-products"
+        : "coffee-shop-products";
 
     if (!shoppingCartDetails) throw new NotFound("No se encontró el registro.");
 
@@ -27,19 +32,19 @@ module.exports = (options = {}) => {
           id: shoppingCartDetails.shopping_cart_id,
           deletedAt: null,
           user_id: user.id,
-          status: "active"
+          status: "active",
         })
-        .then(it => it[0]),
+        .then((it) => it[0]),
       context.app
-        .service("express-products")
+        .service(service)
         .getModel()
         .query()
         .where({
           id: shoppingCartDetails.product_id,
           status: "active",
-          deletedAt: null
+          deletedAt: null,
         })
-        .then(it => it[0])
+        .then((it) => it[0]),
     ]);
 
     if (!shoppingCart)

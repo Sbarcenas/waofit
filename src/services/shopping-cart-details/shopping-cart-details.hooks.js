@@ -30,8 +30,8 @@ const resolves = {
 module.exports = {
   before: {
     all: [],
-    find: [restrigGet()],
-    get: [restrigGet()],
+    find: [iff(isProvider("external"), restrigGet())],
+    get: [iff(isProvider("external"), restrigGet())],
     create: [
       registerShoppingCartDetails(),
       registerExpressProduct(),
