@@ -3,7 +3,7 @@ const removeSoftDelete = require("../../hooks/remove-softdelete");
 const activateRecurrindShoppingCart = require("./hooks/activate-recurring-shopping-cart");
 const searchAdmin = require("./hooks/search-admin");
 
-const { fastJoin } = require("feathers-hooks-common");
+const { fastJoin, isProvider, iff } = require("feathers-hooks-common");
 const resolves = {
   joins: {
     join: () => async (records, context) => {
@@ -53,8 +53,8 @@ module.exports = {
 
   after: {
     all: [],
-    find: [fastJoin(resolves)],
-    get: [fastJoin(resolves)],
+    find: [iff(isProvider("external"), fastJoin(resolves))],
+    get: [iff(isProvider("external"), fastJoin(resolves))],
     create: [],
     update: [],
     patch: [],

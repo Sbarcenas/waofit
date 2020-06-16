@@ -3,12 +3,12 @@
 const {
   checkContext,
   getItems,
-  replaceItems
+  replaceItems,
 } = require("feathers-hooks-common");
 const algolia = require("../../../utils/algolia/");
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}, index) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
     const algoliaCredemtials = context.app.get("algolia");
