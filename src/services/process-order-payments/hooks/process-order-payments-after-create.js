@@ -66,21 +66,13 @@ module.exports = function (options = {}) {
       dues: `${dataPayment.dues}`,
     };
     let response_epayco = null;
-
-    console.log("oooooooooooooooooooooooo");
     await epayco.charge
       .create(payment_info)
       .then(async (payment_info) => {
         if (payment_info.status === false) {
           throw new PaymentError("payment error");
         }
-
-        console.log(payment_info.data, "-------------------------");
-
         response_epayco = payment_info.data;
-
-        console.log(response_epayco, "pppppppppppppppppppp");
-
         //obtenemos el id del product history payment
         const data = {
           order_id: parseInt(payment_info.data.factura.split("-")[1]),
@@ -89,7 +81,6 @@ module.exports = function (options = {}) {
         };
         //respuesta de pago con exito *se actualiza pdocut history payment a pagado*
 
-        console.log(context.params.user, "00000000000000000");
         await context.app
           .service("process-payment-response")
           .create({ ...data });

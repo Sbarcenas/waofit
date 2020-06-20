@@ -39,6 +39,9 @@ module.exports = function (options = {}) {
     if (!shoppingCart)
       throw new NotFound("No se encontró el carro de compras.");
 
+    if (!records.payment_method)
+      throw new NotAcceptable("Debes enviar el metodo de pago.");
+
     let userAddress = null;
 
     if (records.user_address_id) {
