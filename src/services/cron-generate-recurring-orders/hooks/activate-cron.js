@@ -35,6 +35,7 @@ module.exports = (options = {}) => {
         user_id: recurringShoppingCart.user_id,
         shopping_cart_meta_data: JSON.stringify(recurringShoppingCart),
         recurrent: "true",
+        payment_method: "online",
       };
 
       //creamos la orden
