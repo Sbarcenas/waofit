@@ -4,6 +4,9 @@ const activateRecurrindShoppingCart = require("./hooks/activate-recurring-shoppi
 const searchAdmin = require("./hooks/search-admin");
 
 const { fastJoin, isProvider, iff } = require("feathers-hooks-common");
+const { runInContext } = require("lodash");
+const moment = require("moment");
+
 const resolves = {
   joins: {
     join: () => async (records, context) => {
@@ -37,6 +40,26 @@ const resolves = {
           query: { recurring_shopping_cart_id: records.id, deletedAt: null },
           paginate: false,
         });
+
+      if (records.status != "active") {
+        let frequency = {};
+        let quantity = 0;
+        if (records.frequency == "7 days") {
+          frequency = "days";
+          quantity = 7;
+        } else if (records.frequency == "15 days") {
+          frequency = "days";
+          quantity = 15;
+        } else {
+          frequency = "months";
+          quantity = 1;
+        }
+
+        records.next_delivery = await context.app
+          .service("calculate-next-delivery")
+          .find({ query: { frequency, quantity } })
+          .then((it) => moment(it.next_delivery).format("YYYY-MM-DD"));
+      }
     },
   },
 };

@@ -27,11 +27,6 @@ module.exports = (options = {}) => {
 
     if (!userAddress) throw new NotFound("No se encontró la dirección.");
 
-    records.next_delivery = await context.app
-      .service("calculate-next-delivery")
-      .find()
-      .then((it) => moment(it.next_delivery).format("YYYY-MM-DD"));
-
     records.user_address_id = userAddress.id;
     records.user_address_meta_data = JSON.stringify(userAddress);
     records.status = "preparing";
