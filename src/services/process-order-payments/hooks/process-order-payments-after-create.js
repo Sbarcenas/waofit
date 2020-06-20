@@ -66,6 +66,8 @@ module.exports = function (options = {}) {
       dues: `${dataPayment.dues}`,
     };
     let response_epayco = null;
+
+    console.log("oooooooooooooooooooooooo");
     await epayco.charge
       .create(payment_info)
       .then(async (payment_info) => {
@@ -73,15 +75,12 @@ module.exports = function (options = {}) {
           throw new PaymentError("payment error");
         }
 
-        records.payment_status = payment_info.data.cod_respuesta;
-
-        records.response = {
-          invoice: payment_info.data.factura,
-          description: payment_info.data.descripcion,
-          response: payment_info.data.respuesta,
-        };
+        console.log(payment_info.data, "-------------------------");
 
         response_epayco = payment_info.data;
+
+        console.log(response_epayco, "pppppppppppppppppppp");
+
         //obtenemos el id del product history payment
         const data = {
           order_id: parseInt(payment_info.data.factura.split("-")[1]),
@@ -145,7 +144,13 @@ module.exports = function (options = {}) {
         console.log("err: " + err);
       });
 
+    records.payment_status = response_epayco.cod_respuesta;
     records.payment_type = "credit_card";
+    records.response = {
+      invoice: response_epayco.factura,
+      description: response_epayco.descripcion,
+      response: response_epayco.respuesta,
+    };
 
     // Place the modified records back in the context.
     replaceItems(context, records);
