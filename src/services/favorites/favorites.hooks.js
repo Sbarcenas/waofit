@@ -41,11 +41,11 @@ const resolves = {
       }
 
       if (
-        service == "brand" ||
-        service == "blog" ||
-        service == "recipe" ||
-        service == "recipe"
+        service == "brands" ||
+        service == "blogs-and-guides" ||
+        service == "recipes"
       ) {
+        console.log("-------");
         records.favorite = await context.app
           .service(service)
           .getModel()
