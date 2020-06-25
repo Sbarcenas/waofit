@@ -76,8 +76,7 @@ module.exports = function (options = {}) {
       totalPriceCoffeeShopAttributesTaxExc,
       totalTaxCoffeeShopAttributes,
       priceWithOutTax,
-      tax,
-    ] = [null, null, null, []];
+    ] = [null, null, null, null];
     for (const coffeeShop of shoppingCartDetailsCoffeeShop) {
       const coffeeOptionsIds = await context.app
         .service("coffee-options-in-scd")
@@ -119,37 +118,31 @@ module.exports = function (options = {}) {
       for (const coffeeOption of coffeeOptionsJoinAttiOfSections) {
         totalPriceCoffeeShopAttributesTaxExc +=
           coffeeOption.price * coffeeShop.shopping_cart_details_quantity;
+        priceWithOutTax = coffeeOption.price / (1 + coffeeOption.tax_value);
+
         totalPriceCoffeeShopAttributesTaxInc +=
-          coffeeOption.price *
-          coffeeShop.shopping_cart_details_quantity *
-          `1.${coffeeOption.tax_value}`;
+          coffeeOption.price * coffeeShop.shopping_cart_details_quantity +
+          (coffeeOption.price - priceWithOutTax);
+
         totalTaxCoffeeShopAttributes +=
           coffeeOption.price *
             coffeeShop.shopping_cart_details_quantity *
-            `1.${coffeeOption.tax_value}` -
+            (coffeeOption.price - priceWithOutTax) -
           coffeeOption.price * coffeeShop.shopping_cart_details_quantity;
       }
-      console.log(coffeeShop.tax_value, "coffeeShop.tax_value");
-
-      console.log(coffeeShop.price, "coffeeShop.price");
 
       totalPriceCoffeeShop +=
         coffeeShop.price * coffeeShop.shopping_cart_details_quantity +
         totalPriceCoffeeShopAttributesTaxInc;
       totalPriceCoffeeShopTaxExcl +=
         coffeeShop.price * coffeeShop.shopping_cart_details_quantity -
-        (coffeeShop.price - coffeeShop.price / `1.${coffeeShop.tax_value}`) *
+        (coffeeShop.price - priceWithOutTax) *
           coffeeShop.shopping_cart_details_quantity;
-      tax = coffeeShop.tax_value / 100;
-      priceWithOutTax = coffeeShop.price / (1 + tax);
+      priceWithOutTax = coffeeShop.price / (1 + coffeeShop.tax_value);
       totalTaxCoffeeShop +=
         (coffeeShop.price - priceWithOutTax) *
         coffeeShop.shopping_cart_details_quantity;
     }
-
-    console.log(priceWithOutTax, "priceWithOutTax");
-    console.log(totalTaxCoffeeShopAttributes, "totalTaxCoffeeShopAttributes");
-    console.log(totalTaxCoffeeShop, "totalTaxCoffeeShop");
 
     //----------------------------------FIN CALCULOS CAFETERIA---------------------------------------
 

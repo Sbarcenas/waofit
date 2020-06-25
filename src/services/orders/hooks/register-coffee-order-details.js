@@ -19,7 +19,8 @@ module.exports = (options = {}) => {
       totalPriceCoffeeShop,
       totalPriceCoffeeShopTaxExcl,
       totalTaxCoffeeShop,
-    ] = [null, null, null];
+      priceWithOutTax,
+    ] = [null, null, null, null];
     let [
       totalPriceCoffeeShopAttributesTaxInc,
       totalPriceCoffeeShopAttributesTaxExc,
@@ -38,25 +39,24 @@ module.exports = (options = {}) => {
         const shoppingCartDetailCoffeeShop =
           shoppingCartDetailsCoffeeShop[index];
 
+        priceWithOutTax =
+          shoppingCartDetailCoffeeShop.price /
+          (1 + shoppingCartDetailCoffeeShop.tax_value);
+
         const coffeeOrderDetailsData = {
           coffee_order_id: context.dataOrders.coffeeOrderId,
           coffee_shop_product_id: shoppingCartDetailCoffeeShop.product_id,
           unit_price_tax_excl:
-            shoppingCartDetailCoffeeShop.price /
-            `1.${shoppingCartDetailCoffeeShop.tax_value}`,
+            shoppingCartDetailCoffeeShop.price -
+            (shoppingCartDetailCoffeeShop.price - priceWithOutTax),
           quantity: shoppingCartDetailCoffeeShop.shopping_cart_details_quantity,
           unit_price_tax_incl: shoppingCartDetailCoffeeShop.price,
-          unit_price_tax:
-            shoppingCartDetailCoffeeShop.price -
-            shoppingCartDetailCoffeeShop.price /
-              `1.${shoppingCartDetailCoffeeShop.tax_value}`,
+          unit_price_tax: shoppingCartDetailCoffeeShop.price - priceWithOutTax,
           total_price_tax_incl:
             shoppingCartDetailCoffeeShop.price *
             shoppingCartDetailCoffeeShop.shopping_cart_details_quantity,
           total_price_tax:
-            (shoppingCartDetailCoffeeShop.price -
-              shoppingCartDetailCoffeeShop.price /
-                `1.${shoppingCartDetailCoffeeShop.tax_value}`) *
+            (shoppingCartDetailCoffeeShop.price - priceWithOutTax) *
             shoppingCartDetailCoffeeShop.shopping_cart_details_quantity,
           sent: 0,
           shipping_status: "pending shipping",
@@ -117,12 +117,13 @@ module.exports = (options = {}) => {
             total_price_opt_order_det_tax_excl,
             total_price_opt_order_det_tax_inc,
             total_tax_opt_order_det,
+            priceWithOutTax,
           ] = [null, null, null, null];
           for (const coffeeOption of coffeeOptionsJoinAttiOfSections) {
             const tax_value = coffeeOption.tax_value
               ? coffeeOption.tax_value
               : 0;
-
+            priceWithOutTax = coffeeOption.price / (1 + coffeeOption.tax_value);
             const coffeeOptCoffeeOrderDet = {
               coffee_order_details_id: coffeeOrderDetails.id,
               coffee_attributes_of_section_id:
@@ -130,20 +131,21 @@ module.exports = (options = {}) => {
               total_price_tax_inc:
                 coffeeOption.price *
                 coffeeShop.shopping_cart_details_quantity *
-                `1.${tax_value}`,
+                (coffeeOption.price - priceWithOutTax),
               total_price_tax_excl:
                 coffeeOption.price * coffeeShop.shopping_cart_details_quantity,
               total_price:
                 coffeeOption.price *
                 coffeeShop.shopping_cart_details_quantity *
-                `1.${tax_value}`,
+                (coffeeOption.price - priceWithOutTax),
               unit_price_tax_excl: coffeeOption.price,
-              unit_price_tax_inc: coffeeOption.price * `1.${tax_value}`,
+              unit_price_tax_inc:
+                coffeeOption.price + (coffeeShop.price - priceWithOutTax),
               // parseFloat(
               total_tax:
                 coffeeOption.price *
                   coffeeShop.shopping_cart_details_quantity *
-                  `1.${tax_value}` -
+                  (coffeeOption.price - priceWithOutTax) -
                 coffeeOption.price * coffeeShop.shopping_cart_details_quantity,
               createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
               updatedAt: moment().format("YYYY-MM-DD hh:mm:ss"),

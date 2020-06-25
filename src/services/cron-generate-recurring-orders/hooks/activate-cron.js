@@ -139,24 +139,25 @@ module.exports = (options = {}) => {
           totalPriceExpressProduct,
           totalPriceExpressProductTaxExcl,
           totalTaxExpressProduct,
-        ] = [null, null, null];
+          priceWithOutTax,
+        ] = [null, null, null, null];
 
         //calculamos los precios totales de la orden express
         for (const recurringShoppingCartExpressProduct of recurringShoppingCartsExpressProduct) {
+          priceWithOutTax =
+            recurringShoppingCartExpressProduct.price /
+            (1 + recurringShoppingCartExpressProduct.tax_value);
+
           totalPriceExpressProduct +=
             recurringShoppingCartExpressProduct.price *
             recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity;
           totalPriceExpressProductTaxExcl +=
             recurringShoppingCartExpressProduct.price *
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity -
-            (recurringShoppingCartExpressProduct.price -
-              recurringShoppingCartExpressProduct.price /
-                `1.${recurringShoppingCartExpressProduct.tax_value}`) *
+            (recurringShoppingCartExpressProduct.price - priceWithOutTax) *
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity;
           totalTaxExpressProduct +=
-            (recurringShoppingCartExpressProduct.price -
-              recurringShoppingCartExpressProduct.price /
-                `1.${recurringShoppingCartExpressProduct.tax_value}`) *
+            (recurringShoppingCartExpressProduct.price - priceWithOutTax) *
             recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity;
         }
 
@@ -195,7 +196,10 @@ module.exports = (options = {}) => {
         const dataExpressProductDetails = [];
         //creamos los detalles de las sub ordenes
         for (const recurringShoppingCartExpressProduct of recurringShoppingCartsExpressProduct) {
-          // console.log(recurringShoppingCartExpressProduct, "99999999999999");
+          priceWithOutTax =
+            recurringShoppingCartExpressProduct.price /
+            (1 + recurringShoppingCartExpressProduct.tax_value);
+
           dataExpressProductDetails.push({
             express_product_order_id: expressProductOrder.id,
             express_product_id: recurringShoppingCartExpressProduct.product_id,
@@ -204,16 +208,12 @@ module.exports = (options = {}) => {
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity,
             unit_price_tax_incl: recurringShoppingCartExpressProduct.price,
             unit_price_tax:
-              recurringShoppingCartExpressProduct.price -
-              recurringShoppingCartExpressProduct.price /
-                `1.${recurringShoppingCartExpressProduct.tax_value}`,
+              recurringShoppingCartExpressProduct.price - priceWithOutTax,
             total_price_tax_incl:
               recurringShoppingCartExpressProduct.price *
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity,
             total_price_tax:
-              (recurringShoppingCartExpressProduct.price -
-                recurringShoppingCartExpressProduct.price /
-                  `1.${recurringShoppingCartExpressProduct.tax_value}`) *
+              (recurringShoppingCartExpressProduct.price - priceWithOutTax) *
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity,
             sent: 0,
             express_product_name:

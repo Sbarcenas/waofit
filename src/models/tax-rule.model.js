@@ -19,8 +19,8 @@ class taxRule extends Model {
       properties: {
         name: { type: "string", maxLength: 255 },
         value: { type: "number" },
-        deletedAt: { type: "string", format: "date-time" }
-      }
+        deletedAt: { type: "string", format: "date-time" },
+      },
     };
   }
 
@@ -33,29 +33,29 @@ class taxRule extends Model {
   }
 }
 
-module.exports = function(app) {
+module.exports = function (app) {
   if (app) {
     taxRule.setup(app);
     const db = app.get("knex");
 
     db.schema
       .hasTable("tax_rule")
-      .then(exists => {
+      .then((exists) => {
         if (!exists) {
           db.schema
-            .createTable("tax_rule", table => {
+            .createTable("tax_rule", (table) => {
               table.increments("id");
               table.string("name");
-              table.integer("value");
+              table.decimal("value");
               table.timestamp("deletedAt").nullable();
               table.timestamp("createdAt");
               table.timestamp("updatedAt");
             })
             .then(() => console.log("Created tax_rule table")) // eslint-disable-line no-console
-            .catch(e => console.error("Error creating tax_rule table", e)); // eslint-disable-line no-console
+            .catch((e) => console.error("Error creating tax_rule table", e)); // eslint-disable-line no-console
         }
       })
-      .catch(e => console.error("Error creating tax_rule table", e)); // eslint-disable-line no-console
+      .catch((e) => console.error("Error creating tax_rule table", e)); // eslint-disable-line no-console
   }
   return taxRule;
 };
