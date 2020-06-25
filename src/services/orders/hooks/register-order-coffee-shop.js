@@ -76,6 +76,7 @@ module.exports = function (options = {}) {
       totalPriceCoffeeShopAttributesTaxExc,
       totalTaxCoffeeShopAttributes,
       priceWithOutTax,
+      tax,
     ] = [null, null, null, []];
     for (const coffeeShop of shoppingCartDetailsCoffeeShop) {
       const coffeeOptionsIds = await context.app
@@ -139,7 +140,8 @@ module.exports = function (options = {}) {
         coffeeShop.price * coffeeShop.shopping_cart_details_quantity -
         (coffeeShop.price - coffeeShop.price / `1.${coffeeShop.tax_value}`) *
           coffeeShop.shopping_cart_details_quantity;
-      priceWithOutTax = coffeeShop.price / `1.${coffeeShop.tax_value}`;
+      tax = coffeeShop.tax_value / 100;
+      priceWithOutTax = coffeeShop.price / (1 + tax);
       totalTaxCoffeeShop +=
         (coffeeShop.price - priceWithOutTax) *
         coffeeShop.shopping_cart_details_quantity;
