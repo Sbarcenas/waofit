@@ -128,6 +128,9 @@ module.exports = function (options = {}) {
             `1.${coffeeOption.tax_value}` -
           coffeeOption.price * coffeeShop.shopping_cart_details_quantity;
       }
+      console.log(coffeeShop.tax_value, "coffeeShop.tax_value");
+
+      console.log(coffeeShop.price, "coffeeShop.price");
 
       totalPriceCoffeeShop +=
         coffeeShop.price * coffeeShop.shopping_cart_details_quantity +
@@ -143,10 +146,8 @@ module.exports = function (options = {}) {
     }
 
     console.log(priceWithOutTax, "priceWithOutTax");
-    console.log(coffeeShop.price, "coffeeShop.price");
     console.log(totalTaxCoffeeShopAttributes, "totalTaxCoffeeShopAttributes");
     console.log(totalTaxCoffeeShop, "totalTaxCoffeeShop");
-    console.log(coffeeShop.tax_value, "coffeeShop.tax_value");
 
     //----------------------------------FIN CALCULOS CAFETERIA---------------------------------------
 
