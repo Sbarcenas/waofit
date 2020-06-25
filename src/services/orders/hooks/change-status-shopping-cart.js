@@ -5,20 +5,20 @@ const { getItems, replaceItems } = require("feathers-hooks-common");
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (options = {}) => {
-  return async context => {
+  return async (context) => {
     let records = getItems(context);
 
     const { user } = context.params;
 
     if (context.changeStatusShoppingCart)
-      /* await context.app
+      await context.app
         .service("shopping-cart")
         .getModel()
         .query()
         .patch({ status: "completed" })
-        .where({ id: records.shopping_cart_id }); */
+        .where({ id: records.shopping_cart_id });
 
-      console.log("HAY QUE CAMBIAR EL ESTADO DEL CARRO DE COMPRAS");
+    console.log("HAY QUE CAMBIAR EL ESTADO DEL CARRO DE COMPRAS");
 
     replaceItems(context, records);
 

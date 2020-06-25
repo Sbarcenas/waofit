@@ -151,12 +151,6 @@ module.exports = function (options = {}) {
 
     let total_price_tax_excl = null;
 
-    console.log(
-      (totalPriceCoffeeShopAttributesTaxExc
-        ? totalPriceCoffeeShopAttributesTaxExc
-        : 0) + (totalPriceCoffeeShopTaxExcl ? totalPriceCoffeeShopTaxExcl : 0)
-    );
-
     total_price_tax_excl +=
       (totalPriceCoffeeShopAttributesTaxExc
         ? totalPriceCoffeeShopAttributesTaxExc
