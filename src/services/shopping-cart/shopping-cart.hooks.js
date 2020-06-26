@@ -109,6 +109,43 @@ const productsJoins = {
                   records.shopping_cart_details[index].product_id,
               })
               .then((it) => it[0]);
+
+            const coffeeOpionsIds = await context.app
+              .service("coffee-options-in-scd")
+              .getModel()
+              .query()
+              .where({
+                shopping_cart_details_id:
+                  records.shopping_cart_details[index].id,
+                deletedAt: null,
+              })
+              .map((it) => it.coffee_options_id);
+
+            console.log(coffeeOpionsIds, "---------");
+
+            const coffeeOptions = await context.app
+              .service("coffee-options")
+              .getModel()
+              .query()
+              .select("coffee_options.*", "tax_rule.value AS tax_value")
+              .innerJoin(
+                "tax_rule",
+                "tax_rule.id",
+                "=",
+                "coffee_options.tax_rule_id"
+              )
+              .whereIn("coffee_options.id", coffeeOpionsIds);
+
+            console.log(coffeeOptions);
+
+            let [priceWithOutTax, totalPrice] = [null, null];
+            for (const coffeeOption of coffeeOptions) {
+              priceWithOutTax =
+                coffeeOption.price / (1 + coffeeOption.tax_value);
+              totalPrice +=
+                coffeeOption.price - (coffeeOption.price - priceWithOutTax);
+            }
+            records.shopping_cart_details[index].product.price += totalPrice;
           }
         }
       }
