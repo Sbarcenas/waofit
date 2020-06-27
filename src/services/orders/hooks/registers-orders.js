@@ -181,16 +181,14 @@ module.exports = function (options = {}) {
     ] = [null, null, null];
     //for de productos express
     for (const expressProduct of shoppingCartDetailsExpressProduct) {
-      priceWithOutTax = expressProduct.price / (1 + expressProduct.tax_value);
+      priceWithOutTax = expressProduct.price * expressProduct.tax_value;
       totalPriceExpressProduct +=
         expressProduct.price * expressProduct.shopping_cart_details_quantity;
       totalPriceExpressProductTaxExcl +=
         expressProduct.price * expressProduct.shopping_cart_details_quantity -
-        (expressProduct.price - priceWithOutTax) *
-          expressProduct.shopping_cart_details_quantity;
+        priceWithOutTax * expressProduct.shopping_cart_details_quantity;
       totalTaxExpressProduct +=
-        (expressProduct.price - priceWithOutTax) *
-        expressProduct.shopping_cart_details_quantity;
+        priceWithOutTax * expressProduct.shopping_cart_details_quantity;
     }
     //----------------------------------FIN CALCULOS PRODUCTOS EXPRESS---------------------------------------
 

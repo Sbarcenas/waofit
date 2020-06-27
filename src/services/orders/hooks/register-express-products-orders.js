@@ -13,7 +13,7 @@ module.exports = (options = {}) => {
 
     if (context.expressProduct) {
       console.log(context.dataOrders);
-
+      console.log("------------------------");
       const data = {
         user_id: user.id,
         order_status_id: 2,

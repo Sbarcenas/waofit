@@ -136,8 +136,6 @@ const productsJoins = {
               )
               .whereIn("coffee_options.id", coffeeOpionsIds);
 
-            console.log(coffeeOptions);
-
             let [priceWithOutTax, totalPrice] = [null, null];
             for (const coffeeOption of coffeeOptions) {
               priceWithOutTax =

@@ -116,20 +116,20 @@ module.exports = function (options = {}) {
 
       // console.log(coffeeShop);
       for (const coffeeOption of coffeeOptionsJoinAttiOfSections) {
+        priceWithOutTax = coffeeOption.price * coffeeOption.tax_value;
+
         totalPriceCoffeeShopAttributesTaxExc +=
-          coffeeOption.price * coffeeShop.shopping_cart_details_quantity;
-        priceWithOutTax = coffeeOption.price / (1 + coffeeOption.tax_value);
+          (coffeeOption.price - priceWithOutTax) *
+          coffeeShop.shopping_cart_details_quantity;
 
         totalPriceCoffeeShopAttributesTaxInc +=
-          coffeeOption.price * coffeeShop.shopping_cart_details_quantity +
-          (coffeeOption.price - priceWithOutTax);
+          coffeeOption.price * coffeeShop.shopping_cart_details_quantity;
 
         totalTaxCoffeeShopAttributes +=
-          coffeeOption.price *
-            coffeeShop.shopping_cart_details_quantity *
-            (coffeeOption.price - priceWithOutTax) -
-          coffeeOption.price * coffeeShop.shopping_cart_details_quantity;
+          priceWithOutTax * coffeeShop.shopping_cart_details_quantity;
       }
+
+      priceWithOutTax = coffeeShop.price * coffeeShop.tax_value;
 
       totalPriceCoffeeShop +=
         coffeeShop.price * coffeeShop.shopping_cart_details_quantity +
@@ -138,10 +138,8 @@ module.exports = function (options = {}) {
         coffeeShop.price * coffeeShop.shopping_cart_details_quantity -
         (coffeeShop.price - priceWithOutTax) *
           coffeeShop.shopping_cart_details_quantity;
-      priceWithOutTax = coffeeShop.price / (1 + coffeeShop.tax_value);
       totalTaxCoffeeShop +=
-        (coffeeShop.price - priceWithOutTax) *
-        coffeeShop.shopping_cart_details_quantity;
+        priceWithOutTax * coffeeShop.shopping_cart_details_quantity;
     }
 
     //----------------------------------FIN CALCULOS CAFETERIA---------------------------------------
@@ -152,18 +150,16 @@ module.exports = function (options = {}) {
       ? totalPriceCoffeeShop
       : 0;
 
+    records.total_tax += Math.abs(
+      (totalTaxCoffeeShop ? totalTaxCoffeeShop : 0) +
+        (totalTaxCoffeeShopAttributes ? totalTaxCoffeeShopAttributes : 0)
+    );
+
     let total_price_tax_excl = null;
 
-    total_price_tax_excl +=
-      (totalPriceCoffeeShopAttributesTaxExc
-        ? totalPriceCoffeeShopAttributesTaxExc
-        : 0) + (totalPriceCoffeeShopTaxExcl ? totalPriceCoffeeShopTaxExcl : 0);
+    total_price_tax_excl += totalPriceCoffeeShop - records.total_tax;
 
     records.total_price_tax_excl += total_price_tax_excl;
-
-    records.total_tax +=
-      (totalTaxCoffeeShop ? totalTaxCoffeeShop : 0) +
-      (totalTaxCoffeeShopAttributes ? totalTaxCoffeeShopAttributes : 0);
 
     if (shoppingCartDetailsCoffeeShop.length > 0) {
       context.coffeeShop = true;
@@ -172,7 +168,7 @@ module.exports = function (options = {}) {
         ...context.dataOrders,
         shoppingCartDetailsCoffeeShop,
         totalsShoppingCartDetailsCoffee: {
-          total_price_tax_excl: total_price_tax_excl,
+          total_price_tax_excl,
           total_tax: records.total_tax,
           total_price_tax_incl: totalPriceCoffeeShop,
           total_price_shipping_cost_excl: totalPriceCoffeeShop,

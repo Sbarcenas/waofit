@@ -40,23 +40,22 @@ module.exports = (options = {}) => {
           shoppingCartDetailsCoffeeShop[index];
 
         priceWithOutTax =
-          shoppingCartDetailCoffeeShop.price /
-          (1 + shoppingCartDetailCoffeeShop.tax_value);
+          shoppingCartDetailCoffeeShop.price *
+          shoppingCartDetailCoffeeShop.tax_value;
 
         const coffeeOrderDetailsData = {
           coffee_order_id: context.dataOrders.coffeeOrderId,
           coffee_shop_product_id: shoppingCartDetailCoffeeShop.product_id,
           unit_price_tax_excl:
-            shoppingCartDetailCoffeeShop.price -
-            (shoppingCartDetailCoffeeShop.price - priceWithOutTax),
+            shoppingCartDetailCoffeeShop.price - priceWithOutTax,
           quantity: shoppingCartDetailCoffeeShop.shopping_cart_details_quantity,
           unit_price_tax_incl: shoppingCartDetailCoffeeShop.price,
-          unit_price_tax: shoppingCartDetailCoffeeShop.price - priceWithOutTax,
+          unit_price_tax: priceWithOutTax,
           total_price_tax_incl:
             shoppingCartDetailCoffeeShop.price *
             shoppingCartDetailCoffeeShop.shopping_cart_details_quantity,
           total_price_tax:
-            (shoppingCartDetailCoffeeShop.price - priceWithOutTax) *
+            priceWithOutTax *
             shoppingCartDetailCoffeeShop.shopping_cart_details_quantity,
           sent: 0,
           shipping_status: "pending shipping",
@@ -120,33 +119,26 @@ module.exports = (options = {}) => {
             priceWithOutTax,
           ] = [null, null, null, null];
           for (const coffeeOption of coffeeOptionsJoinAttiOfSections) {
+            priceWithOutTax = coffeeOption.price * coffeeOption.tax_value;
+
             const tax_value = coffeeOption.tax_value
               ? coffeeOption.tax_value
               : 0;
-            priceWithOutTax = coffeeOption.price / (1 + coffeeOption.tax_value);
             const coffeeOptCoffeeOrderDet = {
               coffee_order_details_id: coffeeOrderDetails.id,
               coffee_attributes_of_section_id:
                 coffeeOption.coffee_attributes_of_section_id,
               total_price_tax_inc:
-                coffeeOption.price *
-                coffeeShop.shopping_cart_details_quantity *
-                (coffeeOption.price - priceWithOutTax),
+                coffeeOption.price * coffeeShop.shopping_cart_details_quantity,
               total_price_tax_excl:
-                coffeeOption.price * coffeeShop.shopping_cart_details_quantity,
+                (coffeeOption.price - priceWithOutTax) *
+                coffeeShop.shopping_cart_details_quantity,
               total_price:
-                coffeeOption.price *
-                coffeeShop.shopping_cart_details_quantity *
-                (coffeeOption.price - priceWithOutTax),
-              unit_price_tax_excl: coffeeOption.price,
-              unit_price_tax_inc:
-                coffeeOption.price + (coffeeShop.price - priceWithOutTax),
-              // parseFloat(
-              total_tax:
-                coffeeOption.price *
-                  coffeeShop.shopping_cart_details_quantity *
-                  (coffeeOption.price - priceWithOutTax) -
                 coffeeOption.price * coffeeShop.shopping_cart_details_quantity,
+              unit_price_tax_excl: coffeeOption.price - priceWithOutTax,
+              unit_price_tax_inc: coffeeOption.price,
+              total_tax:
+                priceWithOutTax * coffeeShop.shopping_cart_details_quantity,
               createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
               updatedAt: moment().format("YYYY-MM-DD hh:mm:ss"),
             };
@@ -157,9 +149,6 @@ module.exports = (options = {}) => {
             total_price_opt_order_det_tax_inc +=
               coffeeOptCoffeeOrderDet.total_price_tax_inc;
             total_tax_opt_order_det += coffeeOptCoffeeOrderDet.total_tax;
-            // console.log(coffeeOptCoffeeOrderDet);
-
-            // throw "";
 
             //aqui insertar uno por uno para tomar el id de la suborden y sumarle el valor de los productos.
             const coffeeOptOrdeDet = await context.app
