@@ -22,22 +22,20 @@ module.exports = (options = {}) => {
       let priceWithOutTax = null;
       for (let index = 0; index < products.length; index++) {
         const product = products[index];
-        priceWithOutTax = product.price / (1 + product.tax_value);
+        priceWithOutTax = product.price * product.tax_value;
 
         data.push({
           express_product_order_id: context.dataOrders.expressProductOrderId,
           express_product_id: product.product_id,
           type_product: product.product_type,
-          unit_price_tax_excl:
-            product.price - (product.price - priceWithOutTax),
+          unit_price_tax_excl: product.price - priceWithOutTax,
           quantity: product.shopping_cart_details_quantity,
           unit_price_tax_incl: product.price,
-          unit_price_tax: product.price - priceWithOutTax,
+          unit_price_tax: priceWithOutTax,
           total_price_tax_incl:
             product.price * product.shopping_cart_details_quantity,
           total_price_tax:
-            (product.price - priceWithOutTax) *
-            product.shopping_cart_details_quantity,
+            priceWithOutTax * product.shopping_cart_details_quantity,
           sent: 0,
           express_product_name: product.product_name,
           express_product_main_image: product.main_image,

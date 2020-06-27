@@ -145,8 +145,8 @@ module.exports = (options = {}) => {
         //calculamos los precios totales de la orden express
         for (const recurringShoppingCartExpressProduct of recurringShoppingCartsExpressProduct) {
           priceWithOutTax =
-            recurringShoppingCartExpressProduct.price /
-            (1 + recurringShoppingCartExpressProduct.tax_value);
+            recurringShoppingCartExpressProduct.price *
+            recurringShoppingCartExpressProduct.tax_value;
 
           totalPriceExpressProduct +=
             recurringShoppingCartExpressProduct.price *
@@ -154,10 +154,10 @@ module.exports = (options = {}) => {
           totalPriceExpressProductTaxExcl +=
             recurringShoppingCartExpressProduct.price *
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity -
-            (recurringShoppingCartExpressProduct.price - priceWithOutTax) *
+            priceWithOutTax *
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity;
           totalTaxExpressProduct +=
-            (recurringShoppingCartExpressProduct.price - priceWithOutTax) *
+            priceWithOutTax *
             recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity;
         }
 
@@ -197,8 +197,8 @@ module.exports = (options = {}) => {
         //creamos los detalles de las sub ordenes
         for (const recurringShoppingCartExpressProduct of recurringShoppingCartsExpressProduct) {
           priceWithOutTax =
-            recurringShoppingCartExpressProduct.price /
-            (1 + recurringShoppingCartExpressProduct.tax_value);
+            recurringShoppingCartExpressProduct.price *
+            recurringShoppingCartExpressProduct.tax_value;
 
           dataExpressProductDetails.push({
             express_product_order_id: expressProductOrder.id,
@@ -207,13 +207,12 @@ module.exports = (options = {}) => {
             quantity:
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity,
             unit_price_tax_incl: recurringShoppingCartExpressProduct.price,
-            unit_price_tax:
-              recurringShoppingCartExpressProduct.price - priceWithOutTax,
+            unit_price_tax: priceWithOutTax,
             total_price_tax_incl:
               recurringShoppingCartExpressProduct.price *
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity,
             total_price_tax:
-              (recurringShoppingCartExpressProduct.price - priceWithOutTax) *
+              priceWithOutTax *
               recurringShoppingCartExpressProduct.recurring_shopping_cart_details_quantity,
             sent: 0,
             express_product_name:
